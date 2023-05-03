@@ -4,6 +4,7 @@ import com.course.project.DistantLearning.models.Role;
 import com.course.project.DistantLearning.models.ERole;
 import com.course.project.DistantLearning.models.User;
 import com.course.project.DistantLearning.queries.request.LoginRequest;
+import com.course.project.DistantLearning.queries.request.SignupRequest;
 import com.course.project.DistantLearning.queries.response.MessageResponse;
 import com.course.project.DistantLearning.queries.response.UserInfoResponse;
 import com.course.project.DistantLearning.repository.RoleRepository;
@@ -11,13 +12,13 @@ import com.course.project.DistantLearning.repository.UserRepository;
 import com.course.project.DistantLearning.security.jwt.JwtUtils;
 import com.course.project.DistantLearning.security.services.UserDetailsImpl;
 import jakarta.validation.Valid;
-import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -90,7 +91,7 @@ public class AuthController {
         Set<Role> roles = new HashSet<>();
 
         if (strRoles == null) {
-            Role userRole = roleRepository.findByName(ERole.ROLE_USER)
+            Role userRole = roleRepository.findByName(ERole.ROLE_STUDENT)
                     .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
             roles.add(userRole);
         } else {
@@ -103,13 +104,13 @@ public class AuthController {
 
                         break;
                     case "mod":
-                        Role modRole = roleRepository.findByName(ERole.ROLE_MODERATOR)
+                        Role modRole = roleRepository.findByName(ERole.ROLE_LECTOR)
                                 .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
                         roles.add(modRole);
 
                         break;
                     default:
-                        Role userRole = roleRepository.findByName(ERole.ROLE_USER)
+                        Role userRole = roleRepository.findByName(ERole.ROLE_STUDENT)
                                 .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
                         roles.add(userRole);
                 }
