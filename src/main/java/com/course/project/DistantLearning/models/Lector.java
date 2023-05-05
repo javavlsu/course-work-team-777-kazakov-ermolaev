@@ -3,8 +3,8 @@ package com.course.project.DistantLearning.models;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "student")
-public class Student {
+@Table(name = "lector")
+public class Lector {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -13,16 +13,11 @@ public class Student {
     @JoinColumn(name = "user_id")
     private User userId;
 
-    @ManyToOne
-    @JoinColumn(name = "group_id")
-    private Group groupId;
+    public Lector() {}
 
-    public Student() {}
-
-    public Student(Long id, User userId, Group groupId) {
+    public Lector(Long id, User userId) {
         this.id = id;
         this.userId = userId;
-        this.groupId = groupId;
     }
 
     public Long getId() {
@@ -39,13 +34,5 @@ public class Student {
 
     public void setUserId(User userId) {
         this.userId = userId;
-    }
-
-    public Group getGroupId() {
-        return groupId;
-    }
-
-    public void setGroupId(Group groupId) {
-        this.groupId = groupId;
     }
 }
