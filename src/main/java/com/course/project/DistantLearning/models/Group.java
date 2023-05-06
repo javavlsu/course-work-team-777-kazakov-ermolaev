@@ -18,13 +18,20 @@ public class Group {
     @JsonIgnore
     @OneToMany
     @JoinColumn(name = "group_id")
-    private List<Student> students;
+    private List<Student> studentList;
+
+    @JsonIgnore
+    @ManyToMany
+    @JoinTable(name = "discipline_group",
+            joinColumns = @JoinColumn(name = "group_id"),
+            inverseJoinColumns = @JoinColumn(name = "discipline_id"))
+    private List<Discipline> disciplineList;
 
     public Group() {}
 
-    public Group(String name, List<Student> students) {
+    public Group(String name, List<Student> studentList) {
         this.name = name;
-        this.students = students;
+        this.studentList = studentList;
     }
 
     public Long getId() {
@@ -43,11 +50,19 @@ public class Group {
         this.name = name;
     }
 
-    public List<Student> getStudents() {
-        return students;
+    public List<Student> getStudentList() {
+        return studentList;
     }
 
-    public void setStudents(List<Student> students) {
-        this.students = students;
+    public void setStudentList(List<Student> studentList) {
+        this.studentList = studentList;
+    }
+
+    public List<Discipline> getDisciplineList() {
+        return disciplineList;
+    }
+
+    public void setDisciplineList(List<Discipline> disciplineList) {
+        this.disciplineList = disciplineList;
     }
 }

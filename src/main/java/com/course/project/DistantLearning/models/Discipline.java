@@ -20,13 +20,20 @@ public class Discipline {
     @JoinTable(name = "discipline_lector",
             joinColumns = @JoinColumn(name = "discipline_id"),
             inverseJoinColumns = @JoinColumn(name = "lector_id"))
-    private List<Lector> lectorId;
+    private List<Lector> lectorList;
+
+    @JsonIgnore
+    @ManyToMany
+    @JoinTable(name = "discipline_group",
+            joinColumns = @JoinColumn(name = "discipline_id"),
+            inverseJoinColumns = @JoinColumn(name = "group_id"))
+    private List<Group> groupList;
 
     public Discipline() {}
 
-    public Discipline(String title, List<Lector> lectorId) {
+    public Discipline(String title, List<Lector> lectorList) {
         this.title = title;
-        this.lectorId = lectorId;
+        this.lectorList = lectorList;
     }
 
     public Long getId() {
@@ -45,11 +52,19 @@ public class Discipline {
         this.title = title;
     }
 
-    public List<Lector> getLectorId() {
-        return lectorId;
+    public List<Lector> getLector() {
+        return lectorList;
     }
 
-    public void setLectorId(List<Lector> lectorId) {
-        this.lectorId = lectorId;
+    public void setLector(List<Lector> lectorList) {
+        this.lectorList = lectorList;
+    }
+
+    public List<Group> getGroupList() {
+        return groupList;
+    }
+
+    public void setGroupList(List<Group> groupList) {
+        this.groupList = groupList;
     }
 }

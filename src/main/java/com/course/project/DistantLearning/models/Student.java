@@ -15,14 +15,14 @@ public class Student {
 
     @ManyToOne
     @JoinColumn(name = "group_id")
-    private Group groupId;
+    private Group group;
 
     public Student() {}
 
-    public Student(Long id, User userId, Group groupId) {
+    public Student(Long id, User userId, Group group) {
         this.id = id;
         this.userId = userId;
-        this.groupId = groupId;
+        this.group = group;
     }
 
     public Long getId() {
@@ -41,11 +41,11 @@ public class Student {
         this.userId = userId;
     }
 
-    public Group getGroupId() {
-        return groupId;
+    public Group getGroup() {
+        return group;
     }
 
-    public void setGroupId(Group groupId) {
-        this.groupId = groupId;
+    public void setGroup(Group group) {
+        this.group = group;
     }
 }

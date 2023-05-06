@@ -25,16 +25,16 @@ public class LabWork {
 
     @ManyToOne
     @JoinColumn(name = "discipline_id")
-    private Discipline disciplineId;
+    private Discipline discipline;
 
     public LabWork() {}
 
-    public LabWork(String title, Date deadline, String manual, String status, Discipline disciplineId) {
+    public LabWork(String title, Date deadline, String manual, String status, Discipline discipline) {
         this.title = title;
         this.deadline = deadline;
         this.manual = manual;
         this.status = status;
-        this.disciplineId = disciplineId;
+        this.discipline = discipline;
     }
 
     public Long getId() {
@@ -77,11 +77,11 @@ public class LabWork {
         this.status = status;
     }
 
-    public Discipline getDisciplineId() {
-        return disciplineId;
+    public Discipline getDiscipline() {
+        return discipline;
     }
 
-    public void setDisciplineId(Discipline disciplineId) {
-        this.disciplineId = disciplineId;
+    public void setDiscipline(Discipline discipline) {
+        this.discipline = discipline;
     }
 }

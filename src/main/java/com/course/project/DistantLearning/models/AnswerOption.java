@@ -17,14 +17,14 @@ public class AnswerOption {
 
     @ManyToOne
     @JoinColumn(name = "task_id")
-    private Task taskId;
+    private Task task;
 
     public AnswerOption() {}
 
-    public AnswerOption(String title, Boolean isRight, Task taskId) {
+    public AnswerOption(String title, Boolean isRight, Task task) {
         this.title = title;
         this.isRight = isRight;
-        this.taskId = taskId;
+        this.task = task;
     }
 
     public Long getId() {
@@ -52,10 +52,10 @@ public class AnswerOption {
     }
 
     public Task getTaskId() {
-        return taskId;
+        return task;
     }
 
     public void setTaskId(Task taskId) {
-        this.taskId = taskId;
+        this.task = task;
     }
 }

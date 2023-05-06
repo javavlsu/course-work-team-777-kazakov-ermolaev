@@ -22,15 +22,15 @@ public class Test {
 
     @ManyToOne
     @JoinColumn(name = "discipline_id")
-    private Discipline disciplineId;
+    private Discipline discipline;
 
     public Test() {}
 
-    public Test(String title, Date deadline, String status, Discipline disciplineId) {
+    public Test(String title, Date deadline, String status, Discipline discipline) {
         this.title = title;
         this.deadline = deadline;
         this.status = status;
-        this.disciplineId = disciplineId;
+        this.discipline = discipline;
     }
 
     public Long getId() {
@@ -65,11 +65,11 @@ public class Test {
         this.status = status;
     }
 
-    public Discipline getDisciplineId() {
-        return disciplineId;
+    public Discipline getDiscipline() {
+        return discipline;
     }
 
-    public void setDisciplineId(Discipline disciplineId) {
-        this.disciplineId = disciplineId;
+    public void setDiscipline(Discipline discipline) {
+        this.discipline = discipline;
     }
 }

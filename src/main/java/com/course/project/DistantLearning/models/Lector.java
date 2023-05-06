@@ -11,13 +11,13 @@ public class Lector {
 
     @OneToOne
     @JoinColumn(name = "user_id")
-    private User userId;
+    private User user;
 
     public Lector() {}
 
-    public Lector(Long id, User userId) {
+    public Lector(Long id, User user) {
         this.id = id;
-        this.userId = userId;
+        this.user = user;
     }
 
     public Long getId() {
@@ -28,11 +28,11 @@ public class Lector {
         this.id = id;
     }
 
-    public User getUserId() {
-        return userId;
+    public User getUser() {
+        return user;
     }
 
-    public void setUserId(User userId) {
-        this.userId = userId;
+    public void setUser(User user) {
+        this.user = user;
     }
 }

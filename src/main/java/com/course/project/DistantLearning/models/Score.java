@@ -11,20 +11,20 @@ public class Score {
 
     @ManyToOne
     @JoinColumn(name = "student_id")
-    private Student studentId;
+    private Student student;
 
     @ManyToOne
     @JoinColumn(name = "discipline_id")
-    private Discipline disciplineId;
+    private Discipline discipline;
 
     @Column(name = "score")
     private float score;
 
     public Score() {}
 
-    public Score(Student studentId, Discipline disciplineId, float score) {
-        this.studentId = studentId;
-        this.disciplineId = disciplineId;
+    public Score(Student student, Discipline discipline, float score) {
+        this.student = student;
+        this.discipline = discipline;
         this.score = score;
     }
 
@@ -36,20 +36,20 @@ public class Score {
         this.id = id;
     }
 
-    public Student getStudentId() {
-        return studentId;
+    public Student getStudent() {
+        return student;
     }
 
-    public void setStudentId(Student studentId) {
-        this.studentId = studentId;
+    public void setStudent(Student studentId) {
+        this.student = student;
     }
 
-    public Discipline getDisciplineId() {
-        return disciplineId;
+    public Discipline getDiscipline() {
+        return discipline;
     }
 
-    public void setDisciplineId(Discipline disciplineId) {
-        this.disciplineId = disciplineId;
+    public void setDiscipline(Discipline discipline) {
+        this.discipline = discipline;
     }
 
     public float getScore() {

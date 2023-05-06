@@ -14,13 +14,13 @@ public class Task {
 
     @ManyToOne
     @JoinColumn(name = "test_id")
-    private Test testId;
+    private Test test;
 
     public Task() {}
 
-    public Task(String title, Test testId) {
+    public Task(String title, Test test) {
         this.title = title;
-        this.testId = testId;
+        this.test = test;
     }
 
     public Long getId() {
@@ -39,11 +39,11 @@ public class Task {
         this.title = title;
     }
 
-    public Test getTestId() {
-        return testId;
+    public Test getTest() {
+        return test;
     }
 
-    public void setTestId(Test testId) {
-        this.testId = testId;
+    public void setTest(Test testId) {
+        this.test = test;
     }
 }
