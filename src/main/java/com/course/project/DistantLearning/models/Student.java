@@ -11,7 +11,7 @@ public class Student {
 
     @OneToOne
     @JoinColumn(name = "user_id")
-    private User userId;
+    private User user;
 
     @ManyToOne
     @JoinColumn(name = "group_id")
@@ -19,9 +19,9 @@ public class Student {
 
     public Student() {}
 
-    public Student(Long id, User userId, Group group) {
+    public Student(Long id, User user, Group group) {
         this.id = id;
-        this.userId = userId;
+        this.user = user;
         this.group = group;
     }
 
@@ -33,12 +33,12 @@ public class Student {
         this.id = id;
     }
 
-    public User getUserId() {
-        return userId;
+    public User getUser() {
+        return user;
     }
 
-    public void setUserId(User userId) {
-        this.userId = userId;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public Group getGroup() {
