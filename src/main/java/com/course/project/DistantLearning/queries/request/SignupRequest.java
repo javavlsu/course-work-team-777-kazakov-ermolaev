@@ -2,8 +2,10 @@ package com.course.project.DistantLearning.queries.request;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.Set;
 
@@ -24,11 +26,11 @@ public class SignupRequest {
     private String password;
 
     @NotBlank
-    @Size(min = 10, max = 100)
+    @Size(min = 10, max = 150)
     private String fullName;
 
-    @NotBlank
-    private Date birthdate;
+    @NotNull
+    private LocalDate birthdate;
 
     public String getUsername() {
         return username;
@@ -70,11 +72,11 @@ public class SignupRequest {
         this.fullName = fullName;
     }
 
-    public Date getBirthdate() {
+    public LocalDate getBirthdate() {
         return birthdate;
     }
 
-    public void setBirthdate(Date birthdate) {
+    public void setBirthdate(LocalDate birthdate) {
         this.birthdate = birthdate;
     }
 }

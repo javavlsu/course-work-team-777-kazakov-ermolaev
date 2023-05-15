@@ -4,8 +4,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
+import java.time.LocalDate;
 import java.util.*;
 
 @Entity
@@ -34,11 +36,12 @@ public class User {
 
     @NotBlank
     @Column(name = "full_name")
+    @Size(max = 150)
     private String fullName;
 
-    @NotBlank
+    @NotNull
     @Column(name = "birthdate")
-    private Date birthdate;
+    private LocalDate birthdate;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_roles",
@@ -49,7 +52,7 @@ public class User {
     public User() {
     }
 
-    public User(String username, String email, String password, String fullName, Date birthdate) {
+    public User(String username, String email, String password, String fullName, LocalDate birthdate) {
         this.username = username;
         this.email = email;
         this.password = password;
@@ -105,11 +108,11 @@ public class User {
         this.fullName = fullName;
     }
 
-    public Date getBirthdate() {
+    public LocalDate getBirthdate() {
         return birthdate;
     }
 
-    public void setBirthdate(Date birthdate) {
+    public void setBirthdate(LocalDate birthdate) {
         this.birthdate = birthdate;
     }
 }
