@@ -30,22 +30,7 @@ public class DisciplineController {
     @PreAuthorize("hasRole('STUDENT') or hasRole('LECTOR') or hasRole('ADMIN')")
     public ResponseEntity<List<Discipline>> getDisciplines() {
         User user = userService.getAuthorizeUser();
-        List<Discipline> disciplines = new ArrayList<>();
-
-        List<String> roles = new ArrayList<>();
-
-        for(var role: user.getRoles()) {
-            roles.add(role.getName().toString());
-        }
-
-        if(roles.contains("ROLE_ADMIN")) {
-            disciplineService.getAllDiscipline().forEach(disciplines::add);
-        } else if(roles.contains("ROLE_LECTOR") & !roles.contains("ROLE_ADMIN")) {
-            disciplineService.getLectorDiscipline(userService.getAuthorizeLector().getId());
-        } else {
-            Student student = userService.getStudent();
-            disciplineService.getStudentDiscipline(student.getGroup().getId()).forEach(disciplines::add);
-        }
+        List<Discipline> disciplines = disciplineService.getDiscipline(user.getId());
 
         if (disciplines.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
