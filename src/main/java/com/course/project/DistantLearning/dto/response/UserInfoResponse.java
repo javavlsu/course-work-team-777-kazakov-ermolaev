@@ -1,4 +1,4 @@
-package com.course.project.DistantLearning.queries.response;
+package com.course.project.DistantLearning.dto.response;
 
 import java.util.List;
 

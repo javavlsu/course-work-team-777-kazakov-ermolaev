@@ -1,4 +1,4 @@
-package com.course.project.DistantLearning.queries.request;
+package com.course.project.DistantLearning.dto.request;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -6,7 +6,6 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.Set;
 
 public class SignupRequest {

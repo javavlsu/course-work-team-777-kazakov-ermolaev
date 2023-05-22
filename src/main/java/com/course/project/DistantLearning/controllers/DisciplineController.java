@@ -1,19 +1,22 @@
 package com.course.project.DistantLearning.controllers;
 
+import com.course.project.DistantLearning.dto.request.CreateDisciplineRequest;
 import com.course.project.DistantLearning.models.Discipline;
 import com.course.project.DistantLearning.models.Student;
-import com.course.project.DistantLearning.queries.response.MessageResponse;
+import com.course.project.DistantLearning.dto.response.MessageResponse;
+import com.course.project.DistantLearning.models.User;
 import com.course.project.DistantLearning.service.DisciplineService;
-import com.course.project.DistantLearning.service.StudentService;
+import com.course.project.DistantLearning.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
-@CrossOrigin(origins = "*", maxAge = 3600)
+@CrossOrigin(origins = "http://localhost:4200", maxAge = 3600, allowCredentials="true")
 @RestController
 @RequestMapping("/api/discipline")
 public class DisciplineController {
@@ -21,13 +24,28 @@ public class DisciplineController {
     DisciplineService disciplineService;
 
     @Autowired
-    StudentService studentService;
+    UserService userService;
 
     @GetMapping
     @PreAuthorize("hasRole('STUDENT') or hasRole('LECTOR') or hasRole('ADMIN')")
     public ResponseEntity<List<Discipline>> getDisciplines() {
-        Student student = studentService.getStudent();
-        List<Discipline> disciplines = disciplineService.getDiscipline(student.getGroup().getId());
+        User user = userService.getAuthorizeUser();
+        List<Discipline> disciplines = new ArrayList<>();
+
+        List<String> roles = new ArrayList<>();
+
+        for(var role: user.getRoles()) {
+            roles.add(role.getName().toString());
+        }
+
+        if(roles.contains("ROLE_ADMIN")) {
+            disciplineService.getAllDiscipline().forEach(disciplines::add);
+        } else if(roles.contains("ROLE_LECTOR") & !roles.contains("ROLE_ADMIN")) {
+            disciplineService.getLectorDiscipline(userService.getAuthorizeLector().getId());
+        } else {
+            Student student = userService.getStudent();
+            disciplineService.getStudentDiscipline(student.getGroup().getId()).forEach(disciplines::add);
+        }
 
         if (disciplines.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -37,9 +55,9 @@ public class DisciplineController {
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('LECTOR') or hasRole('ADMIN')")
-    public ResponseEntity<?> createDiscipline(@RequestBody Discipline discipline) {
-        disciplineService.createDiscipline(discipline);
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> createDiscipline(@RequestBody CreateDisciplineRequest createDisciplineRequest) {
+        disciplineService.createDiscipline(createDisciplineRequest);
         return ResponseEntity.ok(new MessageResponse("Discipline is creating"));
     }
 
@@ -47,7 +65,7 @@ public class DisciplineController {
     @GetMapping("/student")
     @PreAuthorize("hasRole('STUDENT') or hasRole('LECTOR') or hasRole('ADMIN')")
     public ResponseEntity<Student> getStudent() {
-        return new ResponseEntity<>(studentService.getStudent(), HttpStatus.OK);
+        return new ResponseEntity<>(userService.getStudent(), HttpStatus.OK);
     }
 
 }

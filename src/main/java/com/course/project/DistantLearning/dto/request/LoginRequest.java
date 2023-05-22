@@ -1,4 +1,4 @@
-package com.course.project.DistantLearning.queries.request;
+package com.course.project.DistantLearning.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 

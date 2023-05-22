@@ -1,6 +1,9 @@
 package com.course.project.DistantLearning.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+
+import java.util.List;
 
 @Entity
 @Table(name = "lector")
@@ -12,6 +15,13 @@ public class Lector {
     @OneToOne
     @JoinColumn(name = "user_id")
     private User user;
+
+    @JsonIgnore
+    @ManyToMany
+    @JoinTable(name = "discipline_lector",
+            joinColumns = @JoinColumn(name = "lector_id"),
+            inverseJoinColumns = @JoinColumn(name = "discipline_id"))
+    private List<Discipline> disciplineList;
 
     public Lector() {}
 
@@ -34,5 +44,13 @@ public class Lector {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public List<Discipline> getDisciplineList() {
+        return disciplineList;
+    }
+
+    public void setDisciplineList(List<Discipline> disciplineList) {
+        this.disciplineList = disciplineList;
     }
 }

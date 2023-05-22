@@ -3,10 +3,10 @@ package com.course.project.DistantLearning.controllers;
 import com.course.project.DistantLearning.models.Role;
 import com.course.project.DistantLearning.models.ERole;
 import com.course.project.DistantLearning.models.User;
-import com.course.project.DistantLearning.queries.request.LoginRequest;
-import com.course.project.DistantLearning.queries.request.SignupRequest;
-import com.course.project.DistantLearning.queries.response.MessageResponse;
-import com.course.project.DistantLearning.queries.response.UserInfoResponse;
+import com.course.project.DistantLearning.dto.request.LoginRequest;
+import com.course.project.DistantLearning.dto.request.SignupRequest;
+import com.course.project.DistantLearning.dto.response.MessageResponse;
+import com.course.project.DistantLearning.dto.response.UserInfoResponse;
 import com.course.project.DistantLearning.repository.RoleRepository;
 import com.course.project.DistantLearning.repository.UserRepository;
 import com.course.project.DistantLearning.security.jwt.JwtUtils;
@@ -30,7 +30,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 
-@CrossOrigin(origins = "*", maxAge = 3600)
+@CrossOrigin(origins = "http://localhost:4200", maxAge = 3600, allowCredentials="true")
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
