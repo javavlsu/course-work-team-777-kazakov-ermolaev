@@ -1,0 +1,39 @@
+<div *ngIf="isAdmin">
+  <div class="submit-form">
+    <div *ngIf="!submitted">
+      <div class="form-group">
+        <label for="discipline"><strong>Название дисциплины:</strong></label>
+        <input
+          type="text"
+          class="form-control"
+          id="discipline"
+          required
+          [(ngModel)]="discipline.title"
+          name="discipline"
+        />
+      </div>
+      <div class="form-group">
+        <section>
+          <label style="margin-top: 5px;" for="lecrors"><strong>Выберите лекторов:</strong></label>
+          <form [formGroup]="form" novalidate>
+              <div *ngFor="let lector of lectors">
+                <input
+                  type="checkbox"
+                  formArrayName="pickedUsers"
+                  [value]="lector.name"
+                  (change)="onCheckboxChange($event, lector)"
+                />
+                {{ lector.name }}
+              </div>
+          </form>
+        </section>
+      </div>
+
+      <button (click)="saveDiscipline()" class="btn btn-success">Create</button>
+    </div>
+  </div>
+  <div *ngIf="submitted">
+    <h4>Chat was submitted successfully!</h4>
+    <button class="btn btn-success" (click)="newDiscipline()">Add</button>
+  </div>
+</div>

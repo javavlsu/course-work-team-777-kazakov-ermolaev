@@ -1,0 +1,32 @@
+<div class="list row">
+  <div class="row-md-6" *ngIf="isAdmin">
+    <a
+      style="margin-left: 7px"
+      class="btn btn-outline-secondary"
+      routerLink="addDiscipline">
+      Создать дисциплину
+    </a>
+  </div>
+  <div class="row-md-6">
+    <h4 style="margin-left: 7px">Дисциплины</h4>
+    <div *ngFor="let discipline of disciplines">
+      <ul class="list-group">
+        <div class="col">
+            <button
+              type="button"
+              class="btn btn-outline-primary list-discipline"
+            >
+              {{ discipline.title }}
+            </button>
+            <div *ngIf="isLector">
+              <button
+              type="button"
+              class="bi bi-trash btn btn-outline-danger del-button"
+              >
+              </button>
+            </div>
+        </div>
+      </ul>
+    </div>
+  </div>
+</div>

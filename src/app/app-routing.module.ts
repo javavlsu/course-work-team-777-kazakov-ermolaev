@@ -4,6 +4,8 @@ import { HomeComponent } from './components/home/home.component';
 import { LoginComponent } from './components/login/login.component';
 import { ProfileComponent } from './components/profile/profile.component';
 import { RegisterComponent } from './components/register/register.component';
+import { DisciplineListComponent } from './components/discipline-list/discipline-list.component';
+import { AddDisciplineComponent } from './components/add-discipline/add-discipline.component';
 
 const routes: Routes = [
   { path: 'home', component: HomeComponent },
@@ -11,6 +13,8 @@ const routes: Routes = [
   { path: 'register', component: RegisterComponent },
   { path: 'profile', component: ProfileComponent },
   { path: '', redirectTo: 'home', pathMatch: 'full' },
+  { path: 'discipline', component: DisciplineListComponent},
+  { path: 'discipline/addDiscipline', component: AddDisciplineComponent }
 ];
 
 @NgModule({
