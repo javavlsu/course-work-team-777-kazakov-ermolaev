@@ -1,6 +1,6 @@
 package com.course.project.DistantLearning.controllers;
 
-import com.course.project.DistantLearning.dto.request.CreateDisciplineRequest;
+import com.course.project.DistantLearning.dto.request.CreateOrUpdateDisciplineRequest;
 import com.course.project.DistantLearning.models.Discipline;
 import com.course.project.DistantLearning.models.Student;
 import com.course.project.DistantLearning.dto.response.MessageResponse;
@@ -13,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @CrossOrigin(origins = "http://localhost:4200", maxAge = 3600, allowCredentials="true")
@@ -41,16 +40,16 @@ public class DisciplineController {
 
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> createDiscipline(@RequestBody CreateDisciplineRequest createDisciplineRequest) {
-        disciplineService.createDiscipline(createDisciplineRequest);
+    public ResponseEntity<?> createDiscipline(@RequestBody CreateOrUpdateDisciplineRequest createOrUpdateDisciplineRequest) {
+        disciplineService.createDiscipline(createOrUpdateDisciplineRequest);
         return ResponseEntity.ok(new MessageResponse("Discipline is creating"));
     }
 
-
-    @GetMapping("/student")
-    @PreAuthorize("hasRole('STUDENT') or hasRole('LECTOR') or hasRole('ADMIN')")
-    public ResponseEntity<Student> getStudent() {
-        return new ResponseEntity<>(userService.getStudent(), HttpStatus.OK);
-    }
+//    @PostMapping
+//    @PreAuthorize("hasRole('ADMIN')")
+//    public ResponseEntity<?> updateDiscipline(@PathVariable("id") long id, @RequestBody CreateOrUpdateDisciplineRequest createOrUpdateDisciplineRequest) {
+//        disciplineService.updateDiscipline(createOrUpdateDisciplineRequest);
+//        return ResponseEntity.ok(new MessageResponse("Discipline is updating"));
+//    }
 
 }

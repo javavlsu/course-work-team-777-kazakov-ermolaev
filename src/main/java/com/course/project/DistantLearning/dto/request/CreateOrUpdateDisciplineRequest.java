@@ -4,15 +4,15 @@ import com.course.project.DistantLearning.dto.response.LectorResponse;
 
 import java.util.List;
 
-public class CreateDisciplineRequest {
+public class CreateOrUpdateDisciplineRequest {
 
     private String title;
     private List<LectorResponse> lectorResponseList;
 
-    public CreateDisciplineRequest() {
+    public CreateOrUpdateDisciplineRequest() {
     }
 
-    public CreateDisciplineRequest(String title, List<LectorResponse> lectorResponseList) {
+    public CreateOrUpdateDisciplineRequest(String title, List<LectorResponse> lectorResponseList) {
         this.title = title;
         this.lectorResponseList = lectorResponseList;
     }

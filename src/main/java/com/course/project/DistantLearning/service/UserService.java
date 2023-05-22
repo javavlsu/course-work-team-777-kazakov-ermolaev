@@ -33,6 +33,18 @@ public class UserService {
         return currentPrincipalName;
     }
 
+    public User getUserByID(Long id) {
+        return userRepository.findById(id).get();
+    }
+
+    public Lector getLectorById(Long id) {
+        return lectorRepository.findById(id).get();
+    }
+
+    public Student getStudentById(Long id) {
+        return studentRepository.findById(id).get();
+    }
+
     public User getAuthorizeUser() {
         return userRepository.findByUsername(getCurrentUserName()).get();
     }

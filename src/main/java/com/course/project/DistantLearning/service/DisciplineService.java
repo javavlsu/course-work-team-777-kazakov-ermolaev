@@ -1,18 +1,19 @@
 package com.course.project.DistantLearning.service;
 
-import com.course.project.DistantLearning.dto.request.CreateDisciplineRequest;
+import com.course.project.DistantLearning.dto.request.CreateOrUpdateDisciplineRequest;
 import com.course.project.DistantLearning.models.Discipline;
-import com.course.project.DistantLearning.models.Group;
 import com.course.project.DistantLearning.models.Lector;
-import com.course.project.DistantLearning.models.Student;
 import com.course.project.DistantLearning.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class DisciplineService {
@@ -22,15 +23,6 @@ public class DisciplineService {
 
     @Autowired
     private DisciplineRepository disciplineRepository;
-
-    @Autowired
-    private StudentRepository studentRepository;
-
-    @Autowired
-    private LectorRepository lectorRepository;
-
-    @Autowired
-    private UserRepository userRepository;
 
     @Autowired
     private GroupRepository groupRepository;
@@ -46,7 +38,7 @@ public class DisciplineService {
 
         List<String> roles = new ArrayList<>();
 
-        for(var role: userRepository.findById(idUser).get().getRoles()) {
+        for(var role: userService.getUserByID(idUser).getRoles()) {
             roles.add(role.getName().toString());
         }
 
@@ -74,21 +66,33 @@ public class DisciplineService {
 //        return new ArrayList<>(groupRepository.findById(idGroup).get().getDisciplineList());
 //    }
 
-    public void createDiscipline(CreateDisciplineRequest createDisciplineRequest) {
+    public void createDiscipline(CreateOrUpdateDisciplineRequest createOrUpdateDisciplineRequest) {
         List<Lector> lectorList = new ArrayList<>();
         Discipline discipline = new Discipline();
 
-        if (!createDisciplineRequest.getLectorResponseList().isEmpty()) {
-            for(var lector: createDisciplineRequest.getLectorResponseList()) {
-                lectorList.add(lectorRepository.findById(lector.getId()).get());
+        if (!createOrUpdateDisciplineRequest.getLectorResponseList().isEmpty()) {
+            for(var lector: createOrUpdateDisciplineRequest.getLectorResponseList()) {
+                lectorList.add(userService.getLectorById(lector.getId()));
             }
         }
 
-        discipline.setTitle(createDisciplineRequest.getTitle());
+        discipline.setTitle(createOrUpdateDisciplineRequest.getTitle());
 
         if (!lectorList.isEmpty()) {
             discipline.setLector(lectorList);
         }
         disciplineRepository.save(discipline);
     }
+
+
+//    public void updateDiscipline(Long idDiscipline, CreateOrUpdateDisciplineRequest createOrUpdateDisciplineRequest) {
+//        Optional<Discipline> discipline = disciplineRepository.findById(idDiscipline);
+//        if (discipline.isPresent()) {
+//            Discipline _discipline = discipline.get();
+//            _discipline.setTitle(createOrUpdateDisciplineRequest.getTitle());
+//            List<Lector> listLector = new ArrayList<>();
+//
+//            _discipline.setLector(createOrUpdateDisciplineRequest.getTitle());
+//        }
+//    }
 }
