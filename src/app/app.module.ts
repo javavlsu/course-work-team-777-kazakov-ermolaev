@@ -12,6 +12,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { DisciplineListComponent } from './components/discipline-list/discipline-list.component';
 import { AddDisciplineComponent } from './components/add-discipline/add-discipline.component';
+import { UserListComponent } from './components/user-list/user-list.component';
 
 @NgModule({
   declarations: [
@@ -21,7 +22,8 @@ import { AddDisciplineComponent } from './components/add-discipline/add-discipli
     HomeComponent,
     ProfileComponent,
     DisciplineListComponent,
-    AddDisciplineComponent
+    AddDisciplineComponent,
+    UserListComponent
   ],
   imports: [
     BrowserModule,

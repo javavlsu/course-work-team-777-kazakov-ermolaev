@@ -6,15 +6,17 @@ import { ProfileComponent } from './components/profile/profile.component';
 import { RegisterComponent } from './components/register/register.component';
 import { DisciplineListComponent } from './components/discipline-list/discipline-list.component';
 import { AddDisciplineComponent } from './components/add-discipline/add-discipline.component';
+import { UserListComponent } from './components/user-list/user-list.component';
 
 const routes: Routes = [
   { path: 'home', component: HomeComponent },
   { path: 'login', component: LoginComponent },
-  { path: 'register', component: RegisterComponent },
+  { path: 'newuser', component: RegisterComponent },
   { path: 'profile', component: ProfileComponent },
   { path: '', redirectTo: 'home', pathMatch: 'full' },
   { path: 'discipline', component: DisciplineListComponent},
-  { path: 'discipline/addDiscipline', component: AddDisciplineComponent }
+  { path: 'discipline/addDiscipline', component: AddDisciplineComponent },
+  { path: 'users', component: UserListComponent }
 ];
 
 @NgModule({
