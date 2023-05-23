@@ -11,9 +11,8 @@ import { Router } from '@angular/router';
 export class AppComponent {
   private roles: string[] = [];
   isLoggedIn = false;
-  showAdminBoard = false;
-  showModeratorBoard = false;
-  showAddMessage = false;
+  isAdmin = false;
+  isLector = false;
   username?: string;
 
   constructor(
@@ -28,9 +27,8 @@ export class AppComponent {
       const user = this.storageService.getUser();
       this.roles = user.roles;
 
-      this.showAdminBoard = this.roles.includes('ROLE_ADMIN');
-      this.showModeratorBoard = this.roles.includes('ROLE_LECTOR');
-      this.showAddMessage = this.roles.includes('ROLE_MODERATOR');
+      this.isAdmin = this.roles.includes('ROLE_ADMIN');
+      this.isLector = this.roles.includes('ROLE_LECTOR');
 
       this.username = user.username;
     }
