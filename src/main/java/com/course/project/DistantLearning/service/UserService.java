@@ -1,6 +1,7 @@
 package com.course.project.DistantLearning.service;
 
 import com.course.project.DistantLearning.dto.response.LectorResponse;
+import com.course.project.DistantLearning.dto.response.StudentResponse;
 import com.course.project.DistantLearning.models.Lector;
 import com.course.project.DistantLearning.models.Student;
 import com.course.project.DistantLearning.models.User;
@@ -90,6 +91,23 @@ public class UserService {
         }
 
         return listLector;
+    }
+
+    public List<StudentResponse> getStudents() {
+        var students = studentRepository.findAll();
+        List<StudentResponse> studentList = new ArrayList<>();
+
+        if (!students.isEmpty()) {
+
+            for(var student: students) {
+                var studentResponse = new StudentResponse();
+                studentResponse.setId(student.getId());
+                studentResponse.setName(student.getUser().getFullName());
+                studentResponse.setGroupName(student.getGroup().getName());
+                studentList.add(studentResponse);
+            }
+        }
+        return studentList;
     }
 
     public Lector getAuthorizeLector() {

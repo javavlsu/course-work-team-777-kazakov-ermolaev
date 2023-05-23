@@ -3,8 +3,10 @@ package com.course.project.DistantLearning.controllers;
 import com.course.project.DistantLearning.dto.request.SignupRequest;
 import com.course.project.DistantLearning.dto.response.LectorResponse;
 import com.course.project.DistantLearning.dto.response.MessageResponse;
+import com.course.project.DistantLearning.dto.response.StudentResponse;
 import com.course.project.DistantLearning.models.ERole;
 import com.course.project.DistantLearning.models.Role;
+import com.course.project.DistantLearning.models.Student;
 import com.course.project.DistantLearning.models.User;
 import com.course.project.DistantLearning.repository.RoleRepository;
 import com.course.project.DistantLearning.repository.UserRepository;
@@ -37,18 +39,6 @@ public class UserController {
     @Autowired
     PasswordEncoder encoder;
 
-    @GetMapping("/lectors")
-    @PreAuthorize("hasRole('LECTOR') or hasRole('ADMIN')")
-    public ResponseEntity<List<LectorResponse>> getLectors() {
-        var lectors = userService.getLectors();
-
-        if (!lectors.isEmpty()) {
-            return new ResponseEntity<>(lectors, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-    }
-
     @PostMapping("/newuser")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> newUser(@Valid @RequestBody SignupRequest signUpRequest) {
@@ -67,11 +57,36 @@ public class UserController {
                 signUpRequest.getFullName(),
                 signUpRequest.getBirthdate());
 
-        Set<Role> roles = roleService.getNewUserRoles(signUpRequest.getRole());
-
-        user.setRoles(roles);
+        user.setRoles(roleService.getNewUserRoles(signUpRequest.getRole()));
         userService.createUser(user);
 
         return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
     }
+
+
+    @GetMapping("/lectors")
+    @PreAuthorize("hasRole('LECTOR') or hasRole('ADMIN')")
+    public ResponseEntity<List<LectorResponse>> getLectors() {
+        var lectors = userService.getLectors();
+
+        if (!lectors.isEmpty()) {
+            return new ResponseEntity<>(lectors, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @GetMapping("/students")
+    @PreAuthorize("hasRole('LECTOR') or hasRole('ADMIN')")
+    public ResponseEntity<List<StudentResponse>> getStudents() {
+        var students = userService.getStudents();
+
+        if (!students.isEmpty()) {
+            return new ResponseEntity<>(students, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+
 }
