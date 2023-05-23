@@ -103,7 +103,12 @@ public class UserService {
                 var studentResponse = new StudentResponse();
                 studentResponse.setId(student.getId());
                 studentResponse.setName(student.getUser().getFullName());
-                studentResponse.setGroupName(student.getGroup().getName());
+                try {
+                    studentResponse.setGroupName(student.getGroup().getName());
+                } catch (Exception e) {
+                    studentResponse.setGroupName("Без группы");
+                }
+
                 studentList.add(studentResponse);
             }
         }

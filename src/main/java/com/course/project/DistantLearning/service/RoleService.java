@@ -27,35 +27,38 @@ public class RoleService {
         return roles;
     }
 
-    public Set<Role> getNewUserRoles(Set<String> strRoles) {
+    public Set<Role> getNewUserRoles(String userRole) {
         Set<Role> roles = new HashSet<>();
+        Set<String> strRoles = new HashSet<>();
+        strRoles.add(userRole);
 
-        if (strRoles == null) {
-            Role userRole = roleRepository.findByName(ERole.ROLE_STUDENT)
-                    .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-            roles.add(userRole);
-        } else {
-            strRoles.forEach(role -> {
-                switch (role) {
-                    case "admin":
-                        Role adminRole = roleRepository.findByName(ERole.ROLE_ADMIN)
-                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-                        roles.add(adminRole);
-
-                        break;
-                    case "lector":
-                        Role modRole = roleRepository.findByName(ERole.ROLE_LECTOR)
-                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-                        roles.add(modRole);
-
-                        break;
-                    default:
-                        Role userRole = roleRepository.findByName(ERole.ROLE_STUDENT)
-                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-                        roles.add(userRole);
-                }
-            });
+        if (strRoles.contains("admin")) {
+            strRoles.add("lector");
+            strRoles.add("student");
+        } else if (strRoles.contains("lector")) {
+            strRoles.add("student");
         }
+
+        strRoles.forEach(role -> {
+            switch (role) {
+                case "admin":
+                    Role adminRole = roleRepository.findByName(ERole.ROLE_ADMIN)
+                            .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+                    roles.add(adminRole);
+
+                    break;
+                case "lector":
+                    Role lectorRole = roleRepository.findByName(ERole.ROLE_LECTOR)
+                            .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+                    roles.add(lectorRole);
+
+                    break;
+                default:
+                    Role studentRole = roleRepository.findByName(ERole.ROLE_STUDENT)
+                            .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+                    roles.add(studentRole);
+            }
+        });
 
         return roles;
     }
