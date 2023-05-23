@@ -25,8 +25,7 @@ public class Lector {
 
     public Lector() {}
 
-    public Lector(Long id, User user) {
-        this.id = id;
+    public Lector(User user) {
         this.user = user;
     }
 

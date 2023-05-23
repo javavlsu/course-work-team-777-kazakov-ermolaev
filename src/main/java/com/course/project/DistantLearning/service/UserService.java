@@ -19,19 +19,40 @@ import java.util.Optional;
 @Service
 public class UserService {
     @Autowired
-    StudentRepository studentRepository;
+    private StudentRepository studentRepository;
 
     @Autowired
-    UserRepository userRepository;
+    private UserRepository userRepository;
 
     @Autowired
-    LectorRepository lectorRepository;
+    private LectorRepository lectorRepository;
+
+    @Autowired
+    private RoleService roleService;
 
     public String getCurrentUserName() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentPrincipalName = authentication.getName();
         return currentPrincipalName;
     }
+
+    public void createUser(User user) {
+        userRepository.save(user);
+
+        List<String> roles = roleService.getUserRoles(user);
+
+        if(roles.contains("ROLE_LECTOR") & !roles.contains("ROLE_ADMIN")) {
+            Lector lector = new Lector(user);
+            lectorRepository.save(lector);
+        } else if(roles.contains("ROLE_STUDENT") & !roles.contains("ROLE_ADMIN") & !roles.contains("ROLE_LECTOR")) {
+            Student student = new Student(user);
+            studentRepository.save(student);
+        }
+    }
+
+    public boolean existsByUsername(String username) { return userRepository.existsByUsername(username); }
+
+    public boolean existsByEmail(String email) { return userRepository.existsByEmail(email); }
 
     public User getUserByID(Long id) {
         return userRepository.findById(id).get();

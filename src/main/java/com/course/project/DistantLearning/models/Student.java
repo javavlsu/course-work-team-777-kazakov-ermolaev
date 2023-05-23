@@ -19,10 +19,8 @@ public class Student {
 
     public Student() {}
 
-    public Student(Long id, User user, Group group) {
-        this.id = id;
+    public Student(User user) {
         this.user = user;
-        this.group = group;
     }
 
     public Long getId() {

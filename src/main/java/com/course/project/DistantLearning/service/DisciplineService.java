@@ -22,10 +22,10 @@ public class DisciplineService {
     private UserService userService;
 
     @Autowired
-    private DisciplineRepository disciplineRepository;
+    private RoleService roleService;
 
     @Autowired
-    private GroupRepository groupRepository;
+    private DisciplineRepository disciplineRepository;
 
     public String getCurrentUserName() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -36,11 +36,7 @@ public class DisciplineService {
     public List<Discipline> getDiscipline(Long idUser) {
         List<Discipline> disciplines = new ArrayList<>();
 
-        List<String> roles = new ArrayList<>();
-
-        for(var role: userService.getUserByID(idUser).getRoles()) {
-            roles.add(role.getName().toString());
-        }
+        List<String> roles = roleService.getUserRoles(userService.getUserByID(idUser));
 
         if(roles.contains("ROLE_ADMIN")) {
             disciplineRepository.findAll().forEach(disciplines::add);
@@ -52,19 +48,6 @@ public class DisciplineService {
 
         return disciplines;
     }
-
-
-//    public List<Discipline> getAllDiscipline() {
-//        return new ArrayList<>(disciplineRepository.findAll());
-//    }
-//
-//    public List<Discipline> getLectorDiscipline(Long idLector) {
-//        return new ArrayList<>(lectorRepository.findById(idLector).get().getDisciplineList());
-//    }
-//
-//    public List<Discipline> getStudentDiscipline(Long idGroup) {
-//        return new ArrayList<>(groupRepository.findById(idGroup).get().getDisciplineList());
-//    }
 
     public void createDiscipline(CreateOrUpdateDisciplineRequest createOrUpdateDisciplineRequest) {
         List<Lector> lectorList = new ArrayList<>();
