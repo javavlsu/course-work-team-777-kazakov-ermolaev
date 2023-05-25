@@ -85,6 +85,7 @@ public class UserService {
                 var lectorResponse = new LectorResponse();
                 lectorResponse.setId(lector.getId());
                 lectorResponse.setName(lector.getUser().getFullName());
+                lectorResponse.setEmail(lector.getUser().getEmail());
 
                 listLector.add(lectorResponse);
             }
@@ -103,6 +104,7 @@ public class UserService {
                 var studentResponse = new StudentResponse();
                 studentResponse.setId(student.getId());
                 studentResponse.setName(student.getUser().getFullName());
+                studentResponse.setEmail(student.getUser().getEmail());
                 try {
                     studentResponse.setGroupName(student.getGroup().getName());
                 } catch (Exception e) {
@@ -113,6 +115,18 @@ public class UserService {
             }
         }
         return studentList;
+    }
+
+    public void deleteStudent(Long idStudent) {
+        User user = userRepository.findById(studentRepository.findById(idStudent).get().getUser().getId()).get();
+        studentRepository.deleteById(idStudent);
+        userRepository.delete(user);
+    }
+
+    public void deleteLector(Long idLector) {
+        User user = userRepository.findById(lectorRepository.findById(idLector).get().getUser().getId()).get();
+        lectorRepository.deleteById(idLector);
+        userRepository.delete(user);
     }
 
     public Lector getAuthorizeLector() {

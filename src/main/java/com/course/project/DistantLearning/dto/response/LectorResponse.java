@@ -4,14 +4,16 @@ public class LectorResponse {
 
     private Long id;
     private String name;
+    private String email;
 
     public LectorResponse() {
 
     }
 
-    public LectorResponse(Long id, String name) {
+    public LectorResponse(Long id, String name, String email) {
         this.id = id;
         this.name = name;
+        this.email = email;
     }
 
     public Long getId() {
@@ -28,5 +30,13 @@ public class LectorResponse {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }
