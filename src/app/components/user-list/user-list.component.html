@@ -1,35 +1,55 @@
 <div>
     <div class="row-md-6">
         <button
-          style="margin-left: 7px"
-          class="btn btn-outline-secondary"
+          style="margin-left: 4%;"
+          class="btn btn-outline-primary"
           (click) = "newuser()">
           Создать пользователя
         </button>
       </div>
     <div class="row-md-6">
-        <h4 style="margin-left: 7px">Лекторы</h4>
-
-        <div *ngFor="let lector of lectors">
+        <h4 style="text-align: center;">Лекторы</h4>        
             <ul class="list-group">
-                <div class="col">
-                    {{ lector.name }}
-                </div>
-              </ul>
-        </div>
+                <table class="table">
+                    <tr>
+                     <th>Имя</th>
+                     <th>Почта</th>
+                     <th></th>
+                     <th></th>
+                     <th></th>
+                    </tr>
+                
+                    <tr *ngFor="let lector of lectors">
+                     <td>{{ lector.name }}</td>
+                     <td>{{ lector.email }}</td>
+                     <td></td>
+                     <td><button class="btn btn-outline-secondary" style="float: right;">Редактировать</button></td>
+                     <td><button class="btn btn-outline-danger" style="margin-right: 2%;" (click) = "deleteLector(lector.id)">Удалить</button></td>
+                    </tr>
+                
+                </table>
+            </ul>
+        
     </div>
     <div class="row-md-6">
-        <h4 style="margin-left: 7px">Студенты</h4>
-
-        <div *ngFor="let student of students">
+        <h4 style="text-align: center;">Студенты</h4>
             <ul class="list-group">
-                <div class="col">
-                    {{ student.name }}
-                </div>
-                <div class="col">
-                    {{ student.groupName }}
-                </div>
+                <table class="table">
+                    <tr>
+                     <th>Имя</th>
+                     <th>Группа</th>
+                     <th>Почта</th>
+                     <th></th>
+                     <th></th>
+                    </tr>
+                    <tr *ngFor="let student of students">
+                     <td>{{ student.name }}</td>
+                     <td>{{ student.groupName }}</td>
+                     <td>{{ student.email }}</td>
+                     <td><button class="btn btn-outline-secondary" style="float: right;">Редактировать</button></td>
+                     <td><button class="btn btn-outline-danger" style="margin-right: 2%;" (click) = "deleteStudent(student.id)">Удалить</button></td>
+                    </tr>
+                </table>
             </ul>
-        </div>
     </div>
 </div>

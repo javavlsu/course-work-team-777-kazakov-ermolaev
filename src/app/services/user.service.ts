@@ -22,4 +22,11 @@ export class UserService {
     return this.http.get<Student[]>(`${baseUrl}/students`);
   }
 
+  deleteStudent(id: any): Observable<any> {
+    return this.http.delete(`${baseUrl}/students/${id}`);
+  }
+
+  deleteLector(id: any): Observable<any> {
+    return this.http.delete(`${baseUrl}/lectors/${id}`);
+  }
 }

@@ -1,6 +1,6 @@
 <div>
   <nav class="navbar navbar-expand navbar-dark bg-dark">
-    <a style="margin-left: 5px;" href="#" class="navbar-brand">DistantLearning</a>
+    <a style="margin-left: 4%;" href="#" class="navbar-brand">DistantLearning</a>
     <div class="navbar-nav mr-auto">
       <ul class="navbar-nav ml-auto" *ngIf="!isLoggedIn">
         <li class="nav-item">
@@ -16,10 +16,10 @@
           <a href="/users" class="nav-link" routerLink="users">Пользователи</a>
         </li>
         <li class="nav-item">
-          <a href="/profile" class="nav-link" routerLink="profile">{{ username }}</a>
+          <a href="/profile" class="nav-link" routerLink="profile">Вы: {{ username }}</a>
         </li>
         <li class="nav-item">
-          <a href class="nav-link" (click)="logout()">LogOut</a>
+          <a href class="nav-link" (click)="logout()">Выйти</a>
         </li>
       </ul>
     </div>

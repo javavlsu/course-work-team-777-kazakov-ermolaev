@@ -39,6 +39,26 @@ export class UserListComponent {
       });
   }
 
+  deleteStudent(id: any) {
+    this.userService.deleteStudent(id)
+     .subscribe({
+      next: () => {
+        this.getStudent();
+      },
+      error: (e) => console.error(e)
+     });
+  }
+
+  deleteLector(id: any) {
+    this.userService.deleteLector(id)
+     .subscribe({
+      next: () => {
+        this.getLector();
+      },
+      error: (e) => console.error(e)
+     });
+  }
+
   newuser() {
     this.router.navigate([`newuser`]);
   }
