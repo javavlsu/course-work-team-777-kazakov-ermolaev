@@ -16,6 +16,14 @@ export class DisciplineService {
     return this.http.get<Discipline[]>(baseUrl)
   }
 
+  getLectorsHasDisciplines(idLector: any): Observable<Discipline[]> {
+    return this.http.get<Discipline[]>(`${baseUrl}/withLector/${idLector}`)
+  }
+
+  getLectorsHasNotDisciplines(idLector: any): Observable<Discipline[]> {
+    return this.http.get<Discipline[]>(`${baseUrl}/without/${idLector}`)
+  }
+
   create(data: any): Observable<any> {
     return this.http.post(baseUrl, data)
   }

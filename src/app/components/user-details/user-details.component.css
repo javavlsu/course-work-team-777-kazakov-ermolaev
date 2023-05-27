@@ -1,0 +1,15 @@
+.minus {
+  color: rgb(255, 0, 0);
+}
+
+.minus:hover {
+  cursor: pointer;
+}
+
+.plus {
+  color: rgb(0, 255, 0);
+}
+
+.plus:hover {
+  cursor: pointer;
+}

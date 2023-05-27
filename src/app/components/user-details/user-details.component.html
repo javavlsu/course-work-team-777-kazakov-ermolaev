@@ -15,7 +15,7 @@
         <div class="form-group">
             <label for="lector"><strong>Email лектора</strong></label>
             <input
-              type="text"
+              type="email"
               class="form-control"
               id="lector"
               required
@@ -24,10 +24,32 @@
             />
           </div>
         <div class="form-group">
-            
+          <label><strong>Дисциплины, к которым подключен лектор:</strong></label>
+          <div *ngFor="let discipline of disciplineWithLector">
+            <i
+                class="bi bi-patch-minus minus"
+                (click)="addDisciplene(discipline)"></i> {{ discipline.title }}
+          </div>
+          <label><strong>Дисциплины, к которым не подключен лектор:</strong></label>
+          <div *ngFor="let discipline of disciplineWithoutLector">
+            <i
+              class="bi bi-patch-plus plus"
+              (click)="removeDisciplene(discipline)"></i> {{ discipline.title }}
+          </div>
         </div>
-  
-        <button class="btn btn-success">Edit</button>
+
+        <div style="margin-top: 10px;">
+          <button
+          style="margin-right: 5px;"
+          type="submit"
+          class="btn btn-success"
+          (click)="updateLector()"
+          >
+          Сохранить
+        </button>
       </div>
     </div>
+  </div>
+  <div *ngIf="!isLector">
+
   </div>
