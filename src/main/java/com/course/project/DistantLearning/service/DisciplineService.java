@@ -33,6 +33,10 @@ public class DisciplineService {
         return currentPrincipalName;
     }
 
+    public List<Discipline> getAllDiscipline() {
+        return disciplineRepository.findAll();
+    }
+
     public List<Discipline> getDiscipline(Long idUser) {
         List<Discipline> disciplines = new ArrayList<>();
 
@@ -55,7 +59,7 @@ public class DisciplineService {
 
         if (!createOrUpdateDisciplineRequest.getLectorResponseList().isEmpty()) {
             for(var lector: createOrUpdateDisciplineRequest.getLectorResponseList()) {
-                lectorList.add(userService.getLectorById(lector.getId()));
+                lectorList.add(userService.getLectorById(lector.getId()).get());
             }
         }
 

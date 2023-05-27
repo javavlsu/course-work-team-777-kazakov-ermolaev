@@ -1,7 +1,9 @@
 package com.course.project.DistantLearning.service;
 
 import com.course.project.DistantLearning.dto.response.LectorResponse;
+import com.course.project.DistantLearning.dto.response.MessageResponse;
 import com.course.project.DistantLearning.dto.response.StudentResponse;
+import com.course.project.DistantLearning.models.Group;
 import com.course.project.DistantLearning.models.Lector;
 import com.course.project.DistantLearning.models.Student;
 import com.course.project.DistantLearning.models.User;
@@ -31,6 +33,9 @@ public class UserService {
     @Autowired
     private RoleService roleService;
 
+    @Autowired
+    private GroupService groupService;
+
     public String getCurrentUserName() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentPrincipalName = authentication.getName();
@@ -59,12 +64,12 @@ public class UserService {
         return userRepository.findById(id).get();
     }
 
-    public Lector getLectorById(Long id) {
-        return lectorRepository.findById(id).get();
+    public Optional<Lector> getLectorById(Long id) {
+        return lectorRepository.findById(id);
     }
 
-    public Student getStudentById(Long id) {
-        return studentRepository.findById(id).get();
+    public Optional<Student> getStudentById(Long id) {
+        return studentRepository.findById(id);
     }
 
     public User getAuthorizeUser() {
@@ -128,6 +133,33 @@ public class UserService {
         lectorRepository.deleteById(idLector);
         userRepository.delete(user);
     }
+
+    public MessageResponse updateStudent(Long idStudent, StudentResponse studentResponse) {
+        Optional<Student> studentData = studentRepository.findById(idStudent);
+
+        if (studentData.isPresent()) {
+            Student student = studentData.get();
+            student.setUser(studentData.get().getUser());
+            student.setGroup(groupService.findByGroupName(studentResponse.getGroupName()).get());
+            return new MessageResponse("Update student has finished successfully");
+        } else {
+            return new MessageResponse("Error! Update student has stopped");
+        }
+    }
+
+    public MessageResponse updateLector(Long idLector, LectorResponse lectorResponse) {
+        Optional<Lector> lectorData = lectorRepository.findById(idLector);
+
+        if (lectorData.isPresent()) {
+            Lector lector = lectorData.get();
+            lector.setUser(lectorData.get().getUser());
+            lector.setDisciplineList(lectorResponse.getDisciplineList());
+            return new MessageResponse("Update lector has finished successfully");
+        } else {
+            return new MessageResponse("Error! Update lector has stopped");
+        }
+    }
+
 
     public Lector getAuthorizeLector() {
         return lectorRepository.findByUser(userRepository.findByUsername(getCurrentUserName()).get()).get();

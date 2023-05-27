@@ -4,12 +4,10 @@ import com.course.project.DistantLearning.dto.request.SignupRequest;
 import com.course.project.DistantLearning.dto.response.LectorResponse;
 import com.course.project.DistantLearning.dto.response.MessageResponse;
 import com.course.project.DistantLearning.dto.response.StudentResponse;
-import com.course.project.DistantLearning.models.ERole;
-import com.course.project.DistantLearning.models.Role;
-import com.course.project.DistantLearning.models.Student;
-import com.course.project.DistantLearning.models.User;
+import com.course.project.DistantLearning.models.*;
 import com.course.project.DistantLearning.repository.RoleRepository;
 import com.course.project.DistantLearning.repository.UserRepository;
+import com.course.project.DistantLearning.service.GroupService;
 import com.course.project.DistantLearning.service.RoleService;
 import com.course.project.DistantLearning.service.UserService;
 import jakarta.validation.Valid;
@@ -20,10 +18,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @CrossOrigin(origins = "http://localhost:4200", maxAge = 3600, allowCredentials="true")
 @RestController
@@ -35,6 +30,9 @@ public class UserController {
 
     @Autowired
     RoleService roleService;
+
+    @Autowired
+    GroupService groupService;
 
     @Autowired
     PasswordEncoder encoder;
@@ -63,6 +61,42 @@ public class UserController {
         return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
     }
 
+    @GetMapping("/lectors/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<LectorResponse> getLectorById(@PathVariable("id") Long idLector) {
+        Optional<Lector> lector = userService.getLectorById(idLector);
+
+
+        if (lector.isPresent()) {
+            Lector _lector = lector.get();
+            LectorResponse lectorResponse = new LectorResponse(idLector, _lector.getUser().getFullName(), _lector.getUser().getEmail());
+            return new ResponseEntity<>(lectorResponse, HttpStatus.OK);
+        }
+        else return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    @GetMapping("/students/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<StudentResponse> getStudentById(@PathVariable("id") Long idStudent) {
+        Optional<Student> student = userService.getStudentById(idStudent);
+
+
+        if (student.isPresent()) {
+            Student _student = student.get();
+            StudentResponse studentResponse = new StudentResponse();
+            studentResponse.setId(_student.getId());
+            studentResponse.setName(_student.getUser().getFullName());
+            studentResponse.setEmail(_student.getUser().getEmail());
+
+            try {
+                studentResponse.setGroupName(_student.getGroup().getName());
+            } catch (Exception e) {
+                studentResponse.setGroupName("Без группы");
+            }
+            return new ResponseEntity<>(studentResponse, HttpStatus.OK);
+        }
+        else return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
 
     @GetMapping("/lectors")
     @PreAuthorize("hasRole('LECTOR') or hasRole('ADMIN')")
@@ -108,6 +142,59 @@ public class UserController {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
         catch (Exception e){
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
+
+    @PutMapping("/students/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> updateStudent(@PathVariable("id") Long idStudent, @RequestBody StudentResponse studentResponse) {
+        return ResponseEntity.ok(userService.updateStudent(idStudent, studentResponse));
+    }
+
+    @PutMapping("/lectors/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> updateLector(@PathVariable("id") Long idLector, @RequestBody LectorResponse lectorResponse) {
+        return ResponseEntity.ok(userService.updateLector(idLector, lectorResponse));
+    }
+
+    @GetMapping("/students/groups")
+    @PreAuthorize("hasRole('LECTOR') or hasRole('ADMIN')")
+    public ResponseEntity<List<Group>> getGroups() {
+        List<Group> groups = groupService.getGroups();
+
+        if (groups.isEmpty())
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+
+        return new ResponseEntity<>(groups, HttpStatus.OK);
+    }
+
+    @PostMapping("/student/groups")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> createGroup(@RequestBody Group group) {
+        if (groupService.existsByName(group.getName())) {
+            return ResponseEntity.ok(new MessageResponse("This groupName is already exists"));
+        }
+        groupService.createGroup(group);
+
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @PutMapping("/students/groups/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> updateGroup(@PathVariable("id") Long idGroup, @RequestBody Group group) {
+        return ResponseEntity.ok(groupService.updateGroup(idGroup, group));
+    }
+
+    @DeleteMapping("/students/groups/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<HttpStatus> deleteGroup(@PathVariable("id") Long idGroup) {
+        try {
+            groupService.deleteGroup(idGroup);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

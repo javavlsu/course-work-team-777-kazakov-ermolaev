@@ -6,7 +6,10 @@ import jakarta.persistence.*;
 import java.util.List;
 
 @Entity
-@Table(name = "groups")
+@Table(name = "groups", uniqueConstraints = {
+        @UniqueConstraint(columnNames = "id"),
+        @UniqueConstraint(columnNames = "name")
+})
 public class Group {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
