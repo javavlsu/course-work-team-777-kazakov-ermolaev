@@ -71,6 +71,20 @@ public class DisciplineService {
         disciplineRepository.save(discipline);
     }
 
+    public List<Discipline> getLectorsHasDisciplines(Long idLector) {
+        return userService.getLectorById(idLector).get().getDisciplineList();
+    }
+
+    public List<Discipline> getLectorHasNotDisciplines(Long idLector) {
+        List<Discipline> LectorsHasDisciplines = userService.getLectorById(idLector).get().getDisciplineList();
+        List<Discipline> LectorHasNotDisciplines = disciplineRepository.findAll();
+
+        for (var disciplines: LectorsHasDisciplines) {
+            LectorHasNotDisciplines.remove(disciplines);
+        }
+
+        return LectorHasNotDisciplines;
+    }
 
 //    public void updateDiscipline(Long idDiscipline, CreateOrUpdateDisciplineRequest createOrUpdateDisciplineRequest) {
 //        Optional<Discipline> discipline = disciplineRepository.findById(idDiscipline);

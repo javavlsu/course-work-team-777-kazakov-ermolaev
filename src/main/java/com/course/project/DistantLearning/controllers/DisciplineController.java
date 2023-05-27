@@ -38,6 +38,28 @@ public class DisciplineController {
         return new ResponseEntity<>(disciplines, HttpStatus.OK);
     }
 
+    @GetMapping("/withLector/{idLector}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<Discipline>> getLectorsHasDisciplines(@PathVariable("idLector") Long idLector) {
+        List<Discipline> disciplines = disciplineService.getLectorsHasDisciplines(idLector);
+
+        if (disciplines.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(disciplines, HttpStatus.OK);
+    }
+
+    @GetMapping("/without/{idLector}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<Discipline>> getLectorsHasNotDisciplines(@PathVariable("idLector") Long idLector) {
+        List<Discipline> disciplines = disciplineService.getLectorHasNotDisciplines(idLector);
+
+        if (disciplines.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(disciplines, HttpStatus.OK);
+    }
+
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> createDiscipline(@RequestBody CreateOrUpdateDisciplineRequest createOrUpdateDisciplineRequest) {

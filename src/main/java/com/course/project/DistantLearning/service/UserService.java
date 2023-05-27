@@ -64,6 +64,8 @@ public class UserService {
         return userRepository.findById(id).get();
     }
 
+    public List<Lector> getAllLectors() { return lectorRepository.findAll(); }
+
     public Optional<Lector> getLectorById(Long id) {
         return lectorRepository.findById(id);
     }
@@ -139,8 +141,16 @@ public class UserService {
 
         if (studentData.isPresent()) {
             Student student = studentData.get();
+            User user = studentData.get().getUser();
+
             student.setUser(studentData.get().getUser());
             student.setGroup(groupService.findByGroupName(studentResponse.getGroupName()).get());
+
+            user.setFullName(studentResponse.getName());
+            user.setEmail(studentResponse.getEmail());
+
+            userRepository.save(user);
+            studentRepository.save(student);
             return new MessageResponse("Update student has finished successfully");
         } else {
             return new MessageResponse("Error! Update student has stopped");
@@ -152,8 +162,16 @@ public class UserService {
 
         if (lectorData.isPresent()) {
             Lector lector = lectorData.get();
+            User user = lectorData.get().getUser();
+
             lector.setUser(lectorData.get().getUser());
             lector.setDisciplineList(lectorResponse.getDisciplineList());
+
+            user.setFullName(lectorResponse.getName());
+            user.setEmail(lectorResponse.getEmail());
+
+            userRepository.save(user);
+            lectorRepository.save(lector);
             return new MessageResponse("Update lector has finished successfully");
         } else {
             return new MessageResponse("Error! Update lector has stopped");
