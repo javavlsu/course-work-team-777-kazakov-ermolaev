@@ -1,0 +1,33 @@
+<div *ngIf="isLector">
+    <div class="submit-form">
+      <div>
+        <div class="form-group">
+          <label for="lector"><strong>Имя лектора</strong></label>
+          <input
+            type="text"
+            class="form-control"
+            id="lector"
+            required
+            [(ngModel)]="lector.name"
+            name="lector"
+          />
+        </div>
+        <div class="form-group">
+            <label for="lector"><strong>Email лектора</strong></label>
+            <input
+              type="text"
+              class="form-control"
+              id="lector"
+              required
+              [(ngModel)]="lector.email"
+              name="lector"
+            />
+          </div>
+        <div class="form-group">
+            
+        </div>
+  
+        <button class="btn btn-success">Edit</button>
+      </div>
+    </div>
+  </div>

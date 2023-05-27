@@ -13,6 +13,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { DisciplineListComponent } from './components/discipline-list/discipline-list.component';
 import { AddDisciplineComponent } from './components/add-discipline/add-discipline.component';
 import { UserListComponent } from './components/user-list/user-list.component';
+import { UserDetailsComponent } from './components/user-details/user-details.component';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import { UserListComponent } from './components/user-list/user-list.component';
     ProfileComponent,
     DisciplineListComponent,
     AddDisciplineComponent,
-    UserListComponent
+    UserListComponent,
+    UserDetailsComponent
   ],
   imports: [
     BrowserModule,

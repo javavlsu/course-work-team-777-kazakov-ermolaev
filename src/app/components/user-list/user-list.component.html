@@ -23,7 +23,7 @@
                      <td>{{ lector.name }}</td>
                      <td>{{ lector.email }}</td>
                      <td></td>
-                     <td><button class="btn btn-outline-secondary" style="float: right;">Редактировать</button></td>
+                     <td><button class="btn btn-outline-secondary" style="float: right;" (click) = "redirectToLectorDetails(lector.id)">Редактировать</button></td>
                      <td><button class="btn btn-outline-danger" style="margin-right: 2%;" (click) = "deleteLector(lector.id)">Удалить</button></td>
                     </tr>
                 
@@ -46,7 +46,7 @@
                      <td>{{ student.name }}</td>
                      <td>{{ student.groupName }}</td>
                      <td>{{ student.email }}</td>
-                     <td><button class="btn btn-outline-secondary" style="float: right;">Редактировать</button></td>
+                     <td><button class="btn btn-outline-secondary" style="float: right;" (click) = "redirectToStudentDetails(student.id)">Редактировать</button></td>
                      <td><button class="btn btn-outline-danger" style="margin-right: 2%;" (click) = "deleteStudent(student.id)">Удалить</button></td>
                     </tr>
                 </table>

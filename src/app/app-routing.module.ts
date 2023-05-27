@@ -6,6 +6,7 @@ import { RegisterComponent } from './components/register/register.component';
 import { DisciplineListComponent } from './components/discipline-list/discipline-list.component';
 import { AddDisciplineComponent } from './components/add-discipline/add-discipline.component';
 import { UserListComponent } from './components/user-list/user-list.component';
+import { UserDetailsComponent } from './components/user-details/user-details.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -14,7 +15,9 @@ const routes: Routes = [
   { path: '', redirectTo: 'discipline', pathMatch: 'full' },
   { path: 'discipline', component: DisciplineListComponent},
   { path: 'discipline/addDiscipline', component: AddDisciplineComponent },
-  { path: 'users', component: UserListComponent }
+  { path: 'users', component: UserListComponent },
+  { path: 'users/students/:idStudent', component: UserDetailsComponent },
+  { path: 'users/lectors/:idLector', component: UserDetailsComponent }
 ];
 
 @NgModule({

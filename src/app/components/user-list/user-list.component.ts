@@ -59,7 +59,17 @@ export class UserListComponent {
      });
   }
 
+  redirectToStudentDetails(id: any) {
+    this.router.navigate([`/users/students/${id}`]);
+  }
+
+  redirectToLectorDetails(id: any) {
+    this.router.navigate([`/users/lectors/${id}`]);
+  }
+
   newuser() {
     this.router.navigate([`newuser`]);
   }
+
+  
 }

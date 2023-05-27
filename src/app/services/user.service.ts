@@ -12,7 +12,7 @@ const baseUrl = 'http://localhost:8080/api/users';
 
 export class UserService {
 
-  constructor( private http: HttpClient) { }
+  constructor(private http: HttpClient) { }
 
   getLector(): Observable<Lector[]> {
     return this.http.get<Lector[]>(`${baseUrl}/lectors`);
@@ -28,5 +28,21 @@ export class UserService {
 
   deleteLector(id: any): Observable<any> {
     return this.http.delete(`${baseUrl}/lectors/${id}`);
+  }
+
+  updateStudent(id: any, data: any): Observable<any> {
+    return this.http.put(`${baseUrl}/students/${id}`, data);
+  }
+
+  updateLector(id: any, data: any): Observable<any> {
+    return this.http.put(`${baseUrl}/lectors/${id}`, data);
+  }
+
+  getStudentById(id: any): Observable<Student> {
+    return this.http.get<Student>(`${baseUrl}/students/${id}`);
+  }
+
+  getLectorById(id: any): Observable<Lector> {
+    return this.http.get<Lector>(`${baseUrl}/lectors/${id}`);
   }
 }
