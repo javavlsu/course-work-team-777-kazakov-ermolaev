@@ -47,8 +47,7 @@ export class UserDetailsComponent {
     }
     if (this.router.url.includes("lectors")) {
       this.isLector = true;
-      this.getLector(this.route.snapshot.params["idLector"]);
-      this.getDisciplines(this.route.snapshot.params["idLector"]);
+      this.getLector(this.route.snapshot.params["idLector"])
     }
   }
 
@@ -72,56 +71,12 @@ export class UserDetailsComponent {
     })
   }
 
-  getDisciplines(idLector: any) {
-    this.disciplineServise.getLectorsHasDisciplines(idLector)
-      .subscribe({
-        next: (data) => {
-          this.disciplineWithLector = data;
-        },
-        error: (e) => console.error(e)
-      })
-
-    this.disciplineServise.getLectorsHasNotDisciplines(idLector)
-      .subscribe({
-        next: (data) => {
-          this.disciplineWithoutLector = data;
-        },
-        error: (e) => console.error(e)
-      })
-  }
-
-  addDisciplene(discipline: Discipline) {
-    this.disciplineWithLector.forEach( (item, index) => {
-      if(item === discipline) this.disciplineWithLector.splice(index, 1);
-    });
-
-    this.disciplineWithoutLector.push(discipline);
-  }
-
-  removeDisciplene(discipline: Discipline) {
-    this.disciplineWithLector.push(discipline);
-
-    this.disciplineWithoutLector.forEach( (item, index) => {
-      if(item === discipline) this.disciplineWithoutLector.splice(index, 1);
-    });
-  }
-
-  getGroup() {
-    this.groupService.getAll()
-      .subscribe({
-        next: (data) => {
-          this.groups = data;
-        }
-      })
-  }
-
   updateLector() {
     const idLector = this.route.snapshot.params["idLector"];
 
     const data = {
       name: this.lector.name,
-      email: this.lector.email,
-      disciplineList: this.disciplineWithLector
+      email: this.lector.email
     }
 
     this.userService.updateLector(idLector, data)
@@ -136,6 +91,17 @@ export class UserDetailsComponent {
   updateStudent() {
     const idStudent = this.route.snapshot.params["idStudent"];
 
+    const data = {
+      name: this.student.name,
+      email: this.student.email
+    }
 
+    this.userService.updateStudent(idStudent, data)
+      .subscribe({
+        next: () => {},
+        error: (e) => console.error(e)
+      })
+
+    this.router.navigate([`/users`])
   }
 }

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Discipline } from 'src/app/models/discipline.model';
 import { AuthService } from 'src/app/services/auth.service';
 import { DisciplineService } from 'src/app/services/discipline.service';
@@ -21,7 +21,8 @@ export class DisciplineListComponent {
   constructor(
     private disciplieService: DisciplineService,
     private storageService: StorageService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private router: Router
   ) { }
 
   ngOnInit() {
@@ -47,5 +48,18 @@ export class DisciplineListComponent {
         },
         error: (e) => console.error(e)
       })
+  }
+
+  deleteDiscipline(id: any) {
+    this.disciplieService.delete(id)
+      .subscribe({
+        next: () => {
+          this.getDiscipline();
+        },
+        error: (e) => console.error(e)
+      })
+  }
+  redirectToDisciplineDetails(id: any) {
+    this.router.navigate([`/discipline/${id}`])
   }
 }

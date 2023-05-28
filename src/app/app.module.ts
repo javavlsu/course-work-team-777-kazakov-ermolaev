@@ -14,6 +14,7 @@ import { DisciplineListComponent } from './components/discipline-list/discipline
 import { AddDisciplineComponent } from './components/add-discipline/add-discipline.component';
 import { UserListComponent } from './components/user-list/user-list.component';
 import { UserDetailsComponent } from './components/user-details/user-details.component';
+import { DisciplineDetailsComponent } from './components/discipline-details/discipline-details.component';
 
 @NgModule({
   declarations: [
@@ -24,7 +25,8 @@ import { UserDetailsComponent } from './components/user-details/user-details.com
     DisciplineListComponent,
     AddDisciplineComponent,
     UserListComponent,
-    UserDetailsComponent
+    UserDetailsComponent,
+    DisciplineDetailsComponent
   ],
   imports: [
     BrowserModule,

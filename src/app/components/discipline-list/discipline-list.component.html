@@ -21,7 +21,14 @@
             <div *ngIf="isLector">
               <button
               type="button"
+              class="bi bi-pencil btn-outline-primary edit-button"
+              (click)="redirectToDisciplineDetails(discipline.id)"
+              >
+              </button>
+              <button
+              type="button"
               class="bi bi-trash btn btn-outline-danger del-button"
+              (click)="deleteDiscipline(discipline.id)"
               >
               </button>
             </div>

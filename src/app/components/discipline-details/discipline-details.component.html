@@ -1,0 +1,106 @@
+<div class="discipline">
+  <div class="submit-form">
+    <div>
+      <div class="form-group">
+        <label for="discipline"><strong>Название дисциплины:</strong></label>
+        <input
+          type="text"
+          class="form-control"
+          id="discipline"
+          required
+          [(ngModel)]="discipline.title"
+          name="discipline"
+        />
+      </div>
+      <div class="form-group" *ngIf="isAdmin">
+        <label><strong>Лекторы</strong></label>
+        <ul class="list-group">
+          <table>
+              <tr>
+               <th>Подключенные</th>
+               <th>Не подключенные</th>
+              </tr>
+              <tr>
+                <td>
+                  <table style="width: 500px;">
+                    <tr *ngFor="let lector of lectorInDiscipline">
+                      <td>
+                        {{ lector.name }}
+                        <button
+                          class="btn btn-outline-secondary"
+                          style="float: right;"
+                          (click)="removeLector(lector)">
+                            Отключить
+                        </button>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+                <td>
+                  <table style="width: 500px;">
+                    <tr *ngFor="let lector of lectorOutDiscipline">
+                      <td>
+                        {{ lector.name }}
+                        <button
+                          class="btn btn-outline-secondary"
+                          style="float: right;"
+                          (click)="addlector(lector)">
+                            Подключить
+                        </button>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+          </table>
+      </ul>
+      </div>
+
+
+      <div class="form-group" *ngIf="isLector">
+        <label><strong>Группы</strong></label>
+        <ul class="list-group">
+          <table>
+              <tr>
+               <th>Подключенные</th>
+               <th>Не подключенные</th>
+              </tr>
+              <tr>
+                <td>
+                  <table style="width: 500px;">
+                    <tr *ngFor="let group of groupInDiscipline">
+                      <td>
+                        {{ group.name }}
+                        <button
+                          class="btn btn-outline-secondary"
+                          style="float: right;"
+                          (click)="removeGroup(group)">
+                            Отключить
+                        </button>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+                <td>
+                  <table style="width: 500px;">
+                    <tr *ngFor="let group of groupOutDiscipline">
+                      <td>
+                        {{ group.name }}
+                        <button
+                          class="btn btn-outline-secondary"
+                          style="float: right;"
+                          (click)="addGroup(group)">
+                            Подключить
+                        </button>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+          </table>
+      </ul>
+      </div>
+      <button (click)="saveDiscipline()" class="btn btn-success">Save</button>
+    </div>
+  </div>
+</div>

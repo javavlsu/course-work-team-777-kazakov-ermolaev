@@ -3,12 +3,12 @@
         <button
           style="margin-left: 4%;"
           class="btn btn-outline-primary"
-          (click) = "newuser()">
+          (click)="newuser()">
           Создать пользователя
         </button>
       </div>
     <div class="row-md-6">
-        <h4 style="text-align: center;">Лекторы</h4>        
+        <h4 style="text-align: center;">Лекторы</h4>
             <ul class="list-group">
                 <table class="table">
                     <tr>
@@ -18,18 +18,18 @@
                      <th></th>
                      <th></th>
                     </tr>
-                
+
                     <tr *ngFor="let lector of lectors">
                      <td>{{ lector.name }}</td>
                      <td>{{ lector.email }}</td>
                      <td></td>
-                     <td><button class="btn btn-outline-secondary" style="float: right;" (click) = "redirectToLectorDetails(lector.id)">Редактировать</button></td>
-                     <td><button class="btn btn-outline-danger" style="margin-right: 2%;" (click) = "deleteLector(lector.id)">Удалить</button></td>
+                     <td><button class="btn btn-outline-secondary" style="float: right;" (click)="redirectToLectorDetails(lector.id)">Редактировать</button></td>
+                     <td><button class="btn btn-outline-danger" style="margin-right: 2%;" (click)="deleteLector(lector.id)">Удалить</button></td>
                     </tr>
-                
+
                 </table>
             </ul>
-        
+
     </div>
     <div class="row-md-6">
         <h4 style="text-align: center;">Студенты</h4>
@@ -46,8 +46,8 @@
                      <td>{{ student.name }}</td>
                      <td>{{ student.groupName }}</td>
                      <td>{{ student.email }}</td>
-                     <td><button class="btn btn-outline-secondary" style="float: right;" (click) = "redirectToStudentDetails(student.id)">Редактировать</button></td>
-                     <td><button class="btn btn-outline-danger" style="margin-right: 2%;" (click) = "deleteStudent(student.id)">Удалить</button></td>
+                     <td><button class="btn btn-outline-secondary" style="float: right;" (click)="redirectToStudentDetails(student.id)">Редактировать</button></td>
+                     <td><button class="btn btn-outline-danger" style="margin-right: 2%;" (click)="deleteStudent(student.id)">Удалить</button></td>
                     </tr>
                 </table>
             </ul>
