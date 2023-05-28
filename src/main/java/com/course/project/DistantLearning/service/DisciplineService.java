@@ -94,16 +94,16 @@ public class DisciplineService {
                 for(var lector: createOrUpdateDisciplineRequest.getLectorResponseList()) {
                     lectorList.add(userService.getLectorById(lector.getId()).get());
                 }
-                _discipline.setLector(lectorList);
             }
 
             if (!createOrUpdateDisciplineRequest.getGroupList().isEmpty()) {
                 for(var group: createOrUpdateDisciplineRequest.getGroupList()) {
                     groupList.add(groupService.getGroupById(group.getId()).get());
                 }
-                _discipline.setGroupList(groupList);
             }
 
+            _discipline.setGroupList(groupList);
+            _discipline.setLector(lectorList);
             disciplineRepository.save(_discipline);
             return new MessageResponse("Update discipline has finished successfully");
         } else {
