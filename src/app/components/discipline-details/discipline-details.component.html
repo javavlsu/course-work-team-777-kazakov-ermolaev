@@ -15,6 +15,7 @@
       <div class="form-group" *ngIf="isAdmin">
         <label><strong>Лекторы</strong></label>
         <ul class="list-group">
+          <div class="scroll">
           <table>
               <tr>
                <th>Подключенные</th>
@@ -53,6 +54,7 @@
                 </td>
               </tr>
           </table>
+        </div>
       </ul>
       </div>
 
@@ -60,6 +62,7 @@
       <div class="form-group" *ngIf="isLector">
         <label><strong>Группы</strong></label>
         <ul class="list-group">
+          <div class="scroll">
           <table>
               <tr>
                <th>Подключенные</th>
@@ -98,6 +101,7 @@
                 </td>
               </tr>
           </table>
+        </div>
       </ul>
       </div>
       <button (click)="saveDiscipline()" class="btn btn-success">Save</button>

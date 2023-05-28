@@ -1,3 +1,9 @@
 .discipline {
   margin-left: 4%;
 }
+
+.scroll {
+  height: 200px;
+  overflow-y: scroll;
+  margin-bottom: 30px;
+}
