@@ -1,7 +1,9 @@
 package com.course.project.DistantLearning.controllers;
 
 import com.course.project.DistantLearning.dto.request.CreateOrUpdateDisciplineRequest;
+import com.course.project.DistantLearning.dto.response.LectorResponse;
 import com.course.project.DistantLearning.models.Discipline;
+import com.course.project.DistantLearning.models.Group;
 import com.course.project.DistantLearning.models.Student;
 import com.course.project.DistantLearning.dto.response.MessageResponse;
 import com.course.project.DistantLearning.models.User;
@@ -38,26 +40,15 @@ public class DisciplineController {
         return new ResponseEntity<>(disciplines, HttpStatus.OK);
     }
 
-    @GetMapping("/withLector/{idLector}")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<List<Discipline>> getLectorsHasDisciplines(@PathVariable("idLector") Long idLector) {
-        List<Discipline> disciplines = disciplineService.getLectorsHasDisciplines(idLector);
+    @GetMapping("/{idDiscipline}")
+    @PreAuthorize("hasRole('LECTOR') or hasRole('ADMIN')")
+    public ResponseEntity<Discipline> getDisciplineById(@PathVariable("idDiscipline") Long idDiscipline) {
+        var discipline = disciplineService.getDisciplineById(idDiscipline);
 
-        if (disciplines.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity<>(disciplines, HttpStatus.OK);
-    }
+        if (discipline.isPresent())
+            return new ResponseEntity<>(discipline.get(), HttpStatus.OK);
 
-    @GetMapping("/without/{idLector}")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<List<Discipline>> getLectorsHasNotDisciplines(@PathVariable("idLector") Long idLector) {
-        List<Discipline> disciplines = disciplineService.getLectorHasNotDisciplines(idLector);
-
-        if (disciplines.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity<>(disciplines, HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @PostMapping
@@ -67,11 +58,66 @@ public class DisciplineController {
         return ResponseEntity.ok(new MessageResponse("Discipline is creating"));
     }
 
-//    @PostMapping
-//    @PreAuthorize("hasRole('ADMIN')")
-//    public ResponseEntity<?> updateDiscipline(@PathVariable("id") long id, @RequestBody CreateOrUpdateDisciplineRequest createOrUpdateDisciplineRequest) {
-//        disciplineService.updateDiscipline(createOrUpdateDisciplineRequest);
-//        return ResponseEntity.ok(new MessageResponse("Discipline is updating"));
-//    }
+    @PutMapping("/{idDiscipline}")
+    @PreAuthorize("hasRole('LECTOR') or hasRole('ADMIN')")
+    public  ResponseEntity<?> updateDiscipline(@PathVariable("idDiscipline") Long idDiscipline, @RequestBody CreateOrUpdateDisciplineRequest createOrUpdateDisciplineRequest) {
+        return ResponseEntity.ok(disciplineService.updateDiscipline(idDiscipline, createOrUpdateDisciplineRequest));
+    }
+
+    @GetMapping("/groups/withDiscipline/{idDiscipline}")
+    @PreAuthorize("hasRole('LECTOR') or hasRole('ADMIN')")
+    public ResponseEntity<List<Group>> getGroupInByDisciplineId(@PathVariable("idDiscipline") Long idDiscipline) {
+        List<Group> groups = disciplineService.getGroupInByDisciplineId(idDiscipline);
+
+        if(groups.isEmpty())
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        return new ResponseEntity<>(groups, HttpStatus.OK);
+    }
+
+    @GetMapping("/groups/withoutDiscipline/{idDiscipline}")
+    @PreAuthorize("hasRole('LECTOR') or hasRole('ADMIN')")
+    public ResponseEntity<List<Group>> getGroupOutByDisciplineId(@PathVariable("idDiscipline") Long idDiscipline) {
+        List<Group> groups = disciplineService.getGroupOutByDisciplineId(idDiscipline);
+
+        if(groups.isEmpty())
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        return new ResponseEntity<>(groups, HttpStatus.OK);
+    }
+
+    @GetMapping("/lector/withDiscipline/{idDiscipline}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<LectorResponse>> getLectorsInByDisciplineId(@PathVariable("idDiscipline") Long idDiscipline) {
+        List<LectorResponse> lectors = disciplineService.getLectorsInByDisciplineId(idDiscipline);
+
+        if (lectors.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(lectors, HttpStatus.OK);
+    }
+
+    @GetMapping("/lector/withoutDiscipline/{idDiscipline}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<LectorResponse>> getLectorsOutByDisciplineId(@PathVariable("idDiscipline") Long idDiscipline) {
+        List<LectorResponse> lectors = disciplineService.getLectorsOutByDisciplineId(idDiscipline);
+
+        if (lectors.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(lectors, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('LECTOR') or hasRole('ADMIN')")
+    public ResponseEntity<HttpStatus> deleteDiscipline(@PathVariable("id") Long idDiscipline) {
+        try {
+            disciplineService.deleteDiscipline(idDiscipline);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        catch (Exception e){
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
 }

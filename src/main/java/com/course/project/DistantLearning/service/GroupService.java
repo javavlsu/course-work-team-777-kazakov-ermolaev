@@ -1,7 +1,9 @@
 package com.course.project.DistantLearning.service;
 
+import com.course.project.DistantLearning.dto.response.LectorResponse;
 import com.course.project.DistantLearning.dto.response.MessageResponse;
 import com.course.project.DistantLearning.models.Group;
+import com.course.project.DistantLearning.models.Lector;
 import com.course.project.DistantLearning.repository.GroupRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,6 +20,8 @@ public class GroupService {
     public List<Group> getGroups() {
         return groupRepository.findAll();
     }
+
+    public Optional<Group> getGroupById(Long idGroup) { return groupRepository.findById(idGroup); }
 
     public void createGroup(Group group) {
         groupRepository.save(group);

@@ -3,10 +3,7 @@ package com.course.project.DistantLearning.service;
 import com.course.project.DistantLearning.dto.response.LectorResponse;
 import com.course.project.DistantLearning.dto.response.MessageResponse;
 import com.course.project.DistantLearning.dto.response.StudentResponse;
-import com.course.project.DistantLearning.models.Group;
-import com.course.project.DistantLearning.models.Lector;
-import com.course.project.DistantLearning.models.Student;
-import com.course.project.DistantLearning.models.User;
+import com.course.project.DistantLearning.models.*;
 import com.course.project.DistantLearning.repository.LectorRepository;
 import com.course.project.DistantLearning.repository.StudentRepository;
 import com.course.project.DistantLearning.repository.UserRepository;
@@ -38,8 +35,7 @@ public class UserService {
 
     public String getCurrentUserName() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String currentPrincipalName = authentication.getName();
-        return currentPrincipalName;
+        return authentication.getName();
     }
 
     public void createUser(User user) {
@@ -64,41 +60,16 @@ public class UserService {
         return userRepository.findById(id).get();
     }
 
-    public List<Lector> getAllLectors() { return lectorRepository.findAll(); }
-
-    public Optional<Lector> getLectorById(Long id) {
-        return lectorRepository.findById(id);
+    public User getAuthorizeUser() {
+        return userRepository.findByUsername(getCurrentUserName()).get();
     }
 
     public Optional<Student> getStudentById(Long id) {
         return studentRepository.findById(id);
     }
 
-    public User getAuthorizeUser() {
-        return userRepository.findByUsername(getCurrentUserName()).get();
-    }
-
     public Student getStudent() {
         return studentRepository.findByUser(userRepository.findByUsername(getCurrentUserName()).get()).get();
-    }
-
-    public List<LectorResponse> getLectors() {
-        var lectors = lectorRepository.findAll();
-        List<LectorResponse> listLector = new ArrayList<>();
-
-        if (!lectors.isEmpty()) {
-
-            for(var lector: lectors) {
-                var lectorResponse = new LectorResponse();
-                lectorResponse.setId(lector.getId());
-                lectorResponse.setName(lector.getUser().getFullName());
-                lectorResponse.setEmail(lector.getUser().getEmail());
-
-                listLector.add(lectorResponse);
-            }
-        }
-
-        return listLector;
     }
 
     public List<StudentResponse> getStudents() {
@@ -121,18 +92,12 @@ public class UserService {
                 studentList.add(studentResponse);
             }
         }
-        return studentList;
+        return studentList.stream().sorted((a1, b1) -> Long.compare(a1.getId(), b1.getId())).toList();
     }
 
     public void deleteStudent(Long idStudent) {
         User user = userRepository.findById(studentRepository.findById(idStudent).get().getUser().getId()).get();
         studentRepository.deleteById(idStudent);
-        userRepository.delete(user);
-    }
-
-    public void deleteLector(Long idLector) {
-        User user = userRepository.findById(lectorRepository.findById(idLector).get().getUser().getId()).get();
-        lectorRepository.deleteById(idLector);
         userRepository.delete(user);
     }
 
@@ -142,9 +107,7 @@ public class UserService {
         if (studentData.isPresent()) {
             Student student = studentData.get();
             User user = studentData.get().getUser();
-
-            student.setUser(studentData.get().getUser());
-            student.setGroup(groupService.findByGroupName(studentResponse.getGroupName()).get());
+            //student.setGroup(groupService.findByGroupName(studentResponse.getGroupName()).get());
 
             user.setFullName(studentResponse.getName());
             user.setEmail(studentResponse.getEmail());
@@ -157,15 +120,48 @@ public class UserService {
         }
     }
 
+    public List<LectorResponse> getLectors() {
+        var lectors = lectorRepository.findAll();
+        List<LectorResponse> listLector = new ArrayList<>();
+
+        if (!lectors.isEmpty()) {
+
+            for(var lector: lectors) {
+                var lectorResponse = new LectorResponse();
+                lectorResponse.setId(lector.getId());
+                lectorResponse.setName(lector.getUser().getFullName());
+                lectorResponse.setEmail(lector.getUser().getEmail());
+
+                listLector.add(lectorResponse);
+            }
+        }
+
+        return listLector.stream().sorted((a1, b1) -> Long.compare(a1.getId(), b1.getId())).toList();
+    }
+
+    public List<Lector> getAllLectors() { return lectorRepository.findAll(); }
+
+    public Optional<Lector> getLectorById(Long id) {
+        return lectorRepository.findById(id);
+    }
+
+    public Lector getAuthorizeLector() {
+        return lectorRepository.findByUser(userRepository.findByUsername(getCurrentUserName()).get()).get();
+    }
+
+    public void deleteLector(Long idLector) {
+        User user = userRepository.findById(lectorRepository.findById(idLector).get().getUser().getId()).get();
+        lectorRepository.deleteById(idLector);
+        userRepository.delete(user);
+    }
+
     public MessageResponse updateLector(Long idLector, LectorResponse lectorResponse) {
         Optional<Lector> lectorData = lectorRepository.findById(idLector);
 
         if (lectorData.isPresent()) {
             Lector lector = lectorData.get();
             User user = lectorData.get().getUser();
-
-            lector.setUser(lectorData.get().getUser());
-            lector.setDisciplineList(lectorResponse.getDisciplineList());
+            //lector.setDisciplineList(lectorResponse.getDisciplineList());
 
             user.setFullName(lectorResponse.getName());
             user.setEmail(lectorResponse.getEmail());
@@ -176,10 +172,5 @@ public class UserService {
         } else {
             return new MessageResponse("Error! Update lector has stopped");
         }
-    }
-
-
-    public Lector getAuthorizeLector() {
-        return lectorRepository.findByUser(userRepository.findByUsername(getCurrentUserName()).get()).get();
     }
 }

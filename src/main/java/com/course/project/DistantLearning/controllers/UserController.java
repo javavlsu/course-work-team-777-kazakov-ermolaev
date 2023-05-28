@@ -61,18 +61,16 @@ public class UserController {
         return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
     }
 
-    @GetMapping("/lectors/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<LectorResponse> getLectorById(@PathVariable("id") Long idLector) {
-        Optional<Lector> lector = userService.getLectorById(idLector);
+    @GetMapping("/students")
+    @PreAuthorize("hasRole('LECTOR') or hasRole('ADMIN')")
+    public ResponseEntity<List<StudentResponse>> getStudents() {
+        var students = userService.getStudents();
 
-
-        if (lector.isPresent()) {
-            Lector _lector = lector.get();
-            LectorResponse lectorResponse = new LectorResponse(idLector, _lector.getUser().getFullName(), _lector.getUser().getEmail());
-            return new ResponseEntity<>(lectorResponse, HttpStatus.OK);
+        if (!students.isEmpty()) {
+            return new ResponseEntity<>(students, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        else return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @GetMapping("/students/{id}")
@@ -98,28 +96,10 @@ public class UserController {
         else return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    @GetMapping("/lectors")
-    @PreAuthorize("hasRole('LECTOR') or hasRole('ADMIN')")
-    public ResponseEntity<List<LectorResponse>> getLectors() {
-        var lectors = userService.getLectors();
-
-        if (!lectors.isEmpty()) {
-            return new ResponseEntity<>(lectors, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-    }
-
-    @GetMapping("/students")
-    @PreAuthorize("hasRole('LECTOR') or hasRole('ADMIN')")
-    public ResponseEntity<List<StudentResponse>> getStudents() {
-        var students = userService.getStudents();
-
-        if (!students.isEmpty()) {
-            return new ResponseEntity<>(students, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+    @PutMapping("/students/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> updateStudent(@PathVariable("id") Long idStudent, @RequestBody StudentResponse studentResponse) {
+        return ResponseEntity.ok(userService.updateStudent(idStudent, studentResponse));
     }
 
     @DeleteMapping("/students/{id}")
@@ -134,6 +114,37 @@ public class UserController {
         }
     }
 
+    @GetMapping("/lectors")
+    @PreAuthorize("hasRole('LECTOR') or hasRole('ADMIN')")
+    public ResponseEntity<List<LectorResponse>> getLectors() {
+        var lectors = userService.getLectors();
+
+        if (!lectors.isEmpty()) {
+            return new ResponseEntity<>(lectors, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @GetMapping("/lectors/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<LectorResponse> getLectorById(@PathVariable("id") Long idLector) {
+        Optional<Lector> lector = userService.getLectorById(idLector);
+
+        if (lector.isPresent()) {
+            Lector _lector = lector.get();
+            LectorResponse lectorResponse = new LectorResponse(idLector, _lector.getUser().getFullName(), _lector.getUser().getEmail());
+            return new ResponseEntity<>(lectorResponse, HttpStatus.OK);
+        }
+        else return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    @PutMapping("/lectors/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> updateLector(@PathVariable("id") Long idLector, @RequestBody LectorResponse lectorResponse) {
+        return ResponseEntity.ok(userService.updateLector(idLector, lectorResponse));
+    }
+
     @DeleteMapping("/lectors/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<HttpStatus> deleteLector(@PathVariable("id") Long idLector) {
@@ -144,20 +155,6 @@ public class UserController {
         catch (Exception e){
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-    }
-
-
-
-    @PutMapping("/students/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> updateStudent(@PathVariable("id") Long idStudent, @RequestBody StudentResponse studentResponse) {
-        return ResponseEntity.ok(userService.updateStudent(idStudent, studentResponse));
-    }
-
-    @PutMapping("/lectors/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> updateLector(@PathVariable("id") Long idLector, @RequestBody LectorResponse lectorResponse) {
-        return ResponseEntity.ok(userService.updateLector(idLector, lectorResponse));
     }
 
     @GetMapping("/students/groups")
@@ -198,5 +195,4 @@ public class UserController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
 }

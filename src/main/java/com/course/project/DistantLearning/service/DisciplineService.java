@@ -1,7 +1,10 @@
 package com.course.project.DistantLearning.service;
 
 import com.course.project.DistantLearning.dto.request.CreateOrUpdateDisciplineRequest;
+import com.course.project.DistantLearning.dto.response.LectorResponse;
+import com.course.project.DistantLearning.dto.response.MessageResponse;
 import com.course.project.DistantLearning.models.Discipline;
+import com.course.project.DistantLearning.models.Group;
 import com.course.project.DistantLearning.models.Lector;
 import com.course.project.DistantLearning.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,23 +22,29 @@ import java.util.Optional;
 public class DisciplineService {
 
     @Autowired
+    private DisciplineRepository disciplineRepository;
+
+    @Autowired
     private UserService userService;
 
     @Autowired
     private RoleService roleService;
 
     @Autowired
-    private DisciplineRepository disciplineRepository;
+    private GroupService groupService;
+
+
 
     public String getCurrentUserName() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String currentPrincipalName = authentication.getName();
-        return currentPrincipalName;
+        return authentication.getName();
     }
 
     public List<Discipline> getAllDiscipline() {
         return disciplineRepository.findAll();
     }
+
+    public Optional<Discipline> getDisciplineById(Long idDiscipline) { return disciplineRepository.findById(idDiscipline); }
 
     public List<Discipline> getDiscipline(Long idUser) {
         List<Discipline> disciplines = new ArrayList<>();
@@ -43,19 +52,19 @@ public class DisciplineService {
         List<String> roles = roleService.getUserRoles(userService.getUserByID(idUser));
 
         if(roles.contains("ROLE_ADMIN")) {
-            disciplineRepository.findAll().forEach(disciplines::add);
+            disciplines.addAll(disciplineRepository.findAll());
         } else if(roles.contains("ROLE_LECTOR") & !roles.contains("ROLE_ADMIN")) {
-            userService.getAuthorizeLector().getDisciplineList().forEach(disciplines::add);
+            disciplines.addAll(userService.getAuthorizeLector().getDisciplineList());
         } else {
-            userService.getStudent().getGroup().getDisciplineList().forEach(disciplines::add);
+            disciplines.addAll(userService.getStudent().getGroup().getDisciplineList());
         }
 
-        return disciplines;
+        return disciplines.stream().sorted((a1, b1) -> Long.compare(a1.getId(), b1.getId())).toList();
     }
 
     public void createDiscipline(CreateOrUpdateDisciplineRequest createOrUpdateDisciplineRequest) {
-        List<Lector> lectorList = new ArrayList<>();
         Discipline discipline = new Discipline();
+        List<Lector> lectorList = new ArrayList<>();
 
         if (!createOrUpdateDisciplineRequest.getLectorResponseList().isEmpty()) {
             for(var lector: createOrUpdateDisciplineRequest.getLectorResponseList()) {
@@ -71,29 +80,96 @@ public class DisciplineService {
         disciplineRepository.save(discipline);
     }
 
-    public List<Discipline> getLectorsHasDisciplines(Long idLector) {
-        return userService.getLectorById(idLector).get().getDisciplineList();
+    public MessageResponse updateDiscipline(Long idDiscipline, CreateOrUpdateDisciplineRequest createOrUpdateDisciplineRequest) {
+        Optional<Discipline> disciplineData = disciplineRepository.findById(idDiscipline);
+
+        if (disciplineData.isPresent()) {
+            Discipline _discipline = disciplineData.get();
+            List<Lector> lectorList = new ArrayList<>();
+            List<Group> groupList = new ArrayList<>();
+
+            _discipline.setTitle(createOrUpdateDisciplineRequest.getTitle());
+
+            if (!createOrUpdateDisciplineRequest.getLectorResponseList().isEmpty()) {
+                for(var lector: createOrUpdateDisciplineRequest.getLectorResponseList()) {
+                    lectorList.add(userService.getLectorById(lector.getId()).get());
+                }
+                _discipline.setLector(lectorList);
+            }
+
+            if (!createOrUpdateDisciplineRequest.getGroupList().isEmpty()) {
+                for(var group: createOrUpdateDisciplineRequest.getGroupList()) {
+                    groupList.add(groupService.getGroupById(group.getId()).get());
+                }
+                _discipline.setGroupList(groupList);
+            }
+
+            disciplineRepository.save(_discipline);
+            return new MessageResponse("Update discipline has finished successfully");
+        } else {
+            return new MessageResponse("Error! discipline lector has stopped");
+        }
     }
 
-    public List<Discipline> getLectorHasNotDisciplines(Long idLector) {
-        List<Discipline> LectorsHasDisciplines = userService.getLectorById(idLector).get().getDisciplineList();
-        List<Discipline> LectorHasNotDisciplines = disciplineRepository.findAll();
+    public List<Group> getGroupInByDisciplineId(Long idDiscipline) {
+        return disciplineRepository.findById(idDiscipline).get().getGroupList()
+                .stream().sorted((a1, b1) -> Long.compare(a1.getId(), b1.getId())).toList();
+    }
 
-        for (var disciplines: LectorsHasDisciplines) {
-            LectorHasNotDisciplines.remove(disciplines);
+    public List<Group> getGroupOutByDisciplineId(Long idDiscipline) {
+        List<Group> groupInDiscipline = disciplineRepository.findById(idDiscipline).get().getGroupList();
+        List<Group> groupOutDiscipline = groupService.getGroups();
+
+        if (!groupInDiscipline.isEmpty()) {
+            for (var group: groupInDiscipline) {
+                groupOutDiscipline.remove(group);
+            }
         }
 
-        return LectorHasNotDisciplines;
+        return groupOutDiscipline.stream().sorted((a1, b1) -> Long.compare(a1.getId(), b1.getId())).toList();
     }
 
-//    public void updateDiscipline(Long idDiscipline, CreateOrUpdateDisciplineRequest createOrUpdateDisciplineRequest) {
-//        Optional<Discipline> discipline = disciplineRepository.findById(idDiscipline);
-//        if (discipline.isPresent()) {
-//            Discipline _discipline = discipline.get();
-//            _discipline.setTitle(createOrUpdateDisciplineRequest.getTitle());
-//            List<Lector> listLector = new ArrayList<>();
-//
-//            _discipline.setLector(createOrUpdateDisciplineRequest.getTitle());
-//        }
-//    }
+    public List<LectorResponse> getLectorsInByDisciplineId(Long idDiscipline) {
+        var lectors = disciplineRepository.findById(idDiscipline).get().getLector();
+        List<LectorResponse> listLector = new ArrayList<>();
+        if (!lectors.isEmpty()) {
+
+            for(var lector: lectors) {
+                var lectorResponse = new LectorResponse();
+                lectorResponse.setId(lector.getId());
+                lectorResponse.setName(lector.getUser().getFullName());
+                lectorResponse.setEmail(lector.getUser().getEmail());
+
+                listLector.add(lectorResponse);
+            }
+        }
+        return listLector.stream().sorted((a1, b1) -> Long.compare(a1.getId(), b1.getId())).toList();
+    }
+
+    public List<LectorResponse> getLectorsOutByDisciplineId(Long idDiscipline) {
+        List<Lector> lectorInDiscipline = disciplineRepository.findById(idDiscipline).get().getLector();
+        List<Lector> lectorOutDiscipline = userService.getAllLectors();
+        List<LectorResponse> listLector = new ArrayList<>();
+
+        for (var lector: lectorInDiscipline) {
+            lectorOutDiscipline.remove(lector);
+        }
+
+        if (!lectorOutDiscipline.isEmpty()) {
+
+            for(var lector: lectorOutDiscipline) {
+                var lectorResponse = new LectorResponse();
+                lectorResponse.setId(lector.getId());
+                lectorResponse.setName(lector.getUser().getFullName());
+                lectorResponse.setEmail(lector.getUser().getEmail());
+
+                listLector.add(lectorResponse);
+            }
+        }
+        return listLector.stream().sorted((a1, b1) -> Long.compare(a1.getId(), b1.getId())).toList();
+    }
+
+    public void deleteDiscipline(Long idDiscipline) {
+        disciplineRepository.deleteById(idDiscipline);
+    }
 }
