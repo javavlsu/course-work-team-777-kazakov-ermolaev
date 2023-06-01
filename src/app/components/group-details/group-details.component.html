@@ -1,0 +1,18 @@
+<div class="group">
+    <div class="submit-form">
+      <div>
+            <div class="form-group">
+            <label for="group"><strong>Название группы:</strong></label>
+            <input
+                type="text"
+                class="form-control"
+                id="group"
+                required
+                [(ngModel)]="group.name"
+                name="group"
+            />
+            </div>
+        </div>
+    </div>
+    <button (click)="saveGroup()" class="btn btn-success">Сохранить</button>
+</div>

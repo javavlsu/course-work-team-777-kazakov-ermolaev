@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Group } from '../models/group.model';
 
-const baseUrl = 'http://localhost:8080/api/users/students/groups';
+const baseUrl = 'http://localhost:8080/api/groups';
 @Injectable({
   providedIn: 'root'
 })
@@ -15,8 +15,12 @@ export class GroupService {
     return this.http.get<Group[]>(baseUrl);
   }
 
+  getById(id: any): Observable<Group> {
+    return this.http.get<Group>(`${baseUrl}/${id}`);
+  }
+
   createGroup(data: any): Observable<any> {
-    return this.http.post(baseUrl, data)
+    return this.http.post(baseUrl, data);
   }
 
   updateGroup(id: any, data: any): Observable<any> {

@@ -15,6 +15,9 @@ import { AddDisciplineComponent } from './components/add-discipline/add-discipli
 import { UserListComponent } from './components/user-list/user-list.component';
 import { UserDetailsComponent } from './components/user-details/user-details.component';
 import { DisciplineDetailsComponent } from './components/discipline-details/discipline-details.component';
+import { AddGroupComponent } from './components/add-group/add-group.component';
+import { GroupListComponent } from './components/group-list/group-list.component';
+import { GroupDetailsComponent } from './components/group-details/group-details.component';
 
 @NgModule({
   declarations: [
@@ -26,7 +29,10 @@ import { DisciplineDetailsComponent } from './components/discipline-details/disc
     AddDisciplineComponent,
     UserListComponent,
     UserDetailsComponent,
-    DisciplineDetailsComponent
+    DisciplineDetailsComponent,
+    AddGroupComponent,
+    GroupListComponent,
+    GroupDetailsComponent
   ],
   imports: [
     BrowserModule,

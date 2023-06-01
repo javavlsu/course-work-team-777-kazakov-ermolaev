@@ -70,6 +70,5 @@ export class UserListComponent {
   newuser() {
     this.router.navigate([`newuser`]);
   }
-
   
 }

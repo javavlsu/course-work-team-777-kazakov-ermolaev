@@ -1,0 +1,40 @@
+<div class="list row">
+    <div class="row-md-6" *ngIf="isAdmin">
+      <a
+        style="margin-left: 7px"
+        class="btn btn-outline-secondary"
+        routerLink="addGroup">
+        Создать группу
+      </a>
+    </div>
+    <div class="row-md-6">
+      <h4 style="margin-left: 7px">Группы</h4>
+      <div *ngFor="let group of groups">
+            <ul class="list-group">
+                <div class="col">
+                    <button
+                        type="button"
+                        class="btn btn-outline-primary list-group"
+                    >
+                        {{ group.name }}
+                    </button>
+                    <div *ngIf="isLector">
+                        <button
+                        type="button"
+                        class="bi bi-pencil btn-outline-primary edit-button"
+                        (click)="redirectToGroupDetails(group.id)"
+                        >
+                        </button>
+                        <button
+                        type="button"
+                        class="bi bi-trash btn btn-outline-danger del-button"
+                        (click)="deleteGroup(group.id)"
+                        >
+                        </button>
+                    </div>
+                </div>
+            </ul>
+      </div>
+    </div>
+</div>
+  

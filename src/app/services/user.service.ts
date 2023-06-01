@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Lector } from '../models/lector.model';
 import { Student } from '../models/student.model';
+import { Group } from '../models/group.model';
 
 const baseUrl = 'http://localhost:8080/api/users';
 
@@ -45,4 +46,5 @@ export class UserService {
   deleteLector(id: any): Observable<any> {
     return this.http.delete(`${baseUrl}/lectors/${id}`);
   }
+
 }
