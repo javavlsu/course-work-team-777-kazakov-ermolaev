@@ -54,6 +54,13 @@ public class DisciplineController {
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> createDiscipline(@RequestBody CreateOrUpdateDisciplineRequest createOrUpdateDisciplineRequest) {
+        if (disciplineService.existsByTitle(createOrUpdateDisciplineRequest.getTitle())) {
+            return ResponseEntity.badRequest().body(new MessageResponse("Ошибка: дисциплина с таким именем уже существует!"));
+        }
+        if (createOrUpdateDisciplineRequest.getTitle() == "") {
+            return ResponseEntity.badRequest().body(new MessageResponse("Ошибка: имя дисциплины не заполнено!"));
+        }
+
         disciplineService.createDiscipline(createOrUpdateDisciplineRequest);
         return ResponseEntity.ok(new MessageResponse("Discipline is creating"));
     }

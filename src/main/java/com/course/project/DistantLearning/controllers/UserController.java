@@ -157,37 +157,53 @@ public class UserController {
         }
     }
 
-    @GetMapping("/groups")
+    @GetMapping("/students/groups")
     @PreAuthorize("hasRole('LECTOR') or hasRole('ADMIN')")
     public ResponseEntity<List<Group>> getGroups() {
         List<Group> groups = groupService.getGroups();
 
         if (groups.isEmpty())
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
         return new ResponseEntity<>(groups, HttpStatus.OK);
     }
 
-    @PostMapping("/groups")
+    @GetMapping("/students/groups/{idGroup}")
+    @PreAuthorize("hasRole('LECTOR') or hasRole('ADMIN')")
+    public ResponseEntity<Group> getGroupById(@PathVariable("idGroup") Long idGroup) {
+        Optional<Group> group = groupService.getGroupById(idGroup);
+
+        if (group.isPresent()) {
+            return new ResponseEntity<>(group.get(), HttpStatus.OK);
+        }
+
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    @PostMapping("/students/groups")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> createGroup(@RequestBody Group group) {
         if (groupService.existsByName(group.getName())) {
-            return ResponseEntity.ok(new MessageResponse("This groupName is already exists"));
+            return ResponseEntity.badRequest().body(new MessageResponse("Ошибка: группа с таким именем уже существует!"));
         }
+        if (group.getName() == "") {
+            return ResponseEntity.badRequest().body(new MessageResponse("Ошибка: имя группы не заполнено!"));
+        }
+
         groupService.createGroup(group);
 
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @PutMapping("/groups/{id}")
+    @PutMapping("/students/groups/{idGroup}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> updateGroup(@PathVariable("id") Long idGroup, @RequestBody Group group) {
+    public ResponseEntity<?> updateGroup(@PathVariable("idGroup") Long idGroup, @RequestBody Group group) {
         return ResponseEntity.ok(groupService.updateGroup(idGroup, group));
     }
 
-    @DeleteMapping("/groups/{id}")
+    @DeleteMapping("/students/groups/{idGroup}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<HttpStatus> deleteGroup(@PathVariable("id") Long idGroup) {
+    public ResponseEntity<HttpStatus> deleteGroup(@PathVariable("idGroup") Long idGroup) {
         try {
             groupService.deleteGroup(idGroup);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);

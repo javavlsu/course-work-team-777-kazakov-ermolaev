@@ -13,6 +13,5 @@ import java.util.Optional;
 public interface DisciplineRepository extends JpaRepository<Discipline, Long> {
     Optional<Discipline> findByTitle(String title);
 
-//    @Query("SELECT d FROM Discipline d WHERE d.groupList.id CONTAINS :groupId")
-//    List<Discipline> findByGroupId(@Param("groupId") Long groupId);
+    Boolean existsByTitle(String title);
 }

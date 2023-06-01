@@ -46,6 +46,8 @@ public class DisciplineService {
 
     public Optional<Discipline> getDisciplineById(Long idDiscipline) { return disciplineRepository.findById(idDiscipline); }
 
+    public Boolean existsByTitle(String title) { return disciplineRepository.existsByTitle(title); }
+
     public List<Discipline> getDiscipline(Long idUser) {
         List<Discipline> disciplines = new ArrayList<>();
 
