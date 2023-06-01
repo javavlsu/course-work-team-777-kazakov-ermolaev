@@ -32,6 +32,9 @@
       <button (click)="saveDiscipline()" class="btn btn-success">Создать</button>
     </div>
   </div>
+  <div class="alert alert-warning" *ngIf="isCreateFailed">
+    Группа не создана!<br />{{ errorMessage }}
+  </div>
   <div *ngIf="submitted">
     <h4>Discipline was submitted successfully!</h4>
     <button class="btn btn-success" (click)="newDiscipline()">Add</button>

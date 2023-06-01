@@ -20,6 +20,9 @@ export class AddDisciplineComponent {
   isLoggedIn = false;
   isAdmin = false;
 
+  isCreateFailed = false;
+  errorMessage = '';
+
   lectors: Lector[] = [];
   selectedLector: Lector[] = [];
 
@@ -74,7 +77,11 @@ export class AddDisciplineComponent {
           console.log(res)
           this.submitted = true;
         },
-        error: (e) => console.error(e)
+        error: (e) => {
+          this.errorMessage = e.error.message;
+          this.submitted = false;
+          this.isCreateFailed = true;
+        }
       })
   }
 

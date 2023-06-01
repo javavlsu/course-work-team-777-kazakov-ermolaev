@@ -1,11 +1,46 @@
 <div class="list row">
-    <div class="row-md-6" *ngIf="isAdmin">
-      <a
+    <div class="row-md-6" *ngIf="isAdmin && !create">
+      <!--<a
         style="margin-left: 7px"
         class="btn btn-outline-secondary"
         routerLink="addGroup">
         Создать группу
-      </a>
+      </a>-->
+      <button
+        style="margin-left: 7px"
+        class="btn btn-outline-secondary"
+        type="button"
+        (click)="openCreateForm()">
+        Создать группу
+      </button>
+    </div>
+    <div class="row-md-6" *ngIf="create">
+        <div>
+            <button
+              class="btn btn-secondary"
+              type="button"
+              (click)="closeCreateForm()">
+            </button>
+        </div>
+        <div class="submit-form">
+          <div>
+            <div class="form-group">
+              <label for="group"><strong>Название группы:</strong></label>
+              <input
+                type="text"
+                class="form-control"
+                id="group"
+                required
+                [(ngModel)]="group.name"
+                name="group"
+              />
+            </div>
+            <button (click)="saveGroup()" class="btn btn-success">Создать</button>
+          </div>
+        </div>
+        <div class="alert alert-warning" *ngIf="isCreateFailed">
+          Группа не создана!<br />{{ errorMessage }}
+        </div>
     </div>
     <div class="row-md-6">
       <h4 style="margin-left: 7px">Группы</h4>
@@ -37,4 +72,3 @@
       </div>
     </div>
 </div>
-  

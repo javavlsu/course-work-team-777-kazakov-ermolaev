@@ -9,7 +9,6 @@ import { UserListComponent } from './components/user-list/user-list.component';
 import { UserDetailsComponent } from './components/user-details/user-details.component';
 import { DisciplineDetailsComponent } from './components/discipline-details/discipline-details.component';
 import { GroupListComponent } from './components/group-list/group-list.component';
-import { AddGroupComponent } from './components/add-group/add-group.component';
 import { GroupDetailsComponent } from './components/group-details/group-details.component';
 
 const routes: Routes = [
@@ -24,7 +23,6 @@ const routes: Routes = [
   { path: 'users/students/:idStudent', component: UserDetailsComponent },
   { path: 'users/lectors/:idLector', component: UserDetailsComponent },
   { path: 'groups', component: GroupListComponent },
-  { path: 'groups/addGroup', component: AddGroupComponent },
   { path: 'groups/:idGroup', component: GroupDetailsComponent }
 ];
 

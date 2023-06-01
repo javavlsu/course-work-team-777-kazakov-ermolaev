@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Group } from '../models/group.model';
 
-const baseUrl = 'http://localhost:8080/api/groups';
+const baseUrl = 'http://localhost:8080/api/users/students/groups';
 @Injectable({
   providedIn: 'root'
 })

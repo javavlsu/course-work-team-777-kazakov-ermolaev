@@ -16,6 +16,15 @@ export class GroupListComponent {
   isAdmin = false;
   isLector = false;
 
+  create = false;
+  submitted = false;
+  isCreateFailed = false;
+  errorMessage = '';
+
+  group: Group = {
+    name: ""
+  }
+
   constructor(
     private groupService: GroupService,
     private storageService: StorageService,
@@ -46,6 +55,41 @@ export class GroupListComponent {
         },
         error: (e) => console.error(e)
       })
+  }
+
+  openCreateForm() {
+    this.create = true;
+  }
+
+  closeCreateForm() {
+    this.create = false;
+  }
+
+  saveGroup() {
+    const data = {
+      name: this.group.name
+    }
+
+    this.groupService.createGroup(data)
+      .subscribe({
+        next: (res) => {
+          console.log(res)
+          this.submitted = true;
+          this.isCreateFailed = false;
+          this.group = {
+            name: ''
+          }
+          this.submitted = false;
+          this.getGroups();
+        },
+        error: (e) => {
+          this.errorMessage = e.error.message;
+          this.submitted = false;
+          this.isCreateFailed = true;
+        }
+      })
+
+
   }
 
   deleteGroup(id: any) {
