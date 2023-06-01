@@ -157,7 +157,7 @@ public class UserController {
         }
     }
 
-    @GetMapping("/students/groups")
+    @GetMapping("/groups")
     @PreAuthorize("hasRole('LECTOR') or hasRole('ADMIN')")
     public ResponseEntity<List<Group>> getGroups() {
         List<Group> groups = groupService.getGroups();
@@ -168,7 +168,7 @@ public class UserController {
         return new ResponseEntity<>(groups, HttpStatus.OK);
     }
 
-    @PostMapping("/student/groups")
+    @PostMapping("/groups")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> createGroup(@RequestBody Group group) {
         if (groupService.existsByName(group.getName())) {
@@ -179,13 +179,13 @@ public class UserController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @PutMapping("/students/groups/{id}")
+    @PutMapping("/groups/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> updateGroup(@PathVariable("id") Long idGroup, @RequestBody Group group) {
         return ResponseEntity.ok(groupService.updateGroup(idGroup, group));
     }
 
-    @DeleteMapping("/students/groups/{id}")
+    @DeleteMapping("/groups/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<HttpStatus> deleteGroup(@PathVariable("id") Long idGroup) {
         try {
