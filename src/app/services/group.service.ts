@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Group } from '../models/group.model';
+import { Student } from '../models/student.model';
 
 const baseUrl = 'http://localhost:8080/api/users/students/groups';
 @Injectable({
@@ -29,5 +30,13 @@ export class GroupService {
 
   deleteGroup(id: any): Observable<any> {
     return this.http.delete(`${baseUrl}/${id}`);
+  }
+
+  getStudentsWithGroup(id: any): Observable<Student[]> {
+    return this.http.get<Student[]>(`${baseUrl}/WithGroup/${id}`);
+  }
+
+  getStudentsWithoutGroup(): Observable<Student[]> {
+    return this.http.get<Student[]>(`${baseUrl}/WithoutGroup`);
   }
 }

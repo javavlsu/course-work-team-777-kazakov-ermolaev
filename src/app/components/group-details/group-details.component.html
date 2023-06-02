@@ -14,5 +14,50 @@
             </div>
         </div>
     </div>
+    <div class="form-group" *ngIf="isAdmin">
+        <label><strong>Студенты</strong></label>
+        <ul class="list-group">
+          <div class="scroll">
+          <table>
+              <tr>
+               <th>Подключенные</th>
+               <th>Не подключенные</th>
+              </tr>
+              <tr>
+                <td>
+                  <table style="width: 500px;">
+                    <tr *ngFor="let student of studentsInGroup">
+                      <td>
+                        {{ student.name }}
+                        <button
+                          class="btn btn-outline-secondary"
+                          style="float: right;"
+                          (click)="removeStudent(student)">
+                            Отключить
+                        </button>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+                <td>
+                  <table style="width: 500px;">
+                    <tr *ngFor="let student of studentsOutGroup">
+                      <td>
+                        {{ student.name }}
+                        <button
+                          class="btn btn-outline-secondary"
+                          style="float: right;"
+                          (click)="addStudent(student)">
+                            Подключить
+                        </button>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+          </table>
+        </div>
+      </ul>
+      </div>
     <button (click)="saveGroup()" class="btn btn-success">Сохранить</button>
 </div>

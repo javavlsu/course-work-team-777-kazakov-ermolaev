@@ -40,7 +40,7 @@ export class DisciplineDetailsComponent {
 
   ngOnInit() {
     this.isLoggedIn = this.storageService.isLoggedIn();
-    let idDiscipline = this.route.snapshot.params["idDiscipline"]
+    let idDiscipline = this.route.snapshot.params["idDiscipline"];
 
     if (this.isLoggedIn) {
       const user = this.storageService.getUser();

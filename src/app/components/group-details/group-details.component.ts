@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Group } from 'src/app/models/group.model';
+import { Student } from 'src/app/models/student.model';
 import { GroupService } from 'src/app/services/group.service';
 import { StorageService } from 'src/app/services/storage.service';
 import { UserService } from 'src/app/services/user.service';
@@ -19,6 +20,9 @@ export class GroupDetailsComponent {
   group: Group = {
     name: ""
   }
+
+  studentsInGroup: Student[] = [];
+  studentsOutGroup: Student[] = [];
 
   constructor(
     private userService: UserService,
@@ -41,6 +45,8 @@ export class GroupDetailsComponent {
     }
 
     this.getGroup(idGroup);
+
+    this.getStudents(idGroup);
   }
 
   getGroup(id: any) {
@@ -57,7 +63,8 @@ export class GroupDetailsComponent {
     const idGroup = this.route.snapshot.params["idGroup"]
 
     const data = {
-      name: this.group.name
+      name: this.group.name,
+      studentResponseList: this.studentsInGroup
     }
 
     this.groupService.updateGroup(idGroup, data)
@@ -70,6 +77,40 @@ export class GroupDetailsComponent {
 
     this.router.navigate([`/groups`])
   }
+
+  addStudent(student: Student) {
+    this.studentsInGroup.push(student);
+
+    this.studentsOutGroup.forEach( (item, index) => {
+      if(item === student) this.studentsOutGroup.splice(index, 1);
+    });
+  }
+
+  removeStudent(student: Student) {
+    this.studentsInGroup.forEach( (item, index) => {
+      if(item === student) this.studentsInGroup.splice(index, 1);
+    });
+
+    this.studentsOutGroup.push(student);
+  }
+
+  getStudents(idGroup: any) {
+    this.groupService.getStudentsWithGroup(idGroup)
+      .subscribe({
+        next: (data) => {
+          this.studentsInGroup = data;
+        },
+        error: (e) => console.error(e)
+      })
+      this.groupService.getStudentsWithoutGroup()
+        .subscribe({
+          next: (data) => {
+            this.studentsOutGroup = data;
+          },
+          error: (e) => console.error(e)
+        })
+  }
+  
 
 
 
