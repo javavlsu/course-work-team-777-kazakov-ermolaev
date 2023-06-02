@@ -4,12 +4,14 @@ import com.course.project.DistantLearning.dto.request.SignupRequest;
 import com.course.project.DistantLearning.dto.response.LectorResponse;
 import com.course.project.DistantLearning.dto.response.MessageResponse;
 import com.course.project.DistantLearning.dto.response.StudentResponse;
+import com.course.project.DistantLearning.dto.response.UpdateGroupResponse;
 import com.course.project.DistantLearning.models.*;
 import com.course.project.DistantLearning.repository.RoleRepository;
 import com.course.project.DistantLearning.repository.UserRepository;
 import com.course.project.DistantLearning.service.GroupService;
 import com.course.project.DistantLearning.service.RoleService;
 import com.course.project.DistantLearning.service.UserService;
+import jakarta.persistence.Entity;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -197,7 +199,7 @@ public class UserController {
 
     @PutMapping("/students/groups/{idGroup}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> updateGroup(@PathVariable("idGroup") Long idGroup, @RequestBody Group group) {
+    public ResponseEntity<?> updateGroup(@PathVariable("idGroup") Long idGroup, @RequestBody UpdateGroupResponse group) {
         return ResponseEntity.ok(groupService.updateGroup(idGroup, group));
     }
 
@@ -210,5 +212,27 @@ public class UserController {
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @GetMapping("/students/groups/WithGroup/{idGroup}")
+    @PreAuthorize("hasRole('LECTOR') or hasRole('ADMIN')")
+    public ResponseEntity<List<StudentResponse>> getStudentWithGroup(@PathVariable("idGroup") Long idGroup) {
+        List<StudentResponse> studentResponse = userService.getStudentsOfGroup(idGroup);
+
+        if(studentResponse.isEmpty())
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        return new ResponseEntity<>(studentResponse, HttpStatus.OK);
+    }
+
+    @GetMapping("/students/groups/WithoutGroup")
+    @PreAuthorize("hasRole('LECTOR') or hasRole('ADMIN')")
+    public ResponseEntity<List<StudentResponse>> getStudentWithoutGroup() {
+        List<StudentResponse> studentResponse = userService.getStudentWithoutGroup();
+
+        if(studentResponse.isEmpty())
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        return new ResponseEntity<>(studentResponse, HttpStatus.OK);
     }
 }

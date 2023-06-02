@@ -92,16 +92,12 @@ public class DisciplineService {
 
             _discipline.setTitle(createOrUpdateDisciplineRequest.getTitle());
 
-            if (!createOrUpdateDisciplineRequest.getLectorResponseList().isEmpty()) {
-                for(var lector: createOrUpdateDisciplineRequest.getLectorResponseList()) {
-                    lectorList.add(userService.getLectorById(lector.getId()).get());
-                }
+            for(var lector: createOrUpdateDisciplineRequest.getLectorResponseList()) {
+                lectorList.add(userService.getLectorById(lector.getId()).get());
             }
 
-            if (!createOrUpdateDisciplineRequest.getGroupList().isEmpty()) {
-                for(var group: createOrUpdateDisciplineRequest.getGroupList()) {
-                    groupList.add(groupService.getGroupById(group.getId()).get());
-                }
+            for(var group: createOrUpdateDisciplineRequest.getGroupList()) {
+                groupList.add(groupService.getGroupById(group.getId()).get());
             }
 
             _discipline.setGroupList(groupList);

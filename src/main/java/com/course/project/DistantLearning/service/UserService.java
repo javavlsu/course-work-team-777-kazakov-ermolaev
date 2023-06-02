@@ -107,7 +107,6 @@ public class UserService {
         if (studentData.isPresent()) {
             Student student = studentData.get();
             User user = studentData.get().getUser();
-            //student.setGroup(groupService.findByGroupName(studentResponse.getGroupName()).get());
 
             user.setFullName(studentResponse.getName());
             user.setEmail(studentResponse.getEmail());
@@ -161,7 +160,6 @@ public class UserService {
         if (lectorData.isPresent()) {
             Lector lector = lectorData.get();
             User user = lectorData.get().getUser();
-            //lector.setDisciplineList(lectorResponse.getDisciplineList());
 
             user.setFullName(lectorResponse.getName());
             user.setEmail(lectorResponse.getEmail());
@@ -172,5 +170,41 @@ public class UserService {
         } else {
             return new MessageResponse("Error! Update lector has stopped");
         }
+    }
+
+    public List<StudentResponse> getStudentsOfGroup(Long idGroup) {
+        List<Student> studentList = groupService.getGroupById(idGroup).get().getStudentList();
+
+        List<StudentResponse> listStudent = new ArrayList<>();
+
+        if (!studentList.isEmpty()) {
+
+            for(var student: studentList) {
+                var studentResponse = new StudentResponse();
+                studentResponse.setId(student.getId());
+                studentResponse.setName(student.getUser().getFullName());
+                studentResponse.setEmail(student.getUser().getEmail());
+                studentResponse.setGroupName(student.getGroup().getName());
+
+                listStudent.add(studentResponse);
+            }
+        }
+
+        return listStudent.stream().sorted((a1, b1) -> Long.compare(a1.getId(), b1.getId())).toList();
+    }
+
+    public List<StudentResponse> getStudentWithoutGroup() {
+        List<StudentResponse> studentResponseList = new ArrayList<>();
+        for(var student: studentRepository.findAll()) {
+            if (student.getGroup() == null) {
+                var studentResp = new StudentResponse();
+                studentResp.setId(student.getId());
+                studentResp.setName(student.getUser().getFullName());
+                studentResp.setEmail(student.getUser().getEmail());
+                studentResp.setGroupName("Нет группы");
+                studentResponseList.add(studentResp);
+            }
+        }
+        return studentResponseList.stream().sorted((a1, b1) -> Long.compare(a1.getId(), b1.getId())).toList();
     }
 }
