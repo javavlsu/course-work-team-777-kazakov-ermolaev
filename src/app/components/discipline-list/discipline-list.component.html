@@ -1,17 +1,17 @@
 <div class="list row">
   <div class="row-md-6" *ngIf="isAdmin">
     <a
-      style="margin-left: 7px"
+      style="margin-left: 4%;"
       class="btn btn-outline-secondary"
       routerLink="addDiscipline">
       Создать дисциплину
     </a>
   </div>
-  <div class="row-md-6">
+  <div class="row-md-6" style="margin-left: 4%;">
     <h4 style="margin-left: 7px">Дисциплины</h4>
     <div *ngFor="let discipline of disciplines">
       <ul class="list-group">
-        <div class="col">
+        <div class="col flex">
             <button
               type="button"
               class="btn btn-outline-primary list-discipline"
