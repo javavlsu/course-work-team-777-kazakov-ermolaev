@@ -1,65 +1,60 @@
 <div class="list row">
     <div class="row-md-6" *ngIf="isAdmin && !create">
-      <!--<a
-        style="margin-left: 7px"
-        class="btn btn-outline-secondary"
-        routerLink="addGroup">
-        Создать группу
-      </a>-->
       <button
-        style="margin-left: 7px"
+        style="margin-left: 4%"
         class="btn btn-outline-secondary"
         type="button"
         (click)="openCreateForm()">
         Создать группу
       </button>
     </div>
-    <div class="row-md-6" *ngIf="create">
+    <div class="row-md-6" *ngIf="create" style="margin-left: 4%;">
         <div>
             <button
               class="btn btn-secondary"
               type="button"
               (click)="closeCreateForm()">
+              Отмена
             </button>
         </div>
         <div class="submit-form">
           <div>
             <div class="form-group">
               <label for="group"><strong>Название группы:</strong></label>
+              <div style="display: flex;">
               <input
                 type="text"
                 class="form-control"
+                style="max-width: 25%; margin-right: 15px;"
                 id="group"
                 required
                 [(ngModel)]="group.name"
                 name="group"
               />
-            </div>
+              
             <button (click)="saveGroup()" class="btn btn-success">Создать</button>
+          </div>
+          </div>          
           </div>
         </div>
         <div class="alert alert-warning" *ngIf="isCreateFailed">
           Группа не создана!<br />{{ errorMessage }}
         </div>
     </div>
-    <div class="row-md-6">
+    <div class="row-md-6" style="margin-left: 4%;">
       <h4 style="margin-left: 7px">Группы</h4>
       <div *ngFor="let group of groups">
-            <ul class="list-group">
-                <div class="col">
+            <ul class="list-group" style="margin-top: 15px;">
+                <div class="col" style="display: flex;">
                     <button
                         type="button"
                         class="btn btn-outline-primary list-group"
+                        (click)="redirectToGroupDetails(group.id)"
+                        style="padding-left: 14px; padding-right: 14px; margin-right: 10px;"
                     >
                         {{ group.name }}
                     </button>
                     <div *ngIf="isLector">
-                        <button
-                        type="button"
-                        class="bi bi-pencil btn-outline-primary edit-button"
-                        (click)="redirectToGroupDetails(group.id)"
-                        >
-                        </button>
                         <button
                         type="button"
                         class="bi bi-trash btn btn-outline-danger del-button"
