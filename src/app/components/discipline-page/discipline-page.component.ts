@@ -1,8 +1,10 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Discipline } from 'src/app/models/discipline.model';
+import { LabWork } from 'src/app/models/labwork.model';
 import { Test } from 'src/app/models/test.model';
 import { DisciplineService } from 'src/app/services/discipline.service';
+import { LabworkService } from 'src/app/services/labwork.service';
 import { StorageService } from 'src/app/services/storage.service';
 import { TestService } from 'src/app/services/test.service';
 
@@ -31,12 +33,25 @@ export class DisciplinePageComponent {
   isAdmin = false;
   isLector = false;
 
-  createForm = false;
-  isCreateFailed = false;
-  errorMessage = "";
+  createFormTest = false;
+  isCreateTestFailed = false;
+  errorMessageTest = "";
+
+  labWork: LabWork = {
+    title: "",
+    manual: "",
+    deadline: new Date()
+  }
+
+  labworks: LabWork[] = [];
+
+  createFormLabWork = false;
+  isCreateLabWorkFailed = false;
+  errorMessageLabWork = "";
 
   constructor(
     private testService: TestService,
+    private labworkService: LabworkService,
     private disciplineService: DisciplineService,
     private storageService: StorageService,
     private route: ActivatedRoute,
@@ -54,6 +69,7 @@ export class DisciplinePageComponent {
     }
 
     this.getTest();
+    this.getLabWork();
     this.getDiscipline();
   }
 
@@ -92,19 +108,19 @@ export class DisciplinePageComponent {
   deleteTest(idTest: any) {
     this.testService.deleteTest(this.idDiscipline, idTest)
       .subscribe({
-        next: (data) => {
+        next: () => {
           this.getTest();
         },
         error: (e) => console.error(e)
       })
   }
 
-  openCreateForm() {
-    this.createForm = true;
+  openCreateFormTest() {
+    this.createFormTest = true;
   }
 
-  closeCreateForm() {
-    this.createForm = false;
+  closeCreateFormTest() {
+    this.createFormTest = false;
   }
 
   saveTest() {
@@ -118,7 +134,7 @@ export class DisciplinePageComponent {
       .subscribe({
         next: (res) => {
           console.log(res);
-          this.isCreateFailed = false;
+          this.isCreateTestFailed = false;
           this.test = {
             title: "",
             deadline: new Date(),
@@ -127,8 +143,70 @@ export class DisciplinePageComponent {
           this.getTest();
         },
         error: (e) => {
-          this.errorMessage = e.error.message;
-          this.isCreateFailed = true;
+          this.errorMessageTest = e.error.message;
+          this.isCreateTestFailed = true;
+        }
+      })
+  }
+
+  getLabWork() {
+    this.labworkService.getAll(this.idDiscipline)
+      .subscribe({
+        next: (data) => {
+          this.labworks = data;
+        },
+        error: (e) => console.error(e)
+      })
+  }
+
+  redirectToLabWorkEdit(idLabWork: any) {
+    this.router.navigate([`/discipline/${this.idDiscipline}/labwork/${idLabWork}`])
+  }
+
+  redirectToLabWorkPage(idLabWork: any) {
+    this.router.navigate([`/discipline/${this.idDiscipline}/labworkPage/${idLabWork}`])
+  }
+
+  deleteLabWork(idLabWork: any) {
+    this.labworkService.deleteLabWork(this.idDiscipline, idLabWork)
+      .subscribe({
+        next: () => {
+          this.getLabWork();
+        },
+        error: (e) => console.error(e)
+      })
+  }
+
+  openCreateFormLabWork() {
+    this.createFormLabWork = true;
+  }
+
+  closeCreateFormLabWork() {
+    this.createFormLabWork = false;
+  }
+
+  saveLabWork() {
+    const data = {
+      title: this.labWork.title,
+      manual: this.labWork.manual,
+      deadline: this.labWork.deadline
+    }
+
+    this.labworkService.createLabWork(this.idDiscipline, data)
+      .subscribe({
+        next: (res) => {
+          console.log(res);
+          this.isCreateLabWorkFailed = false;
+          this.labWork = {
+            title: "",
+            manual: "",
+            deadline: new Date()
+          }
+          this.getLabWork();
+        },
+        error: (e) => {
+          this.errorMessageLabWork = e.error.message;
+          this.isCreateLabWorkFailed = true;
         }
       })
   }
