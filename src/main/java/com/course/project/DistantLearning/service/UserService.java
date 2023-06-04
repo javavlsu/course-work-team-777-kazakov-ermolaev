@@ -19,19 +19,19 @@ import java.util.Optional;
 @Service
 public class UserService {
     @Autowired
-    private StudentRepository studentRepository;
+    StudentRepository studentRepository;
 
     @Autowired
-    private UserRepository userRepository;
+    UserRepository userRepository;
 
     @Autowired
-    private LectorRepository lectorRepository;
+    LectorRepository lectorRepository;
 
     @Autowired
-    private RoleService roleService;
+    RoleService roleService;
 
     @Autowired
-    private GroupService groupService;
+    GroupService groupService;
 
     public String getCurrentUserName() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

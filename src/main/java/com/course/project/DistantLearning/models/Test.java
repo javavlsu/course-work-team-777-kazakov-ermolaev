@@ -14,6 +14,9 @@ public class Test {
     @Column(name = "title")
     private String title;
 
+    @Column(name = "datestart")
+    private Date dateStart;
+
     @Column(name = "deadline")
     private Date deadline;
 
@@ -26,8 +29,9 @@ public class Test {
 
     public Test() {}
 
-    public Test(String title, Date deadline, String status, Discipline discipline) {
+    public Test(String title, Date deadline, Date dateStart, String status, Discipline discipline) {
         this.title = title;
+        this.dateStart = dateStart;
         this.deadline = deadline;
         this.status = status;
         this.discipline = discipline;
@@ -47,6 +51,14 @@ public class Test {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public Date getDateStart() {
+        return dateStart;
+    }
+
+    public void setDateStart(Date dateStart) {
+        this.dateStart = dateStart;
     }
 
     public Date getDeadline() {

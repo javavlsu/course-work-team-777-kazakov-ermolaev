@@ -15,7 +15,7 @@ import java.util.Set;
 @Service
 public class RoleService {
     @Autowired
-    private RoleRepository roleRepository;
+    RoleRepository roleRepository;
 
     public List<String> getUserRoles(User user) {
         List<String> roles = new ArrayList<>();

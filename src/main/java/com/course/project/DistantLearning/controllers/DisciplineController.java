@@ -116,7 +116,7 @@ public class DisciplineController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('LECTOR') or hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<HttpStatus> deleteDiscipline(@PathVariable("id") Long idDiscipline) {
         try {
             disciplineService.deleteDiscipline(idDiscipline);

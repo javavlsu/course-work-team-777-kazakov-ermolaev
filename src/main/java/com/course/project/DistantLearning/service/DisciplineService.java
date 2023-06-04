@@ -8,13 +8,10 @@ import com.course.project.DistantLearning.models.Group;
 import com.course.project.DistantLearning.models.Lector;
 import com.course.project.DistantLearning.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,27 +19,16 @@ import java.util.Optional;
 public class DisciplineService {
 
     @Autowired
-    private DisciplineRepository disciplineRepository;
+    DisciplineRepository disciplineRepository;
 
     @Autowired
-    private UserService userService;
+    UserService userService;
 
     @Autowired
-    private RoleService roleService;
+    RoleService roleService;
 
     @Autowired
-    private GroupService groupService;
-
-
-
-    public String getCurrentUserName() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return authentication.getName();
-    }
-
-    public List<Discipline> getAllDiscipline() {
-        return disciplineRepository.findAll();
-    }
+    GroupService groupService;
 
     public Optional<Discipline> getDisciplineById(Long idDiscipline) { return disciplineRepository.findById(idDiscipline); }
 
@@ -61,7 +47,7 @@ public class DisciplineService {
             disciplines.addAll(userService.getStudent().getGroup().getDisciplineList());
         }
 
-        return disciplines.stream().sorted((a1, b1) -> Long.compare(a1.getId(), b1.getId())).toList();
+        return disciplines.stream().sorted(Comparator.comparingLong(Discipline::getId)).toList();
     }
 
     public void createDiscipline(CreateOrUpdateDisciplineRequest createOrUpdateDisciplineRequest) {
@@ -70,7 +56,7 @@ public class DisciplineService {
 
         if (!createOrUpdateDisciplineRequest.getLectorResponseList().isEmpty()) {
             for(var lector: createOrUpdateDisciplineRequest.getLectorResponseList()) {
-                lectorList.add(userService.getLectorById(lector.getId()).get());
+                userService.getLectorById(lector.getId()).ifPresent(lectorList::add);
             }
         }
 
@@ -93,11 +79,11 @@ public class DisciplineService {
             _discipline.setTitle(createOrUpdateDisciplineRequest.getTitle());
 
             for(var lector: createOrUpdateDisciplineRequest.getLectorResponseList()) {
-                lectorList.add(userService.getLectorById(lector.getId()).get());
+                userService.getLectorById(lector.getId()).ifPresent(lectorList::add);
             }
 
             for(var group: createOrUpdateDisciplineRequest.getGroupList()) {
-                groupList.add(groupService.getGroupById(group.getId()).get());
+                groupService.getGroupById(group.getId()).ifPresent(groupList::add);
             }
 
             _discipline.setGroupList(groupList);
@@ -110,28 +96,33 @@ public class DisciplineService {
     }
 
     public List<Group> getGroupInByDisciplineId(Long idDiscipline) {
-        return disciplineRepository.findById(idDiscipline).get().getGroupList()
-                .stream().sorted((a1, b1) -> Long.compare(a1.getId(), b1.getId())).toList();
+        List<Group> groups = new ArrayList<>();
+        disciplineRepository.findById(idDiscipline).ifPresent(value -> groups.addAll(value.getGroupList()));
+        return groups.stream().sorted(Comparator.comparingLong(Group::getId)).toList();
     }
 
     public List<Group> getGroupOutByDisciplineId(Long idDiscipline) {
-        List<Group> groupInDiscipline = disciplineRepository.findById(idDiscipline).get().getGroupList();
+        List<Group> groupInDiscipline = new ArrayList<>();
+        disciplineRepository.findById(idDiscipline).ifPresent(value -> groupInDiscipline.addAll(value.getGroupList()));
         List<Group> groupOutDiscipline = groupService.getGroups();
+        System.out.println(groupOutDiscipline.size());
 
         if (!groupInDiscipline.isEmpty()) {
             for (var group: groupInDiscipline) {
+                System.out.println(groupOutDiscipline.size());
                 groupOutDiscipline.remove(group);
+
             }
         }
 
-        return groupOutDiscipline.stream().sorted((a1, b1) -> Long.compare(a1.getId(), b1.getId())).toList();
+        return groupOutDiscipline.stream().sorted(Comparator.comparingLong(Group::getId)).toList();
     }
 
     public List<LectorResponse> getLectorsInByDisciplineId(Long idDiscipline) {
-        var lectors = disciplineRepository.findById(idDiscipline).get().getLector();
+        List<Lector> lectors = new ArrayList<>();
+        disciplineRepository.findById(idDiscipline).ifPresent(value -> lectors.addAll(value.getLector()));
         List<LectorResponse> listLector = new ArrayList<>();
         if (!lectors.isEmpty()) {
-
             for(var lector: lectors) {
                 var lectorResponse = new LectorResponse();
                 lectorResponse.setId(lector.getId());
@@ -141,11 +132,12 @@ public class DisciplineService {
                 listLector.add(lectorResponse);
             }
         }
-        return listLector.stream().sorted((a1, b1) -> Long.compare(a1.getId(), b1.getId())).toList();
+        return listLector.stream().sorted(Comparator.comparingLong(LectorResponse::getId)).toList();
     }
 
     public List<LectorResponse> getLectorsOutByDisciplineId(Long idDiscipline) {
-        List<Lector> lectorInDiscipline = disciplineRepository.findById(idDiscipline).get().getLector();
+        List<Lector> lectorInDiscipline = new ArrayList<>();
+        disciplineRepository.findById(idDiscipline).ifPresent(value -> lectorInDiscipline.addAll(value.getLector()));
         List<Lector> lectorOutDiscipline = userService.getAllLectors();
         List<LectorResponse> listLector = new ArrayList<>();
 
@@ -154,7 +146,6 @@ public class DisciplineService {
         }
 
         if (!lectorOutDiscipline.isEmpty()) {
-
             for(var lector: lectorOutDiscipline) {
                 var lectorResponse = new LectorResponse();
                 lectorResponse.setId(lector.getId());
@@ -164,7 +155,7 @@ public class DisciplineService {
                 listLector.add(lectorResponse);
             }
         }
-        return listLector.stream().sorted((a1, b1) -> Long.compare(a1.getId(), b1.getId())).toList();
+        return listLector.stream().sorted(Comparator.comparingLong(LectorResponse::getId)).toList();
     }
 
     public void deleteDiscipline(Long idDiscipline) {
