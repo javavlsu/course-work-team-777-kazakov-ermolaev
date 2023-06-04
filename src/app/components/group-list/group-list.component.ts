@@ -17,7 +17,6 @@ export class GroupListComponent {
   isLector = false;
 
   create = false;
-  submitted = false;
   isCreateFailed = false;
   errorMessage = '';
 
@@ -73,18 +72,15 @@ export class GroupListComponent {
     this.groupService.createGroup(data)
       .subscribe({
         next: (res) => {
-          console.log(res)
-          this.submitted = true;
+          console.log(res);
           this.isCreateFailed = false;
           this.group = {
             name: ''
           }
-          this.submitted = false;
           this.getGroups();
         },
         error: (e) => {
           this.errorMessage = e.error.message;
-          this.submitted = false;
           this.isCreateFailed = true;
         }
       })

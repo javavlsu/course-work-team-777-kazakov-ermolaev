@@ -1,0 +1,52 @@
+<div>
+  <div class="submit-form">
+    <div class="form-group">
+      <label for="group"><strong>Название теста:</strong></label>
+        <input
+          type="text"
+          class="form-control"
+          style="max-width: 25%; margin-right: 15px;"
+          id="group"
+          required
+          [(ngModel)]="test.title"
+          name="group"
+        />
+    </div>
+    <div class="form-group">
+      <label for="group"><strong>Дата начала теста:</strong></label>
+        <input
+          type="datetime-local"
+          class="form-control"
+          style="max-width: 25%; margin-right: 15px;"
+          id="group"
+          required
+          [(ngModel)]="test.dateStart"
+          name="group"
+        />
+    </div>
+    <div class="form-group">
+      <label for="group"><strong>Дата окончания теста:</strong></label>
+        <input
+          type="datetime-local"
+          class="form-control"
+          style="max-width: 25%; margin-right: 15px;"
+          id="group"
+          required
+          [(ngModel)]="test.deadline"
+          name="group"
+        />
+    </div>
+  </div>
+  <div class="alert alert-warning" *ngIf="isUpdateFailed">
+    Тест не обновлен!<br />{{ errorMessage }}
+  </div>
+  <div style="display: flex;">
+    <button (click)="saveTest()" class="btn btn-success">Сохранить</button>
+    <button
+      type="button"
+      class="btn btn-secondary"
+      (click)="redirectToDiscipline()">
+      Назад
+    </button>
+  </div>
+</div>

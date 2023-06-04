@@ -1,0 +1,23 @@
+<div>
+  <h4>Тест {{ test.title }}</h4>
+  <p>Тест начинается: {{ test.dateStart | date:'dd.MM HH:mm' }}</p>
+  <p>Тест заканчивается: {{ test.deadline | date:'dd.MM HH:mm' }}</p>
+  <div *ngIf="isOpen">
+    <button
+      type="button"
+      class="btn btn-outline-primary">
+        Пройти
+    </button>
+  </div>
+  <div *ngIf="!isOpen">
+    <p>Тест закрыт</p>
+  </div>
+  <div>
+    <button
+      type="button"
+      class="btn btn-secondary"
+      (click)="redirectToDiscipline()">
+      Назад
+    </button>
+  </div>
+</div>

@@ -15,6 +15,7 @@
             <button
               type="button"
               class="btn btn-outline-primary list-discipline"
+              (click)="redirectToDisciplinePage(discipline.id)"
             >
               {{ discipline.title }}
             </button>
@@ -25,6 +26,8 @@
               (click)="redirectToDisciplineDetails(discipline.id)"
               >
               </button>
+            </div>
+            <div *ngIf="isAdmin">
               <button
               type="button"
               class="bi bi-trash btn btn-outline-danger del-button"

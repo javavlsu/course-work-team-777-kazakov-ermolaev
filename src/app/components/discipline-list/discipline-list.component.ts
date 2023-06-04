@@ -59,7 +59,12 @@ export class DisciplineListComponent {
         error: (e) => console.error(e)
       })
   }
+
   redirectToDisciplineDetails(id: any) {
     this.router.navigate([`/discipline/${id}`])
+  }
+
+  redirectToDisciplinePage(id: any) {
+    this.router.navigate([`/discipline/${id}/page`])
   }
 }

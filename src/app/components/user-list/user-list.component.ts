@@ -18,22 +18,22 @@ export class UserListComponent {
     this.getLector();
     this.getStudent();
   }
+
   getStudent() {
     this.userService.getStudent()
       .subscribe({
         next: (data) => {
           this.students = data;
-          console.log(data);
         },
         error: (e) => console.error(e)
       });
   }
+
   getLector() {
     this.userService.getLector()
       .subscribe({
         next: (data) => {
           this.lectors = data;
-          console.log(data);
         },
         error: (e) => console.error(e)
       });
@@ -67,8 +67,12 @@ export class UserListComponent {
     this.router.navigate([`/users/lectors/${id}`]);
   }
 
+  redirectToGroups() {
+    this.router.navigate([`groups`]);
+  }
+
   newuser() {
     this.router.navigate([`newuser`]);
   }
-  
+
 }

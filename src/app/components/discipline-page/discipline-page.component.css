@@ -1,0 +1,31 @@
+.flex {
+  display: flex;
+}
+
+.tests {
+  width: 300px;
+  margin-bottom: 5px;
+}
+.plus {
+  color: rgba(192, 192, 192, 0.897);
+  transition:  all 0.6s ease;
+  margin-left: 5px;
+  font-size: 22px;
+}
+
+.plus:hover {
+  cursor: pointer;
+  color: rgb(11, 238, 11)
+}
+
+.minus {
+  color: rgba(192, 192, 192, 0.897);
+  transition:  all 0.6s ease;
+  margin-left: 5px;
+  font-size: 22px;
+}
+
+.minus:hover {
+  cursor: pointer;
+  color: rgb(235, 48, 42)
+}

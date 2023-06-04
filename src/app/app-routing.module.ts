@@ -10,6 +10,9 @@ import { UserDetailsComponent } from './components/user-details/user-details.com
 import { DisciplineDetailsComponent } from './components/discipline-details/discipline-details.component';
 import { GroupListComponent } from './components/group-list/group-list.component';
 import { GroupDetailsComponent } from './components/group-details/group-details.component';
+import { DisciplinePageComponent } from './components/discipline-page/discipline-page.component';
+import { TestPageComponent } from './components/test-page/test-page.component';
+import { TestEditComponent } from './components/test-edit/test-edit.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -23,7 +26,11 @@ const routes: Routes = [
   { path: 'users/students/:idStudent', component: UserDetailsComponent },
   { path: 'users/lectors/:idLector', component: UserDetailsComponent },
   { path: 'groups', component: GroupListComponent },
-  { path: 'groups/:idGroup', component: GroupDetailsComponent }
+  { path: 'groups/:idGroup', component: GroupDetailsComponent },
+  { path: 'discipline/:idDiscipline/page', component: DisciplinePageComponent },
+  { path: 'discipline/:idDiscipline/test/:idTest', component: TestEditComponent },
+  { path: 'discipline/:idDiscipline/testPage/:idTest', component: TestPageComponent }
+
 ];
 
 @NgModule({

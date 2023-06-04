@@ -37,42 +37,43 @@
       </div>
     </div>
   </div>
-  <div *ngIf="!isLector">
-    <div class="submit-form">
-      <div>
-        <div class="form-group">
-          <label for="student"><strong>Имя студента</strong></label>
+</div>
+<div *ngIf="!isLector">
+  <div class="submit-form">
+    <div>
+      <div class="form-group">
+        <label for="student"><strong>Имя студента</strong></label>
+        <input
+          type="text"
+          class="form-control"
+          id="student"
+          required
+          [(ngModel)]="student.name"
+          name="student"
+        />
+      </div>
+      <div class="form-group">
+          <label for="lector"><strong>Email студента</strong></label>
           <input
-            type="text"
+            type="email"
             class="form-control"
             id="student"
             required
-            [(ngModel)]="student.name"
+            [(ngModel)]="student.email"
             name="student"
           />
         </div>
-        <div class="form-group">
-            <label for="lector"><strong>Email студента</strong></label>
-            <input
-              type="email"
-              class="form-control"
-              id="student"
-              required
-              [(ngModel)]="student.email"
-              name="student"
-            />
-          </div>
 
 
-        <div style="margin-top: 10px;">
-          <button
-          style="margin-right: 5px;"
-          type="submit"
-          class="btn btn-success"
-          (click)="updateStudent()"
-          >
-          Сохранить
-        </button>
-      </div>
+      <div style="margin-top: 10px;">
+        <button
+        style="margin-right: 5px;"
+        type="submit"
+        class="btn btn-success"
+        (click)="updateStudent()"
+        >
+        Сохранить
+      </button>
     </div>
   </div>
+</div>

@@ -22,19 +22,19 @@
             <div class="form-group">
               <label for="group"><strong>Название группы:</strong></label>
               <div style="display: flex;">
-              <input
-                type="text"
-                class="form-control"
-                style="max-width: 25%; margin-right: 15px;"
-                id="group"
-                required
-                [(ngModel)]="group.name"
-                name="group"
-              />
-              
-            <button (click)="saveGroup()" class="btn btn-success">Создать</button>
-          </div>
-          </div>          
+                <input
+                  type="text"
+                  class="form-control"
+                  style="max-width: 25%; margin-right: 15px;"
+                  id="group"
+                  required
+                  [(ngModel)]="group.name"
+                  name="group"
+                />
+
+                <button (click)="saveGroup()" class="btn btn-success">Создать</button>
+              </div>
+            </div>
           </div>
         </div>
         <div class="alert alert-warning" *ngIf="isCreateFailed">

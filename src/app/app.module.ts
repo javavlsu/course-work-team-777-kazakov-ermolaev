@@ -17,6 +17,9 @@ import { UserDetailsComponent } from './components/user-details/user-details.com
 import { DisciplineDetailsComponent } from './components/discipline-details/discipline-details.component';
 import { GroupListComponent } from './components/group-list/group-list.component';
 import { GroupDetailsComponent } from './components/group-details/group-details.component';
+import { DisciplinePageComponent } from './components/discipline-page/discipline-page.component';
+import { TestEditComponent } from './components/test-edit/test-edit.component';
+import { TestPageComponent } from './components/test-page/test-page.component';
 
 @NgModule({
   declarations: [
@@ -30,7 +33,10 @@ import { GroupDetailsComponent } from './components/group-details/group-details.
     UserDetailsComponent,
     DisciplineDetailsComponent,
     GroupListComponent,
-    GroupDetailsComponent
+    GroupDetailsComponent,
+    DisciplinePageComponent,
+    TestEditComponent,
+    TestPageComponent
   ],
   imports: [
     BrowserModule,
