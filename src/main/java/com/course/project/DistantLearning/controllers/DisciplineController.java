@@ -4,7 +4,6 @@ import com.course.project.DistantLearning.dto.request.CreateOrUpdateDisciplineRe
 import com.course.project.DistantLearning.dto.response.LectorResponse;
 import com.course.project.DistantLearning.models.Discipline;
 import com.course.project.DistantLearning.models.Group;
-import com.course.project.DistantLearning.models.Student;
 import com.course.project.DistantLearning.dto.response.MessageResponse;
 import com.course.project.DistantLearning.models.User;
 import com.course.project.DistantLearning.service.DisciplineService;
@@ -15,7 +14,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @CrossOrigin(origins = "http://localhost:4200", maxAge = 3600, allowCredentials="true")
 @RestController
@@ -30,8 +31,9 @@ public class DisciplineController {
     @GetMapping
     @PreAuthorize("hasRole('STUDENT') or hasRole('LECTOR') or hasRole('ADMIN')")
     public ResponseEntity<List<Discipline>> getDisciplines() {
-        User user = userService.getAuthorizeUser();
-        List<Discipline> disciplines = disciplineService.getDiscipline(user.getId());
+        Optional<User> user = userService.getAuthorizeUser();
+        List<Discipline> disciplines = new ArrayList<>();
+        user.ifPresent(value -> disciplines.addAll(disciplineService.getDiscipline(value.getId())));
 
         if (disciplines.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -45,10 +47,8 @@ public class DisciplineController {
     public ResponseEntity<Discipline> getDisciplineById(@PathVariable("idDiscipline") Long idDiscipline) {
         var discipline = disciplineService.getDisciplineById(idDiscipline);
 
-        if (discipline.isPresent())
-            return new ResponseEntity<>(discipline.get(), HttpStatus.OK);
+        return discipline.map(value -> new ResponseEntity<>(value, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
 
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @PostMapping

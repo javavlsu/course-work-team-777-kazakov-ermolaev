@@ -6,12 +6,9 @@ import com.course.project.DistantLearning.dto.response.MessageResponse;
 import com.course.project.DistantLearning.dto.response.StudentResponse;
 import com.course.project.DistantLearning.dto.response.UpdateGroupResponse;
 import com.course.project.DistantLearning.models.*;
-import com.course.project.DistantLearning.repository.RoleRepository;
-import com.course.project.DistantLearning.repository.UserRepository;
 import com.course.project.DistantLearning.service.GroupService;
 import com.course.project.DistantLearning.service.RoleService;
 import com.course.project.DistantLearning.service.UserService;
-import jakarta.persistence.Entity;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -175,11 +172,8 @@ public class UserController {
     public ResponseEntity<Group> getGroupById(@PathVariable("idGroup") Long idGroup) {
         Optional<Group> group = groupService.getGroupById(idGroup);
 
-        if (group.isPresent()) {
-            return new ResponseEntity<>(group.get(), HttpStatus.OK);
-        }
+        return group.map(value -> new ResponseEntity<>(value, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
 
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @PostMapping("/students/groups")

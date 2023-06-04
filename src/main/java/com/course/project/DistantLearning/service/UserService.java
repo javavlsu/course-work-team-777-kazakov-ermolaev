@@ -13,6 +13,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -56,12 +57,12 @@ public class UserService {
 
     public boolean existsByEmail(String email) { return userRepository.existsByEmail(email); }
 
-    public User getUserByID(Long id) {
-        return userRepository.findById(id).get();
+    public Optional<User> getUserByID(Long id) {
+        return userRepository.findById(id);
     }
 
-    public User getAuthorizeUser() {
-        return userRepository.findByUsername(getCurrentUserName()).get();
+    public Optional<User> getAuthorizeUser() {
+        return userRepository.findByUsername(getCurrentUserName());
     }
 
     public Optional<Student> getStudentById(Long id) {
@@ -92,7 +93,7 @@ public class UserService {
                 studentList.add(studentResponse);
             }
         }
-        return studentList.stream().sorted((a1, b1) -> Long.compare(a1.getId(), b1.getId())).toList();
+        return studentList.stream().sorted(Comparator.comparingLong(StudentResponse::getId)).toList();
     }
 
     public void deleteStudent(Long idStudent) {
@@ -135,7 +136,7 @@ public class UserService {
             }
         }
 
-        return listLector.stream().sorted((a1, b1) -> Long.compare(a1.getId(), b1.getId())).toList();
+        return listLector.stream().sorted(Comparator.comparingLong(LectorResponse::getId)).toList();
     }
 
     public List<Lector> getAllLectors() { return lectorRepository.findAll(); }
@@ -190,7 +191,7 @@ public class UserService {
             }
         }
 
-        return listStudent.stream().sorted((a1, b1) -> Long.compare(a1.getId(), b1.getId())).toList();
+        return listStudent.stream().sorted(Comparator.comparingLong(StudentResponse::getId)).toList();
     }
 
     public List<StudentResponse> getStudentWithoutGroup() {
@@ -205,6 +206,6 @@ public class UserService {
                 studentResponseList.add(studentResp);
             }
         }
-        return studentResponseList.stream().sorted((a1, b1) -> Long.compare(a1.getId(), b1.getId())).toList();
+        return studentResponseList.stream().sorted(Comparator.comparingLong(StudentResponse::getId)).toList();
     }
 }

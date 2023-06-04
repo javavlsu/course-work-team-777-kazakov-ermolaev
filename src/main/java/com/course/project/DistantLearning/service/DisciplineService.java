@@ -37,15 +37,18 @@ public class DisciplineService {
     public List<Discipline> getDiscipline(Long idUser) {
         List<Discipline> disciplines = new ArrayList<>();
 
-        List<String> roles = roleService.getUserRoles(userService.getUserByID(idUser));
-
-        if(roles.contains("ROLE_ADMIN")) {
-            disciplines.addAll(disciplineRepository.findAll());
-        } else if(roles.contains("ROLE_LECTOR") & !roles.contains("ROLE_ADMIN")) {
-            disciplines.addAll(userService.getAuthorizeLector().getDisciplineList());
-        } else {
-            disciplines.addAll(userService.getStudent().getGroup().getDisciplineList());
+        List<String> roles = new ArrayList<>();
+        userService.getUserByID(idUser).ifPresent(value -> roles.addAll(roleService.getUserRoles(value)));
+        if (!roles.isEmpty()){
+            if(roles.contains("ROLE_ADMIN")) {
+                disciplines.addAll(disciplineRepository.findAll());
+            } else if(roles.contains("ROLE_LECTOR") & !roles.contains("ROLE_ADMIN")) {
+                disciplines.addAll(userService.getAuthorizeLector().getDisciplineList());
+            } else {
+                disciplines.addAll(userService.getStudent().getGroup().getDisciplineList());
+            }
         }
+
 
         return disciplines.stream().sorted(Comparator.comparingLong(Discipline::getId)).toList();
     }

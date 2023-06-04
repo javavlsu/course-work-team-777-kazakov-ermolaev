@@ -1,9 +1,6 @@
 package com.course.project.DistantLearning.service;
 
-import com.course.project.DistantLearning.dto.response.MessageResponse;
-import com.course.project.DistantLearning.models.AnswerOption;
 import com.course.project.DistantLearning.models.Discipline;
-import com.course.project.DistantLearning.models.Student;
 import com.course.project.DistantLearning.models.Test;
 import com.course.project.DistantLearning.repository.AnswerOptionRepository;
 import com.course.project.DistantLearning.repository.TaskRepository;
@@ -31,8 +28,6 @@ public class TestService {
     AnswerOptionRepository answerOptionRepository;
 
     public Boolean existsByTitle(String title) { return testRepository.existsByTitle(title); }
-
-    public List<Test> getAllTest() { return testRepository.findAll(); }
 
     public List<Test> getTestByDiscipline (Long idDiscipline) {
         List<Test> tests = new ArrayList<>();

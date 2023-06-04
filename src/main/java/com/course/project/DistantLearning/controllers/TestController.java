@@ -36,10 +36,8 @@ public class TestController {
     public ResponseEntity<Test> getTestById(@PathVariable("idTest") Long idTest) {
         Optional<Test> test = testService.getTestById(idTest);
 
-        if (test.isPresent())
-            return new ResponseEntity<>(test.get(), HttpStatus.OK);
+        return test.map(value -> new ResponseEntity<>(value, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
 
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
     @PostMapping
     @PreAuthorize("hasRole('LECTOR') or hasRole('ADMIN')")
@@ -56,9 +54,8 @@ public class TestController {
         if (test.getDateStart().before(new Date()))
             return ResponseEntity.badRequest().body(new MessageResponse("Ошибка: тест не может начинаться раньше сегодняшней даты!"));
 
-        if (testService.createTest(idDiscipline, test)) {
+        if (testService.createTest(idDiscipline, test))
             return ResponseEntity.ok(new MessageResponse("Test is creating"));
-        };
 
         return ResponseEntity.badRequest().body(new MessageResponse("Error: test was not created"));
     }
@@ -80,9 +77,8 @@ public class TestController {
         if (test.getDateStart().before(new Date()))
             return ResponseEntity.badRequest().body(new MessageResponse("Ошибка: тест не может начинаться раньше сегодняшней даты!"));
 
-        if (testService.updateTest(idTest, test)) {
+        if (testService.updateTest(idTest, test))
             return ResponseEntity.ok(new MessageResponse("Test has updated"));
-        };
 
         return ResponseEntity.badRequest().body(new MessageResponse("Error: Test has not updated"));
     }

@@ -41,22 +41,21 @@ public class RoleService {
 
         strRoles.forEach(role -> {
             switch (role) {
-                case "admin":
+                case "admin" -> {
                     Role adminRole = roleRepository.findByName(ERole.ROLE_ADMIN)
                             .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
                     roles.add(adminRole);
-
-                    break;
-                case "lector":
+                }
+                case "lector" -> {
                     Role lectorRole = roleRepository.findByName(ERole.ROLE_LECTOR)
                             .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
                     roles.add(lectorRole);
-
-                    break;
-                default:
+                }
+                default -> {
                     Role studentRole = roleRepository.findByName(ERole.ROLE_STUDENT)
                             .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
                     roles.add(studentRole);
+                }
             }
         });
 
