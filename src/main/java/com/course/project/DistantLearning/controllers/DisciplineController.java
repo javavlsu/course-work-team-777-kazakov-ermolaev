@@ -35,9 +35,9 @@ public class DisciplineController {
         List<Discipline> disciplines = new ArrayList<>();
         user.ifPresent(value -> disciplines.addAll(disciplineService.getDiscipline(value.getId())));
 
-        if (disciplines.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+//        if (disciplines.isEmpty()) {
+//            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+//        }
 
         return new ResponseEntity<>(disciplines, HttpStatus.OK);
     }

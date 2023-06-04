@@ -25,8 +25,8 @@ public class TestController {
     public ResponseEntity<List<Test>> getTest(@PathVariable("idDiscipline") Long idDiscipline) {
         List<Test> tests = testService.getTestByDiscipline(idDiscipline);
 
-        if (tests.isEmpty())
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+//        if (tests.isEmpty())
+//            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
         return new ResponseEntity<>(tests, HttpStatus.OK);
     }

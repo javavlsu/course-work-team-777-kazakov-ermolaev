@@ -65,11 +65,13 @@ public class UserController {
     public ResponseEntity<List<StudentResponse>> getStudents() {
         var students = userService.getStudents();
 
-        if (!students.isEmpty()) {
-            return new ResponseEntity<>(students, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+//        if (!students.isEmpty()) {
+//            return new ResponseEntity<>(students, HttpStatus.OK);
+//        } else {
+//            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+//        }
+
+        return new ResponseEntity<>(students, HttpStatus.OK);
     }
 
     @GetMapping("/students/{id}")
@@ -118,11 +120,13 @@ public class UserController {
     public ResponseEntity<List<LectorResponse>> getLectors() {
         var lectors = userService.getLectors();
 
-        if (!lectors.isEmpty()) {
-            return new ResponseEntity<>(lectors, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+//        if (!lectors.isEmpty()) {
+//            return new ResponseEntity<>(lectors, HttpStatus.OK);
+//        } else {
+//            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+//        }
+
+        return new ResponseEntity<>(lectors, HttpStatus.OK);
     }
 
     @GetMapping("/lectors/{id}")
@@ -161,8 +165,8 @@ public class UserController {
     public ResponseEntity<List<Group>> getGroups() {
         List<Group> groups = groupService.getGroups();
 
-        if (groups.isEmpty())
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+//        if (groups.isEmpty())
+//            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
         return new ResponseEntity<>(groups, HttpStatus.OK);
     }
