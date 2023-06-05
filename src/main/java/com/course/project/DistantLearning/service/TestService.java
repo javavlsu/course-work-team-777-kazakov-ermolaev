@@ -1,6 +1,7 @@
 package com.course.project.DistantLearning.service;
 
-import com.course.project.DistantLearning.dto.request.CreateAnswerOption;
+import com.course.project.DistantLearning.dto.request.UpdateAnswer;
+import com.course.project.DistantLearning.dto.response.AnswerOptionResponse;
 import com.course.project.DistantLearning.models.AnswerOption;
 import com.course.project.DistantLearning.models.Discipline;
 import com.course.project.DistantLearning.models.Task;
@@ -130,21 +131,50 @@ public class TestService {
 
     public Boolean answerOptionExistsByTitle(String title) { return answerOptionRepository.existsByTitle(title); }
 
-    public List<AnswerOption> getAnswerOptionByTask(Long idTask) {
+    public List<AnswerOptionResponse> getAnswerOptionByTask(Long idTask) {
         List<AnswerOption> answerOptions = new ArrayList<>();
+        List<AnswerOptionResponse> answerOptionResponses = new ArrayList<>();
+
         Optional<Task> task = taskRepository.findById(idTask);
         task.ifPresent(value -> answerOptions.addAll(answerOptionRepository.findByTask(value)));
-        return answerOptions.stream().sorted(Comparator.comparingLong(AnswerOption::getId)).toList();
+
+        for(var answer: answerOptions) {
+            var answerResponse = new AnswerOptionResponse();
+
+            answerResponse.setId(answer.getId());
+            answerResponse.setTitle(answer.getTitle());
+            if (answer.getRight()) {
+                answerResponse.setIsRight("true");
+            } else {
+                answerResponse.setIsRight("false");
+            }
+            answerOptionResponses.add(answerResponse);
+        }
+
+        return answerOptionResponses.stream().sorted(Comparator.comparingLong(AnswerOptionResponse::getId)).toList();
     }
 
-    public Optional<AnswerOption> getAnswerOptionById(Long idAnswerOption) { return answerOptionRepository.findById(idAnswerOption); }
+    public AnswerOptionResponse getAnswerOptionById(Long idAnswerOption) {
+        Optional<AnswerOption> answerOption = answerOptionRepository.findById(idAnswerOption);
+        AnswerOptionResponse answerOptionResponse = new AnswerOptionResponse();
+        if (answerOption.isPresent()) {
+            answerOptionResponse.setId(answerOption.get().getId());
+            answerOptionResponse.setTitle(answerOption.get().getTitle());
+            if (answerOption.get().getRight()) {
+                answerOptionResponse.setIsRight("true");
+            } else {
+                answerOptionResponse.setIsRight("false");
+            }
+        }
+        return answerOptionResponse;
+    }
 
-    public boolean createAnswerOption(Long idTask, CreateAnswerOption createAnswerOption) {
+    public boolean createAnswerOption(Long idTask, AnswerOptionResponse answerOptionResponse) {
         Optional<Task> task = taskRepository.findById(idTask);
         if (task.isPresent()) {
             AnswerOption answerOption = new AnswerOption();
-            answerOption.setTitle(createAnswerOption.getTitle());
-            answerOption.setRight(Objects.equals(createAnswerOption.getIsRight(), "true"));
+            answerOption.setTitle(answerOptionResponse.getTitle());
+            answerOption.setRight(Objects.equals(answerOptionResponse.getIsRight(), "true"));
             answerOption.setTask(task.get());
             answerOptionRepository.save(answerOption);
             return true;
@@ -152,14 +182,19 @@ public class TestService {
         return false;
     }
 
-    public boolean updateAnswerOption(Long idAnswerOption, AnswerOption answerOption) {
-        Optional<AnswerOption> answerOptionData = answerOptionRepository.findById(idAnswerOption);
+    public boolean updateAnswerOption(UpdateAnswer updateAnswer) {
+        List<AnswerOptionResponse> answerOptionResponses = updateAnswer.getAnswers();
 
-        if (answerOptionData.isPresent()) {
-            AnswerOption _answerOption = answerOptionData.get();
-            _answerOption.setTitle(answerOption.getTitle());
-            _answerOption.setRight(answerOption.getRight());
-            answerOptionRepository.save(_answerOption);
+        if (!answerOptionResponses.isEmpty()) {
+            for (var answer: answerOptionResponses) {
+                var answerOption = answerOptionRepository.findById(answer.getId());
+                if(answerOption.isPresent()) {
+                    var _answerOption = answerOption.get();
+                    _answerOption.setTitle(answer.getTitle());
+                    _answerOption.setRight(Objects.equals(answer.getIsRight(), "true"));
+                    answerOptionRepository.save(_answerOption);
+                }
+            }
             return true;
         }
         else {

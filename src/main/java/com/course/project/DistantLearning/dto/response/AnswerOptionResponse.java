@@ -1,12 +1,23 @@
-package com.course.project.DistantLearning.dto.request;
+package com.course.project.DistantLearning.dto.response;
 
-public class CreateAnswerOption {
+public class AnswerOptionResponse {
+    private Long id;
     private String title;
     private String isRight;
 
-    public CreateAnswerOption(String title, String isRight) {
+    public AnswerOptionResponse() { }
+    public AnswerOptionResponse(Long id, String title, String isRight) {
+        this.id = id;
         this.title = title;
         this.isRight = isRight;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getTitle() {

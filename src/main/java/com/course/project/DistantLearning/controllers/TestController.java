@@ -1,6 +1,7 @@
 package com.course.project.DistantLearning.controllers;
 
-import com.course.project.DistantLearning.dto.request.CreateAnswerOption;
+import com.course.project.DistantLearning.dto.response.AnswerOptionResponse;
+import com.course.project.DistantLearning.dto.request.UpdateAnswer;
 import com.course.project.DistantLearning.dto.response.MessageResponse;
 import com.course.project.DistantLearning.models.AnswerOption;
 import com.course.project.DistantLearning.models.Task;
@@ -163,28 +164,33 @@ public class TestController {
 
     @GetMapping("/{idTest}/tasks/{idTask}/answerOptions")
     @PreAuthorize("hasRole('STUDENT') or hasRole('LECTOR') or hasRole('ADMIN')")
-    public ResponseEntity<List<AnswerOption>> getAnswerOption(@PathVariable("idTask") Long idTask) {
-        List<AnswerOption> answerOptions = testService.getAnswerOptionByTask(idTask);
+    public ResponseEntity<List<AnswerOptionResponse>> getAnswerOption(@PathVariable("idTask") Long idTask) {
+        List<AnswerOptionResponse> answerOptions = testService.getAnswerOptionByTask(idTask);
         return new ResponseEntity<>(answerOptions, HttpStatus.OK);
     }
 
     @GetMapping("/{idTest}/tasks/{idTask}/answerOptions/{idAnswerOption}")
     @PreAuthorize("hasRole('STUDENT') or hasRole('LECTOR') or hasRole('ADMIN')")
-    public ResponseEntity<AnswerOption> getAnswerOptionById(@PathVariable("idAnswerOption") Long idAnswerOption) {
-        Optional<AnswerOption> answerOption = testService.getAnswerOptionById(idAnswerOption);
-        return answerOption.map(value -> new ResponseEntity<>(value, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    public ResponseEntity<AnswerOptionResponse> getAnswerOptionById(@PathVariable("idAnswerOption") Long idAnswerOption) {
+        AnswerOptionResponse answerOption = testService.getAnswerOptionById(idAnswerOption);
+
+        if (answerOption == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        return new ResponseEntity<>(answerOption, HttpStatus.OK);
     }
 
     @PostMapping("/{idTest}/tasks/{idTask}/answerOptions")
     @PreAuthorize("hasRole('LECTOR') or hasRole('ADMIN')")
-    public ResponseEntity<?> createAnswerOption(@PathVariable("idTask") Long idTask, @RequestBody CreateAnswerOption createAnswerOption) {
-        if (testService.answerOptionExistsByTitle(createAnswerOption.getTitle()))
+    public ResponseEntity<?> createAnswerOption(@PathVariable("idTask") Long idTask, @RequestBody AnswerOptionResponse answerOptionResponse) {
+        if (testService.answerOptionExistsByTitle(answerOptionResponse.getTitle()))
             return ResponseEntity.badRequest().body(new MessageResponse("Ошибка: такой вопрос уже существует!"));
 
-        if (createAnswerOption.getTitle() == "")
+        if (answerOptionResponse.getTitle() == "")
             return ResponseEntity.badRequest().body(new MessageResponse("Ошибка: вопрос не заполнен!"));
 
-        if (testService.createAnswerOption(idTask, createAnswerOption))
+        if (testService.createAnswerOption(idTask, answerOptionResponse))
             return ResponseEntity.ok(new MessageResponse("AnswerOption is creating"));
 
         return ResponseEntity.badRequest().body(new MessageResponse("Error: AnswerOption was not created"));
@@ -192,16 +198,16 @@ public class TestController {
 
     @PutMapping("/{idTest}/tasks/{idTask}/answerOptions/{idAnswerOption}")
     @PreAuthorize("hasRole('LECTOR') or hasRole('ADMIN')")
-    public ResponseEntity<?> updateAnswerOption(@PathVariable("idAnswerOption") Long idAnswerOption, @RequestBody AnswerOption answerOption) {
+    public ResponseEntity<?> updateAnswerOption(@RequestBody UpdateAnswer answers) {
         /*if (testService.existsByTitle(test.getTitle())) {
             return ResponseEntity.badRequest().body(new MessageResponse("Ошибка: тест с таким название уже существует!"));
         }*/
 
-        if (answerOption.getTitle() == "") {
+        /*if (answerOption.getTitle() == "") {
             return ResponseEntity.badRequest().body(new MessageResponse("Ошибка: вопрос не заполнен!"));
-        }
+        }*/
 
-        if (testService.updateAnswerOption(idAnswerOption, answerOption))
+        if (testService.updateAnswerOption(answers))
             return ResponseEntity.ok(new MessageResponse("AnswerOption has updated"));
 
         return ResponseEntity.badRequest().body(new MessageResponse("Error: AnswerOption has not updated"));
