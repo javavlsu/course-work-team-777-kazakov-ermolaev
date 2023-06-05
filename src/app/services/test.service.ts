@@ -2,6 +2,8 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Test } from '../models/test.model';
+import { Task } from '../models/task.model';
+import { AnswerOption } from '../models/answerOption.model';
 
 const baseUrl = 'http://localhost:8080/api';
 
@@ -12,7 +14,7 @@ export class TestService {
 
   constructor(private http: HttpClient) { }
 
-  getAll(idDiscipline: any): Observable<Test[]> {
+  getAllTest(idDiscipline: any): Observable<Test[]> {
     return this.http.get<Test[]>(`${baseUrl}/${idDiscipline}/tests`)
   }
 
@@ -30,5 +32,49 @@ export class TestService {
 
   deleteTest(idDiscipline: any, idTest: any): Observable<any> {
     return this.http.delete(`${baseUrl}/${idDiscipline}/tests/${idTest}`)
+  }
+
+
+
+  getAllTask(idDiscipline: any, idTest: any): Observable<Task[]> {
+    return this.http.get<Task[]>(`${baseUrl}/${idDiscipline}/tests/${idTest}/tasks`)
+  }
+
+  getTaskById(idDiscipline: any, idTest: any, idTask: any): Observable<Task> {
+    return this.http.get<Task>(`${baseUrl}/${idDiscipline}/tests/${idTest}/tasks/${idTask}`)
+  }
+
+  createTask(idDiscipline: any, idTest: any, data: any): Observable<any> {
+    return this.http.post(`${baseUrl}/${idDiscipline}/tests/${idTest}/tasks`, data)
+  }
+
+  updateTask(idDiscipline: any, idTest: any, idTask: any, data: any): Observable<any> {
+    return this.http.put(`${baseUrl}/${idDiscipline}/tests/${idTest}/tasks/${idTask}`, data)
+  }
+
+  deleteTask(idDiscipline: any, idTest: any, idTask: any): Observable<any> {
+    return this.http.delete(`${baseUrl}/${idDiscipline}/tests/${idTest}/tasks/${idTask}`)
+  }
+
+
+
+  getAllAnswerOption(idDiscipline: any, idTest: any, idTask: any): Observable<AnswerOption[]> {
+    return this.http.get<AnswerOption[]>(`${baseUrl}/${idDiscipline}/tests/${idTest}/tasks/${idTask}/answerOptions`)
+  }
+
+  getAnswerOptionById(idDiscipline: any, idTest: any, idTask: any, idAnswerOption: any): Observable<AnswerOption> {
+    return this.http.get<AnswerOption>(`${baseUrl}/${idDiscipline}/tests/${idTest}/tasks/${idTask}/answerOptions/${idAnswerOption}`)
+  }
+
+  createAnswerOption(idDiscipline: any, idTest: any, idTask: any, data: any): Observable<any> {
+    return this.http.post(`${baseUrl}/${idDiscipline}/tests/${idTest}/tasks/${idTask}/answerOptions`, data)
+  }
+
+  updateAnswerOption(idDiscipline: any, idTest: any, idTask: any, idAnswerOption: any, data: any): Observable<any> {
+    return this.http.put(`${baseUrl}/${idDiscipline}/tests/${idTest}/tasks/${idTask}/answerOptions/${idAnswerOption}`, data)
+  }
+
+  deleteAnswerOption(idDiscipline: any, idTest: any, idTask: any, idAnswerOption: any): Observable<any> {
+    return this.http.delete(`${baseUrl}/${idDiscipline}/tests/${idTest}/tasks/${idTask}/answerOptions/${idAnswerOption}`)
   }
 }

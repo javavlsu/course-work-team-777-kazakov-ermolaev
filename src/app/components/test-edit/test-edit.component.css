@@ -1,0 +1,11 @@
+.arrow {
+  color: rgba(192, 192, 192, 0.705);
+  transition:  all 0.6s ease;
+  margin-left: 5px;
+  font-size: 19px;
+}
+
+.arrow:hover {
+  cursor: pointer;
+  color: rgb(192, 192, 192)
+}

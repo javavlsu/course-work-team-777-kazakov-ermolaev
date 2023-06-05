@@ -25,20 +25,106 @@
         />
     </div>
     <div class="form-group">
-      <label for="group"><strong>Дата окончания теста:</strong></label>
+      <label for="test"><strong>Дата окончания теста:</strong></label>
         <input
           type="datetime-local"
           class="form-control"
           style="max-width: 25%; margin-right: 15px;"
-          id="group"
+          id="test"
           required
           [(ngModel)]="test.deadline"
-          name="group"
+          name="test"
         />
     </div>
   </div>
   <div class="alert alert-warning" *ngIf="isUpdateFailed">
     Тест не обновлен!<br />{{ errorMessage }}
+  </div>
+  <div>
+    <div style="display: flex;">
+      <label for="task"><strong>Список заданий</strong></label>
+      <div *ngIf="!taskOpen">
+        <i
+          class="bi bi-caret-down-fill arrow"
+          (click)="openTasks()"></i>
+      </div>
+      <div *ngIf="taskOpen">
+        <i
+          class="bi bi-caret-up-fill arrow"
+          (click)="closeTasks()"></i>
+        <div>
+          <div *ngIf="!isCreateTask">
+            <button class="btn btn-success" (click)="isCreateTask = true">Новый</button>
+          </div>
+          <div *ngIf="isCreateTask">
+            <div class="form-group">
+              <label for="task"><strong>Название задания:</strong></label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="task"
+                  required
+                  [(ngModel)]="task.title"
+                  name="task"
+                />
+            </div>
+            <div style="display: flex;">
+              <button (click)="createTask()" class="btn btn-success" style="margin-right: 5px;">Добавить</button>
+              <button class="btn btn-success" (click)="isCreateTask = false">Отмена</button>
+            </div>
+
+            <div class="alert alert-warning" *ngIf="isSaveTaskFailed">
+              Задание не добавлено!<br />{{ errorMessage }}
+            </div>
+
+          </div>
+          <div *ngFor="let task of tasks">
+            <div class="flex">
+              <button
+                *ngIf="!task.editTask"
+                type="button"
+                class="btn btn-outline-primary tests"
+                (click)="redirectToAnswerPage(task.id)"
+              >
+                {{ task.title }}
+              </button>
+              <div *ngIf="task.editTask">
+                <div class="submit-form" style="display: flex;">
+                  <div class="form-group">
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="task"
+                      required
+                      [(ngModel)]="task.title"
+                      name="task"
+                    />
+                  </div>
+                  <button (click)="updateTask(task.title! ,task.id)" class="btn btn-success" style="margin-right: 5px;">Сохранить</button>
+                </div>
+                <div class="alert alert-warning" *ngIf="isUpdateTaskFailed">
+                  Задание не обновлено!<br />{{ errorMessage }}
+                </div>
+              </div>
+
+              <button
+                type="button"
+                class="bi bi-pencil btn-outline-primary edit-button"
+                (click)="task.editTask = !task.editTask"
+              >
+              </button>
+
+              <button
+                type="button"
+                class="bi bi-trash btn btn-outline-danger del-button"
+                (click)="deleteTask(task.id)"
+              >
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
   <div style="display: flex; margin-top: 10px;">
     <button (click)="saveTest()" class="btn btn-success" style="margin-right: 5px;">Сохранить</button>

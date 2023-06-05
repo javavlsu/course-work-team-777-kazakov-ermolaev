@@ -84,7 +84,7 @@ export class DisciplinePageComponent {
   }
 
   getTest() {
-    this.testService.getAll(this.idDiscipline)
+    this.testService.getAllTest(this.idDiscipline)
       .subscribe({
         next: (data) => {
           this.tests = data;

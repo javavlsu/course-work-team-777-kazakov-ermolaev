@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Task } from 'src/app/models/task.model';
 import { Test } from 'src/app/models/test.model';
 import { StorageService } from 'src/app/services/storage.service';
 import { TestService } from 'src/app/services/test.service';
@@ -20,8 +21,19 @@ export class TestEditComponent {
     status: ""
   }
 
+  task: Task = {
+    title: "",
+    editTask: false
+  }
+
+  tasks: Task[] = [];
+
+  isSaveTaskFailed = false;
+  isUpdateTaskFailed = false;
   isUpdateFailed = false;
   errorMessage = "";
+  taskOpen = false;
+  isCreateTask = false;
 
   constructor(
     private testService: TestService,
@@ -31,6 +43,7 @@ export class TestEditComponent {
 
     ngOnInit() {
       this.getTest();
+      this.getTask();
     }
 
     getTest() {
@@ -53,7 +66,6 @@ export class TestEditComponent {
       this.testService.updateTest(this.idDiscipline, this.idTest, data)
         .subscribe({
           next: (res) => {
-            console.log(res);
             this.isUpdateFailed = false;
             this.redirectToDiscipline();
 
@@ -67,5 +79,77 @@ export class TestEditComponent {
 
     redirectToDiscipline() {
       this.router.navigate([`/discipline/${this.idDiscipline}/page`])
+    }
+
+    openTasks() {
+      this.taskOpen = true;
+    }
+
+    closeTasks() {
+      this.taskOpen = false;
+    }
+
+    getTask() {
+      this.testService.getAllTask(this.idDiscipline, this.idTest)
+        .subscribe({
+          next:(data) => {
+            this.tasks = data;
+          },
+          error: (e) => console.error(e)
+        })
+    }
+
+    createTask() {
+      const data = {
+        title: this.task.title
+      }
+
+      this.testService.createTask(this.idDiscipline, this.idTest, data)
+        .subscribe({
+          next: () => {
+            this.isSaveTaskFailed = false;
+            this.getTask();
+            this.task = {
+              title: ""
+            }
+          },
+          error: (e) => {
+            this.errorMessage = e.error.message;
+            this.isSaveTaskFailed = true;
+          }
+        })
+    }
+
+    updateTask(title: string, idTask: any) {
+      const data = {
+        title: title
+      }
+
+      console.log(data)
+
+      this.testService.updateTask(this.idDiscipline, this.idTest, idTask, data)
+        .subscribe({
+          next: () => {
+            this.isUpdateTaskFailed = false;
+            this.task.editTask = false;
+            this.getTask();
+          },
+          error: (e) => {
+            this.errorMessage = e.error.message;
+            this.isUpdateTaskFailed = true;
+          }
+        })
+    }
+
+    deleteTask(id: any) {
+      this.testService.deleteTask(this.idDiscipline, this.idTest, id)
+        .subscribe({
+          next: () => this.getTask(),
+          error: (e) => console.error(e)
+        })
+    }
+
+    redirectToAnswerPage(id: any) {
+
     }
 }
