@@ -1,47 +1,47 @@
 <div style="margin-left: 4%;">
   <div class="submit-form">
     <div class="form-group">
-      <label for="group"><strong>Название теста:</strong></label>
+      <label for="group"><strong>Название:</strong></label>
         <input
           type="text"
           class="form-control"
           style="max-width: 25%; margin-right: 15px;"
           id="group"
           required
-          [(ngModel)]="test.title"
+          [(ngModel)]="labWork.title"
           name="group"
         />
     </div>
     <div class="form-group">
-      <label for="group"><strong>Дата начала теста:</strong></label>
+      <label for="group"><strong>Ссылка на методичку:</strong></label>
+        <input
+          type="text"
+          class="form-control"
+          style="max-width: 25%; margin-right: 15px;"
+          id="group"
+          required
+          [(ngModel)]="labWork.manual"
+          name="group"
+        />
+    </div>
+    <div class="form-group">
+      <label for="group"><strong>Дата окончания:</strong></label>
         <input
           type="datetime-local"
           class="form-control"
           style="max-width: 25%; margin-right: 15px;"
           id="group"
           required
-          [(ngModel)]="test.dateStart"
-          name="group"
-        />
-    </div>
-    <div class="form-group">
-      <label for="group"><strong>Дата окончания теста:</strong></label>
-        <input
-          type="datetime-local"
-          class="form-control"
-          style="max-width: 25%; margin-right: 15px;"
-          id="group"
-          required
-          [(ngModel)]="test.deadline"
+          [(ngModel)]="labWork.deadline"
           name="group"
         />
     </div>
   </div>
   <div class="alert alert-warning" *ngIf="isUpdateFailed">
-    Тест не обновлен!<br />{{ errorMessage }}
+    Лабораторная работа не обновлена!<br />{{ errorMessage }}
   </div>
   <div style="display: flex; margin-top: 10px;">
-    <button (click)="saveTest()" class="btn btn-success" style="margin-right: 5px;">Сохранить</button>
+    <button (click)="saveLabWork()" class="btn btn-success" style="margin-right: 5px;">Сохранить</button>
     <button
       type="button"
       class="btn btn-secondary"

@@ -1,9 +1,9 @@
-<div class="col-md-12 registration">
+<div class="col-md-12 registration" style="margin-left: 2%;">
   <div class="card card-container">
     <img
       id="profile-img"
       src="//ssl.gstatic.com/accounts/ui/avatar_2x.png"
-      class="profile-img-card"
+      class="profile-img-card margins"
       width="200" height="200"
     />
     <form
@@ -13,7 +13,7 @@
       #f="ngForm"
       novalidate
     >
-      <div class="form-group">
+      <div class="form-group margins">
         <label for="username">Логин</label>
         <input
           type="text"
@@ -36,7 +36,7 @@
           </div>
         </div>
       </div>
-      <div class="form-group">
+      <div class="form-group margins">
         <label for="email">Email</label>
         <input
           type="email"
@@ -55,7 +55,7 @@
           </div>
         </div>
       </div>
-      <div class="form-group">
+      <div class="form-group margins">
         <label for="username">Полное имя</label>
         <input
           type="text"
@@ -78,7 +78,7 @@
           </div>
         </div>
       </div>
-      <div class="form-group">
+      <div class="form-group margins">
         <label for="username">Дата рождения</label>
         <input
           type="date"
@@ -94,7 +94,7 @@
           <div *ngIf="birthdate.errors['required']">Дата рождения обязательна</div>
         </div>
       </div>
-      <div class="form-group">
+      <div class="form-group margins">
         <label for="role">Роли пользователя</label>
         <ng-select
           [items]="roles"
@@ -112,7 +112,7 @@
           <div *ngIf="role.errors['required']">Роль обязательна</div>
         </div>
       </div>
-      <div class="form-group">
+      <div class="form-group margins">
         <label for="password">Пароль</label>
         <input
           type="password"
@@ -131,7 +131,7 @@
           </div>
         </div>
       </div>
-      <div class="form-group">
+      <div class="form-group margins">
         <button style="margin-top: 5px;" class="btn btn-primary btn-block">Создать</button>
       </div>
 

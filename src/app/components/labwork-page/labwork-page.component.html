@@ -1,0 +1,41 @@
+<div style="margin-left: 4%;">
+  <h4>Лабораторная работа: {{ labWork.title }}</h4>
+  <p>Ссылка на методичку: <a href="{{ labWork.manual }}" >{{ labWork.manual }}</a></p>
+  <p>Дата окончания: {{ labWork.deadline | date:'dd.MM:YYYY HH:mm' }}</p>
+  <div *ngIf="isStudent">
+    <button
+      type="button"
+      class="btn btn-outline-primary">
+      <!-- (click)="openLoadFormFile()" -->
+        Загрузить отчёт
+    </button>
+  </div>
+  <div *ngIf="isLector" style="margin-top: 15px;">
+    <div *ngIf="!studentFiles">
+      <div>Открыть список студентов, загрузивших отчёты
+      <i
+      class="bi bi-plus-circle-fill plus"
+      (click)="openStudentFiles()"></i>
+    </div>
+    </div>
+    <div *ngIf="studentFiles">
+      <div>Закрыть список студентов, загрузивших отчёты
+      <i
+      class="bi bi-dash-circle-fill minus"
+      (click)="closeStudentFiles()"></i>
+    </div>
+    </div>
+  </div>
+  <div class="row-md-6" *ngIf="studentFiles" style="margin-left: 4%;">
+    <div>ХРЮ</div>
+  </div>
+
+  <div style="margin-top: 30px;">
+    <button
+      type="button"
+      class="btn btn-secondary"
+      (click)="redirectToDiscipline()">
+      Назад
+    </button>
+  </div>
+</div>

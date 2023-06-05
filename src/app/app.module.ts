@@ -20,6 +20,8 @@ import { GroupDetailsComponent } from './components/group-details/group-details.
 import { DisciplinePageComponent } from './components/discipline-page/discipline-page.component';
 import { TestEditComponent } from './components/test-edit/test-edit.component';
 import { TestPageComponent } from './components/test-page/test-page.component';
+import { LabworkEditComponent } from './components/labwork-edit/labwork-edit.component';
+import { LabworkPageComponent } from './components/labwork-page/labwork-page.component';
 
 @NgModule({
   declarations: [
@@ -36,7 +38,9 @@ import { TestPageComponent } from './components/test-page/test-page.component';
     GroupDetailsComponent,
     DisciplinePageComponent,
     TestEditComponent,
-    TestPageComponent
+    TestPageComponent,
+    LabworkEditComponent,
+    LabworkPageComponent
   ],
   imports: [
     BrowserModule,

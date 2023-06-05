@@ -13,6 +13,8 @@ import { GroupDetailsComponent } from './components/group-details/group-details.
 import { DisciplinePageComponent } from './components/discipline-page/discipline-page.component';
 import { TestPageComponent } from './components/test-page/test-page.component';
 import { TestEditComponent } from './components/test-edit/test-edit.component';
+import { LabworkEditComponent } from './components/labwork-edit/labwork-edit.component';
+import { LabworkPageComponent } from './components/labwork-page/labwork-page.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -29,8 +31,9 @@ const routes: Routes = [
   { path: 'groups/:idGroup', component: GroupDetailsComponent },
   { path: 'discipline/:idDiscipline/page', component: DisciplinePageComponent },
   { path: 'discipline/:idDiscipline/test/:idTest', component: TestEditComponent },
-  { path: 'discipline/:idDiscipline/testPage/:idTest', component: TestPageComponent }
-
+  { path: 'discipline/:idDiscipline/testPage/:idTest', component: TestPageComponent },
+  { path: 'discipline/:idDiscipline/labwork/:idLabWork', component: LabworkEditComponent },
+  { path: 'discipline/:idDiscipline/labworkPage/:idLabWork', component: LabworkPageComponent }
 ];
 
 @NgModule({

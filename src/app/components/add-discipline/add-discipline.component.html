@@ -1,4 +1,4 @@
-<div *ngIf="isAdmin">
+<div *ngIf="isAdmin" style="margin-left: 4%;">
   <div class="submit-form">
     <div *ngIf="!submitted">
       <div class="form-group">
@@ -12,7 +12,7 @@
           name="discipline"
         />
       </div>
-      <div class="form-group">
+      <div class="form-group" style="margin-top: 15px;">
         <section>
           <label style="margin-top: 5px;" for="lectors"><strong>Выберите лекторов:</strong></label>
           <form [formGroup]="form" novalidate>
@@ -29,7 +29,7 @@
         </section>
       </div>
 
-      <button (click)="saveDiscipline()" class="btn btn-success">Создать</button>
+      <button (click)="saveDiscipline()" class="btn btn-success" style="margin-top: 10px;">Создать</button>
     </div>
   </div>
   <div class="alert alert-warning" *ngIf="isCreateFailed">
