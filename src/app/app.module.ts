@@ -22,7 +22,6 @@ import { TestEditComponent } from './components/test-edit/test-edit.component';
 import { TestPageComponent } from './components/test-page/test-page.component';
 import { LabworkEditComponent } from './components/labwork-edit/labwork-edit.component';
 import { LabworkPageComponent } from './components/labwork-page/labwork-page.component';
-import { AnswerOptionPageComponent } from './answer-option-page/answer-option-page.component';
 
 @NgModule({
   declarations: [
@@ -41,8 +40,7 @@ import { AnswerOptionPageComponent } from './answer-option-page/answer-option-pa
     TestEditComponent,
     TestPageComponent,
     LabworkEditComponent,
-    LabworkPageComponent,
-    AnswerOptionPageComponent
+    LabworkPageComponent
   ],
   imports: [
     BrowserModule,
