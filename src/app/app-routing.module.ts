@@ -15,6 +15,7 @@ import { TestPageComponent } from './components/test-page/test-page.component';
 import { TestEditComponent } from './components/test-edit/test-edit.component';
 import { LabworkEditComponent } from './components/labwork-edit/labwork-edit.component';
 import { LabworkPageComponent } from './components/labwork-page/labwork-page.component';
+import { AnswerOptionPageComponent } from './components/answer-option-page/answer-option-page.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -32,6 +33,7 @@ const routes: Routes = [
   { path: 'discipline/:idDiscipline/page', component: DisciplinePageComponent },
   { path: 'discipline/:idDiscipline/test/:idTest', component: TestEditComponent },
   { path: 'discipline/:idDiscipline/testPage/:idTest', component: TestPageComponent },
+  { path: 'discipline/:idDiscipline/testPage/:idTest/task/:idTask/answer', component: AnswerOptionPageComponent },
   { path: 'discipline/:idDiscipline/labwork/:idLabWork', component: LabworkEditComponent },
   { path: 'discipline/:idDiscipline/labworkPage/:idLabWork', component: LabworkPageComponent }
 ];

@@ -1,0 +1,108 @@
+<div style="margin-left: 4%;">
+  <label for="answer"><strong>Задание {{ task.title }}</strong></label>
+  <div *ngIf="!createForm">
+    <button
+      type="button"
+      class="btn btn-outline-primary"
+      (click)="createForm = true">
+      Новый
+    </button>
+  </div>
+  <div *ngIf="createForm">
+    <div class="submit-form">
+      <label for="answer"><strong>Вопрос</strong></label>
+      <div class="form-group" class="flex">
+        <input
+          type="text"
+          class="form-control"
+          style="width: 60%; margin-right: 5px;"
+          id="answer"
+          required
+          [(ngModel)]="answerOption.title"
+          name="answer"
+        />
+        <button
+          *ngIf="isRight(answerOption.isRight!)"
+          class="btn btn-outline-success"
+          style="width: 142px;"
+          (click)="changeIsRight(answerOption)">
+          Правильный
+        </button>
+        <button
+          *ngIf="!isRight(answerOption.isRight!)"
+          class="btn btn-outline-danger"
+          style="width: 142px;"
+          (click)="changeIsRight(answerOption)">
+          Не правильный
+        </button>
+      </div>
+      <div class="flex button">
+        <button (click)="createAnswer()" class="btn btn-success" style="margin-right: 5px;">Сохранить</button>
+        <button
+          type="button"
+          class="btn btn-secondary"
+          (click)="createForm = false">
+            Отмена
+        </button>
+      </div>
+    </div>
+    <div class="alert alert-warning" *ngIf="isCreateFailed">
+      Вопрос не был добавлен!<br />{{ errorMessage }}
+    </div>
+  </div>
+  <div *ngFor="let answer of answerOptions">
+    <div class="flex">
+      <input
+          type="text"
+          class="form-control answer"
+          id="answer"
+          required
+          [(ngModel)]="answer.title"
+          name="answer"
+        />
+      <button
+          *ngIf="isRight(answer.isRight!)"
+          class="btn btn-outline-success"
+          style="width: 142px;"
+          (click)="changeIsRight(answer)">
+          Правильный
+        </button>
+        <button
+          *ngIf="!isRight(answer.isRight!)"
+          class="btn btn-outline-danger"
+          style="width: 142px;"
+          (click)="changeIsRight(answer)">
+          Не правильный
+        </button>
+
+      <button
+        type="button"
+        class="bi bi-trash btn btn-outline-danger del-button"
+        (click)="deleteAnswer(answer.id)"
+      >
+      </button>
+    </div>
+  </div>
+  <div>
+    <button
+      type="button"
+      class="btn btn-success"
+      style="margin-right: 5px;"
+      (click)="saveAnswer()">
+      Сохранить
+    </button>
+    <button
+      type="button"
+      class="btn btn-secondary"
+      (click)="redirectToTestEdit()">
+      Назад
+    </button>
+    <div class="alert alert-warning" *ngIf="isUpdated">
+      Вопросы обновлены!<br />{{ currentMess }}
+    </div>
+    <div class="alert alert-warning" *ngIf="isUpdateFailed">
+      Вопросы не были обновлены!<br />{{ errorMessage }}
+    </div>
+  </div>
+</div>
+

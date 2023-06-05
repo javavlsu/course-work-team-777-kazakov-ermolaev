@@ -150,6 +150,7 @@ export class TestEditComponent {
     }
 
     redirectToAnswerPage(id: any) {
+      this.router.navigate([`discipline/${this.idDiscipline}/testPage/${this.idTest}/task/${id}/answer`])
 
     }
 }

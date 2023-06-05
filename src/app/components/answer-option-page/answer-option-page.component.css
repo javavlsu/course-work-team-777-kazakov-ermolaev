@@ -1,0 +1,13 @@
+.flex {
+  display: flex;
+}
+
+.answer {
+  width: 60%;
+  margin: 5px;
+}
+
+.button {
+  margin-top: 3px;
+  margin-bottom: 3px;
+}
