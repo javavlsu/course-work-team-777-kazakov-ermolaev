@@ -1,5 +1,6 @@
 package com.course.project.DistantLearning.service;
 
+import com.course.project.DistantLearning.dto.request.CreateAnswerOption;
 import com.course.project.DistantLearning.models.AnswerOption;
 import com.course.project.DistantLearning.models.Discipline;
 import com.course.project.DistantLearning.models.Task;
@@ -138,9 +139,12 @@ public class TestService {
 
     public Optional<AnswerOption> getAnswerOptionById(Long idAnswerOption) { return answerOptionRepository.findById(idAnswerOption); }
 
-    public boolean createAnswerOption(Long idTask, AnswerOption answerOption) {
+    public boolean createAnswerOption(Long idTask, CreateAnswerOption createAnswerOption) {
         Optional<Task> task = taskRepository.findById(idTask);
         if (task.isPresent()) {
+            AnswerOption answerOption = new AnswerOption();
+            answerOption.setTitle(createAnswerOption.getTitle());
+            answerOption.setRight(Objects.equals(createAnswerOption.getIsRight(), "true"));
             answerOption.setTask(task.get());
             answerOptionRepository.save(answerOption);
             return true;

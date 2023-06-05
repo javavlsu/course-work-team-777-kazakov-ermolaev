@@ -1,5 +1,6 @@
 package com.course.project.DistantLearning.controllers;
 
+import com.course.project.DistantLearning.dto.request.CreateAnswerOption;
 import com.course.project.DistantLearning.dto.response.MessageResponse;
 import com.course.project.DistantLearning.models.AnswerOption;
 import com.course.project.DistantLearning.models.Task;
@@ -176,14 +177,14 @@ public class TestController {
 
     @PostMapping("/{idTest}/tasks/{idTask}/answerOptions")
     @PreAuthorize("hasRole('LECTOR') or hasRole('ADMIN')")
-    public ResponseEntity<?> createAnswerOption(@PathVariable("idTask") Long idTask, @RequestBody AnswerOption answerOption) {
-        if (testService.answerOptionExistsByTitle(answerOption.getTitle()))
+    public ResponseEntity<?> createAnswerOption(@PathVariable("idTask") Long idTask, @RequestBody CreateAnswerOption createAnswerOption) {
+        if (testService.answerOptionExistsByTitle(createAnswerOption.getTitle()))
             return ResponseEntity.badRequest().body(new MessageResponse("Ошибка: такой вопрос уже существует!"));
 
-        if (answerOption.getTitle() == "")
+        if (createAnswerOption.getTitle() == "")
             return ResponseEntity.badRequest().body(new MessageResponse("Ошибка: вопрос не заполнен!"));
 
-        if (testService.createAnswerOption(idTask, answerOption))
+        if (testService.createAnswerOption(idTask, createAnswerOption))
             return ResponseEntity.ok(new MessageResponse("AnswerOption is creating"));
 
         return ResponseEntity.badRequest().body(new MessageResponse("Error: AnswerOption was not created"));
