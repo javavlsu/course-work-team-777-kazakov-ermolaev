@@ -1,6 +1,8 @@
 package com.course.project.DistantLearning.service;
 
+import com.course.project.DistantLearning.models.AnswerOption;
 import com.course.project.DistantLearning.models.Discipline;
+import com.course.project.DistantLearning.models.Task;
 import com.course.project.DistantLearning.models.Test;
 import com.course.project.DistantLearning.repository.AnswerOptionRepository;
 import com.course.project.DistantLearning.repository.TaskRepository;
@@ -8,10 +10,7 @@ import com.course.project.DistantLearning.repository.TestRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class TestService {
@@ -27,14 +26,14 @@ public class TestService {
     @Autowired
     AnswerOptionRepository answerOptionRepository;
 
-    public Boolean existsByTitle(String title) { return testRepository.existsByTitle(title); }
+    public Boolean testExistsByTitle(String title) { return testRepository.existsByTitle(title); }
 
     public List<Test> getTestByDiscipline (Long idDiscipline) {
         List<Test> tests = new ArrayList<>();
         Optional<Discipline> discipline = disciplineService.getDisciplineById(idDiscipline);
         discipline.ifPresent(value -> tests.addAll(testRepository.findByDiscipline(value)));
 
-        return tests;
+        return tests.stream().sorted(Comparator.comparingLong(Test::getId)).toList();
 
     }
 
@@ -43,15 +42,16 @@ public class TestService {
         if (test.isPresent()) {
             Test _test = test.get();
             if (_test.getStatus().equals("close") && _test.getDateStart().before(new Date())) {
-                if (_test.getDeadline().after(new Date()))
+                if (_test.getDeadline().after(new Date())) {
                     _test.setStatus("open");
+                    testRepository.save(_test);
+                }
             }
 
-            if (_test.getStatus().equals("open") && _test.getDeadline().before(new Date()))
+            if (_test.getStatus().equals("open") && _test.getDeadline().before(new Date())) {
                 _test.setStatus("close");
-
-            if (test.get().getStatus() != _test.getStatus())
                 testRepository.save(_test);
+            }
         }
         return testRepository.findById(idTest);
     }
@@ -85,4 +85,83 @@ public class TestService {
     }
 
     public void deleteTest(Long idTest) { testRepository.deleteById(idTest); }
+
+    public Boolean taskExistsByTitle(String title) { return taskRepository.existsByTitle(title); }
+
+
+
+    public List<Task> getTaskByTest(Long idTest) {
+        List<Task> tasks = new ArrayList<>();
+        Optional<Test> test = testRepository.findById(idTest);
+        test.ifPresent(value -> tasks.addAll(taskRepository.findByTest(value)));
+        return tasks.stream().sorted(Comparator.comparingLong(Task::getId)).toList();
+    }
+
+    public Optional<Task> getTaskById(Long idTask) { return taskRepository.findById(idTask); }
+
+    public boolean createTask(Long idTest, Task task) {
+        Optional<Test> test = testRepository.findById(idTest);
+        if (test.isPresent()) {
+            task.setTest(test.get());
+            taskRepository.save(task);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean updateTask(Long idTask, Task task) {
+        Optional<Task> taskData = taskRepository.findById(idTask);
+
+        if (taskData.isPresent()) {
+            Task _task = taskData.get();
+            _task.setTitle(task.getTitle());
+            taskRepository.save(_task);
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    public void deleteTask(Long idTask) { taskRepository.deleteById(idTask); }
+
+
+
+    public Boolean answerOptionExistsByTitle(String title) { return answerOptionRepository.existsByTitle(title); }
+
+    public List<AnswerOption> getAnswerOptionByTask(Long idTask) {
+        List<AnswerOption> answerOptions = new ArrayList<>();
+        Optional<Task> task = taskRepository.findById(idTask);
+        task.ifPresent(value -> answerOptions.addAll(answerOptionRepository.findByTask(value)));
+        return answerOptions.stream().sorted(Comparator.comparingLong(AnswerOption::getId)).toList();
+    }
+
+    public Optional<AnswerOption> getAnswerOptionById(Long idAnswerOption) { return answerOptionRepository.findById(idAnswerOption); }
+
+    public boolean createAnswerOption(Long idTask, AnswerOption answerOption) {
+        Optional<Task> task = taskRepository.findById(idTask);
+        if (task.isPresent()) {
+            answerOption.setTask(task.get());
+            answerOptionRepository.save(answerOption);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean updateAnswerOption(Long idAnswerOption, AnswerOption answerOption) {
+        Optional<AnswerOption> answerOptionData = answerOptionRepository.findById(idAnswerOption);
+
+        if (answerOptionData.isPresent()) {
+            AnswerOption _answerOption = answerOptionData.get();
+            _answerOption.setTitle(answerOption.getTitle());
+            _answerOption.setRight(answerOption.getRight());
+            answerOptionRepository.save(_answerOption);
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    public void deleteAnswerOption(Long idAnswerOption) { answerOptionRepository.deleteById(idAnswerOption); }
 }

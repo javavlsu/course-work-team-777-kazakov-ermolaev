@@ -1,6 +1,8 @@
 package com.course.project.DistantLearning.controllers;
 
 import com.course.project.DistantLearning.dto.response.MessageResponse;
+import com.course.project.DistantLearning.models.AnswerOption;
+import com.course.project.DistantLearning.models.Task;
 import com.course.project.DistantLearning.models.Test;
 import com.course.project.DistantLearning.service.TestService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +44,7 @@ public class TestController {
     @PostMapping
     @PreAuthorize("hasRole('LECTOR') or hasRole('ADMIN')")
     public ResponseEntity<?> createTest(@PathVariable("idDiscipline") Long idDiscipline, @RequestBody Test test) {
-        if (testService.existsByTitle(test.getTitle()))
+        if (testService.testExistsByTitle(test.getTitle()))
             return ResponseEntity.badRequest().body(new MessageResponse("Ошибка: тест с таким название уже существует!"));
 
         if (test.getTitle() == "")
@@ -85,9 +87,130 @@ public class TestController {
 
     @DeleteMapping("/{idTest}")
     @PreAuthorize("hasRole('LECTOR') or hasRole('ADMIN')")
-    public ResponseEntity<HttpStatus> deleteDiscipline(@PathVariable("idTest") Long idTest) {
+    public ResponseEntity<HttpStatus> deleteTest(@PathVariable("idTest") Long idTest) {
         try {
             testService.deleteTest(idTest);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        catch (Exception e){
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
+
+    @GetMapping("/{idTest}/tasks")
+    @PreAuthorize("hasRole('STUDENT') or hasRole('LECTOR') or hasRole('ADMIN')")
+    public ResponseEntity<List<Task>> getTask(@PathVariable("idTest") Long idTest) {
+        List<Task> tasks = testService.getTaskByTest(idTest);
+        return new ResponseEntity<>(tasks, HttpStatus.OK);
+    }
+
+    @GetMapping("/{idTest}/tasks/{idTask}")
+    @PreAuthorize("hasRole('STUDENT') or hasRole('LECTOR') or hasRole('ADMIN')")
+    public ResponseEntity<Task> getTaskById(@PathVariable("idTask") Long idTask) {
+        Optional<Task> task = testService.getTaskById(idTask);
+
+        return task.map(value -> new ResponseEntity<>(value, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+
+    }
+    @PostMapping("/{idTest}/tasks")
+    @PreAuthorize("hasRole('LECTOR') or hasRole('ADMIN')")
+    public ResponseEntity<?> createTask(@PathVariable("idTest") Long idTest, @RequestBody Task task) {
+        if (testService.taskExistsByTitle(task.getTitle()))
+            return ResponseEntity.badRequest().body(new MessageResponse("Ошибка: задание с таким название уже существует!"));
+
+        if (task.getTitle() == "")
+            return ResponseEntity.badRequest().body(new MessageResponse("Ошибка: название задания не заполнено!"));
+
+        if (testService.createTask(idTest, task))
+            return ResponseEntity.ok(new MessageResponse("Task is creating"));
+
+        return ResponseEntity.badRequest().body(new MessageResponse("Error: Task was not created"));
+    }
+
+    @PutMapping("/{idTest}/tasks/{idTask}")
+    @PreAuthorize("hasRole('LECTOR') or hasRole('ADMIN')")
+    public ResponseEntity<?> updateTask(@PathVariable("idTask") Long idTask, @RequestBody Task task) {
+        /*if (testService.existsByTitle(test.getTitle())) {
+            return ResponseEntity.badRequest().body(new MessageResponse("Ошибка: тест с таким название уже существует!"));
+        }*/
+
+        if (task.getTitle() == "") {
+            return ResponseEntity.badRequest().body(new MessageResponse("Ошибка: название задания не заполнено!"));
+        }
+
+        if (testService.updateTask(idTask, task))
+            return ResponseEntity.ok(new MessageResponse("Task has updated"));
+
+        return ResponseEntity.badRequest().body(new MessageResponse("Error: Task has not updated"));
+    }
+
+    @DeleteMapping("/{idTest}/tasks/{idTask}")
+    @PreAuthorize("hasRole('LECTOR') or hasRole('ADMIN')")
+    public ResponseEntity<HttpStatus> deleteTask(@PathVariable("idTask") Long idTask) {
+        try {
+            testService.deleteTask(idTask);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        catch (Exception e){
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
+
+    @GetMapping("/{idTest}/tasks/{idTask}/answerOptions")
+    @PreAuthorize("hasRole('STUDENT') or hasRole('LECTOR') or hasRole('ADMIN')")
+    public ResponseEntity<List<AnswerOption>> getAnswerOption(@PathVariable("idTask") Long idTask) {
+        List<AnswerOption> answerOptions = testService.getAnswerOptionByTask(idTask);
+        return new ResponseEntity<>(answerOptions, HttpStatus.OK);
+    }
+
+    @GetMapping("/{idTest}/tasks/{idTask}/answerOptions/{idAnswerOption}")
+    @PreAuthorize("hasRole('STUDENT') or hasRole('LECTOR') or hasRole('ADMIN')")
+    public ResponseEntity<AnswerOption> getAnswerOptionById(@PathVariable("idAnswerOption") Long idAnswerOption) {
+        Optional<AnswerOption> answerOption = testService.getAnswerOptionById(idAnswerOption);
+        return answerOption.map(value -> new ResponseEntity<>(value, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
+    @PostMapping("/{idTest}/tasks/{idTask}/answerOptions")
+    @PreAuthorize("hasRole('LECTOR') or hasRole('ADMIN')")
+    public ResponseEntity<?> createAnswerOption(@PathVariable("idTask") Long idTask, @RequestBody AnswerOption answerOption) {
+        if (testService.answerOptionExistsByTitle(answerOption.getTitle()))
+            return ResponseEntity.badRequest().body(new MessageResponse("Ошибка: такой вопрос уже существует!"));
+
+        if (answerOption.getTitle() == "")
+            return ResponseEntity.badRequest().body(new MessageResponse("Ошибка: вопрос не заполнен!"));
+
+        if (testService.createAnswerOption(idTask, answerOption))
+            return ResponseEntity.ok(new MessageResponse("AnswerOption is creating"));
+
+        return ResponseEntity.badRequest().body(new MessageResponse("Error: AnswerOption was not created"));
+    }
+
+    @PutMapping("/{idTest}/tasks/{idTask}/answerOptions/{idAnswerOption}")
+    @PreAuthorize("hasRole('LECTOR') or hasRole('ADMIN')")
+    public ResponseEntity<?> updateAnswerOption(@PathVariable("idAnswerOption") Long idAnswerOption, @RequestBody AnswerOption answerOption) {
+        /*if (testService.existsByTitle(test.getTitle())) {
+            return ResponseEntity.badRequest().body(new MessageResponse("Ошибка: тест с таким название уже существует!"));
+        }*/
+
+        if (answerOption.getTitle() == "") {
+            return ResponseEntity.badRequest().body(new MessageResponse("Ошибка: вопрос не заполнен!"));
+        }
+
+        if (testService.updateAnswerOption(idAnswerOption, answerOption))
+            return ResponseEntity.ok(new MessageResponse("AnswerOption has updated"));
+
+        return ResponseEntity.badRequest().body(new MessageResponse("Error: AnswerOption has not updated"));
+    }
+
+    @DeleteMapping("/{idTest}/tasks/{idTask}/answerOptions/{idAnswerOption}")
+    @PreAuthorize("hasRole('LECTOR') or hasRole('ADMIN')")
+    public ResponseEntity<HttpStatus> deleteAnswerOption(@PathVariable("idAnswerOption") Long idAnswerOption) {
+        try {
+            testService.deleteAnswerOption(idAnswerOption);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
         catch (Exception e){

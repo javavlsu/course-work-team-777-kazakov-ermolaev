@@ -51,11 +51,11 @@ public class AnswerOption {
         isRight = right;
     }
 
-    public Task getTaskId() {
+    public Task getTask() {
         return task;
     }
 
-    public void setTaskId(Task taskId) {
+    public void setTask(Task task) {
         this.task = task;
     }
 }
