@@ -23,6 +23,7 @@ import { TestPageComponent } from './components/test-page/test-page.component';
 import { LabworkEditComponent } from './components/labwork-edit/labwork-edit.component';
 import { LabworkPageComponent } from './components/labwork-page/labwork-page.component';
 import { AnswerOptionPageComponent } from './components/answer-option-page/answer-option-page.component';
+import { TestPassComponent } from './components/test-pass/test-pass.component';
 
 @NgModule({
   declarations: [
@@ -42,7 +43,8 @@ import { AnswerOptionPageComponent } from './components/answer-option-page/answe
     TestPageComponent,
     LabworkEditComponent,
     LabworkPageComponent,
-    AnswerOptionPageComponent
+    AnswerOptionPageComponent,
+    TestPassComponent
   ],
   imports: [
     BrowserModule,

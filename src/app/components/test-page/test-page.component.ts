@@ -51,4 +51,8 @@ export class TestPageComponent {
   redirectToDiscipline() {
     this.router.navigate([`/discipline/${this.idDiscipline}/page`])
   }
+
+  redirectToTestPass() {
+    this.router.navigate([`/discipline/${this.idDiscipline}/testpage/${this.idTest}/testPass`])
+  }
 }

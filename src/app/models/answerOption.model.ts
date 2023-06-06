@@ -2,4 +2,5 @@ export class AnswerOption {
   id?: any;
   title?: string;
   isRight?: string;
+  idTask?: any;
 }

@@ -1,5 +1,6 @@
 <div style="margin-left: 4%;">
-  <label for="answer"><strong>Задание {{ task.title }}</strong></label>
+  <p><label for="answer"><strong>Задание {{ task.title }}</strong></label></p>
+  <p><label for="answer">В задании может быть <strong>{{ typeTask }}</strong></label></p>
   <div *ngIf="!createForm">
     <button
       type="button"

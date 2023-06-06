@@ -1,0 +1,26 @@
+<div>
+  <label><strong>Тест {{ test.title }}</strong></label>
+  <div *ngFor="let task of tasks">
+    <p><label><strong>{{ task.title }}</strong></label></p>
+    <div *ngFor="let answer of answerOptions">
+      <div *ngIf="answerInTask(task.id, answer.idTask)">
+        <div *ngIf="isOnlyOneAnswer(task)">
+          <input
+            type="radio"
+            class="custom-control-input"
+            id="answer.idTask"
+            value=""/>
+          {{ answer.title }}
+        </div>
+        <div *ngIf="!isOnlyOneAnswer(task)">
+          <input
+            type="checkbox"
+            class="custom-control-input"
+            id="answer.idTask"
+            value=""/>
+            {{ answer.title }}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

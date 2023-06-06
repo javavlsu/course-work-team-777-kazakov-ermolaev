@@ -68,6 +68,30 @@
                   name="task"
                 />
             </div>
+            <div>
+              <label for="task"><strong>Тип задания:</strong></label>
+              <input
+                  type="radio"
+                  class="custom-control-input"
+                  id="task"
+                  value="checkbox"
+                  required
+                  [(ngModel)]="task.type"
+                  name="task"
+                />
+                <label for="task">Несколько ответов</label>
+
+                <input
+                  type="radio"
+                  class="custom-control-input"
+                  id="task"
+                  value="radio"
+                  required
+                  [(ngModel)]="task.type"
+                  name="task"
+                />
+                <label for="task">Один ответов</label>
+            </div>
             <div style="display: flex;">
               <button (click)="createTask()" class="btn btn-success" style="margin-right: 5px;">Добавить</button>
               <button class="btn btn-success" (click)="isCreateTask = false">Отмена</button>
@@ -100,7 +124,31 @@
                       name="task"
                     />
                   </div>
-                  <button (click)="updateTask(task.title! ,task.id)" class="btn btn-success" style="margin-right: 5px;">Сохранить</button>
+                  <div>
+                    <label for="task"><strong>Тип задания:</strong></label>
+                    <input
+                        type="radio"
+                        class="custom-control-input"
+                        id="task"
+                        value="checkbox"
+                        required
+                        [(ngModel)]="task.type"
+                        name="task"
+                      />
+                      <label for="task">Несколько ответов</label>
+
+                      <input
+                        type="radio"
+                        class="custom-control-input"
+                        id="task"
+                        value="radio"
+                        required
+                        [(ngModel)]="task.type"
+                        name="task"
+                      />
+                      <label for="task">Один ответов</label>
+                  </div>
+                  <button (click)="updateTask(task.title!, task.type!, task.id)" class="btn btn-success" style="margin-right: 5px;">Сохранить</button>
                 </div>
                 <div class="alert alert-warning" *ngIf="isUpdateTaskFailed">
                   Задание не обновлено!<br />{{ errorMessage }}

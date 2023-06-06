@@ -30,6 +30,7 @@ export class AnswerOptionPageComponent {
   answerOptions: AnswerOption[] = [];
   createForm = false;
 
+  typeTask = "";
 
   isUpdateFailed = false;
   isCreateFailed = false;
@@ -41,6 +42,7 @@ export class AnswerOptionPageComponent {
   ngOnInit() {
     this.getAnswer();
     this.getTask();
+
   }
 
   getTask() {
@@ -48,6 +50,12 @@ export class AnswerOptionPageComponent {
       .subscribe({
         next:(data) => {
           this.task = data;
+          if (data.type?.includes("checkbox")) {
+            this.typeTask = "несколько ответов"
+          }
+          if (data.type?.includes("radio")) {
+            this.typeTask = "один ответ"
+          }
         },
         error: (e) => console.error(e)
       })

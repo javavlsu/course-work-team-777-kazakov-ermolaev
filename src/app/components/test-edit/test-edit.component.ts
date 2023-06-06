@@ -23,6 +23,7 @@ export class TestEditComponent {
 
   task: Task = {
     title: "",
+    type: "",
     editTask: false
   }
 
@@ -101,7 +102,8 @@ export class TestEditComponent {
 
     createTask() {
       const data = {
-        title: this.task.title
+        title: this.task.title,
+        type: this.task.type
       }
 
       this.testService.createTask(this.idDiscipline, this.idTest, data)
@@ -120,9 +122,10 @@ export class TestEditComponent {
         })
     }
 
-    updateTask(title: string, idTask: any) {
+    updateTask(title: string, type: string, idTask: any) {
       const data = {
-        title: title
+        title: title,
+        type: type
       }
 
       console.log(data)

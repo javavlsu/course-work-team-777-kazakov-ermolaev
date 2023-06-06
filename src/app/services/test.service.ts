@@ -62,6 +62,10 @@ export class TestService {
     return this.http.get<AnswerOption[]>(`${baseUrl}/${idDiscipline}/tests/${idTest}/tasks/${idTask}/answerOptions`)
   }
 
+  getAllAnswerOptionInTest(idDiscipline: any, idTest: any, idTask: any): Observable<AnswerOption[]> {
+    return this.http.get<AnswerOption[]>(` ${baseUrl}/${idDiscipline}/tests/${idTest}/tasks/${idTask}/allAnswerOptions`)
+  }
+
   getAnswerOptionById(idDiscipline: any, idTest: any, idTask: any, idAnswerOption: any): Observable<AnswerOption> {
     return this.http.get<AnswerOption>(`${baseUrl}/${idDiscipline}/tests/${idTest}/tasks/${idTask}/answerOptions/${idAnswerOption}`)
   }
