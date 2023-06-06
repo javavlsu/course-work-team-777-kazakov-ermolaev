@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @CrossOrigin(origins = "http://localhost:4200", maxAge = 3600, allowCredentials="true")
@@ -169,6 +170,13 @@ public class TestController {
         return new ResponseEntity<>(answerOptions, HttpStatus.OK);
     }
 
+    @GetMapping("/{idTest}/tasks/{idTask}/allAnswerOptions")
+    @PreAuthorize("hasRole('STUDENT') or hasRole('LECTOR') or hasRole('ADMIN')")
+    public ResponseEntity<List<AnswerOptionResponse>> getAllAnswerOptionInTest(@PathVariable("idTest") Long idTest) {
+        List<AnswerOptionResponse> answerOptions = testService.geyAllAnswerOptionInTest(idTest);
+        return new ResponseEntity<>(answerOptions, HttpStatus.OK);
+    }
+
     @GetMapping("/{idTest}/tasks/{idTask}/answerOptions/{idAnswerOption}")
     @PreAuthorize("hasRole('STUDENT') or hasRole('LECTOR') or hasRole('ADMIN')")
     public ResponseEntity<AnswerOptionResponse> getAnswerOptionById(@PathVariable("idAnswerOption") Long idAnswerOption) {
@@ -185,10 +193,14 @@ public class TestController {
     @PreAuthorize("hasRole('LECTOR') or hasRole('ADMIN')")
     public ResponseEntity<?> createAnswerOption(@PathVariable("idTask") Long idTask, @RequestBody AnswerOptionResponse answerOptionResponse) {
         if (testService.answerOptionExistsByTitle(answerOptionResponse.getTitle()))
-            return ResponseEntity.badRequest().body(new MessageResponse("Ошибка: такой вопрос уже существует!"));
+            return ResponseEntity.badRequest().body(new MessageResponse("Ошибка: такой ответ уже существует!"));
 
-        if (answerOptionResponse.getTitle() == "")
-            return ResponseEntity.badRequest().body(new MessageResponse("Ошибка: вопрос не заполнен!"));
+        if (Objects.equals(answerOptionResponse.getTitle(), ""))
+            return ResponseEntity.badRequest().body(new MessageResponse("Ошибка: ответ не заполнен!"));
+
+        if (!testService.isOnlyOneAnswerCreate(idTask, answerOptionResponse)) {
+            return ResponseEntity.badRequest().body(new MessageResponse("Ошибка: в задании уже есть правильный ответ!"));
+        }
 
         if (testService.createAnswerOption(idTask, answerOptionResponse))
             return ResponseEntity.ok(new MessageResponse("AnswerOption is creating"));
@@ -199,13 +211,9 @@ public class TestController {
     @PutMapping("/{idTest}/tasks/{idTask}/answerOptions/{idAnswerOption}")
     @PreAuthorize("hasRole('LECTOR') or hasRole('ADMIN')")
     public ResponseEntity<?> updateAnswerOption(@RequestBody UpdateAnswer answers) {
-        /*if (testService.existsByTitle(test.getTitle())) {
-            return ResponseEntity.badRequest().body(new MessageResponse("Ошибка: тест с таким название уже существует!"));
-        }*/
 
-        /*if (answerOption.getTitle() == "") {
-            return ResponseEntity.badRequest().body(new MessageResponse("Ошибка: вопрос не заполнен!"));
-        }*/
+        if (!testService.isOnlyOneAnswerUpdate(answers))
+            return ResponseEntity.badRequest().body(new MessageResponse("Ошибка: задание содержит больше одного правильного ответа или не содержит ни одного правльного ответа!"));
 
         if (testService.updateAnswerOption(answers))
             return ResponseEntity.ok(new MessageResponse("AnswerOption has updated"));

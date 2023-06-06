@@ -117,6 +117,7 @@ public class TestService {
         if (taskData.isPresent()) {
             Task _task = taskData.get();
             _task.setTitle(task.getTitle());
+            _task.setType(task.getType());
             taskRepository.save(_task);
             return true;
         }
@@ -130,6 +131,35 @@ public class TestService {
 
 
     public Boolean answerOptionExistsByTitle(String title) { return answerOptionRepository.existsByTitle(title); }
+
+    public List<AnswerOptionResponse> geyAllAnswerOptionInTest(Long idTest) {
+        List<AnswerOption> answerOptions = new ArrayList<>();
+        List<AnswerOptionResponse> answerOptionResponses = new ArrayList<>();
+        Optional<Test> test = testRepository.findById(idTest);
+
+        if (test.isPresent()) {
+            List<Task> tasks = taskRepository.findByTest(test.get());
+            for (var task: tasks) {
+                answerOptions.addAll(answerOptionRepository.findByTask(task));
+            }
+        }
+
+        for (var answer: answerOptions) {
+            var answerResponse = new AnswerOptionResponse();
+
+            answerResponse.setId(answer.getId());
+            answerResponse.setTitle(answer.getTitle());
+            answerResponse.setIdTask(answer.getTask().getId());
+            if (answer.getRight()) {
+                answerResponse.setIsRight("true");
+            } else {
+                answerResponse.setIsRight("false");
+            }
+            answerOptionResponses.add(answerResponse);
+
+        }
+        return answerOptionResponses;
+    }
 
     public List<AnswerOptionResponse> getAnswerOptionByTask(Long idTask) {
         List<AnswerOption> answerOptions = new ArrayList<>();
@@ -180,6 +210,39 @@ public class TestService {
             return true;
         }
         return false;
+    }
+
+    public boolean isOnlyOneAnswerUpdate(UpdateAnswer updateAnswer) {
+        Optional<AnswerOptionResponse> answerOptionResponse = updateAnswer.getAnswers().stream().findAny();
+        if (answerOptionResponse.isPresent()) {
+            Task task = answerOptionRepository.findById(answerOptionResponse.get().getId()).get().getTask();
+            if (Objects.equals(task.getType(), "radio")) {
+                var i = 0;
+                for(var answer: updateAnswer.getAnswers()) {
+                    if (Objects.equals(answer.getIsRight(), "true"))
+                        i++;
+                }
+                return i < 2 & i > 0;
+            }
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isOnlyOneAnswerCreate(Long idTask, AnswerOptionResponse answerOptionResponse) {
+        Optional<Task> task = taskRepository.findById(idTask);
+        if (task.isPresent()) {
+            if (Objects.equals(task.get().getType(), "radio")) {
+                if (Objects.equals(answerOptionResponse.getIsRight(), "true")) {
+                    for (var answer: answerOptionRepository.findByTask(task.get())) {
+                        if (answer.getRight())
+                            return false;
+                    }
+                }
+            }
+            return true;
+        }
+        return true;
     }
 
     public boolean updateAnswerOption(UpdateAnswer updateAnswer) {

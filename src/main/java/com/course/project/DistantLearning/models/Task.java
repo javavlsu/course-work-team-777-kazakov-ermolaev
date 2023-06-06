@@ -12,14 +12,18 @@ public class Task {
     @Column(name = "title")
     private String title;
 
+    @Column(name = "typeTask")
+    private String type;
+
     @ManyToOne
     @JoinColumn(name = "test_id")
     private Test test;
 
     public Task() {}
 
-    public Task(String title, Test test) {
+    public Task(String title, String type, Test test) {
         this.title = title;
+        this.type = type;
         this.test = test;
     }
 
@@ -45,5 +49,13 @@ public class Task {
 
     public void setTest(Test test) {
         this.test = test;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }
