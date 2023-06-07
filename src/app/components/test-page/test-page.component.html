@@ -3,16 +3,49 @@
   <p>Тест начинается: {{ test.dateStart | date:'dd.MM HH:mm' }}</p>
   <p>Тест заканчивается: {{ test.deadline | date:'dd.MM HH:mm' }}</p>
   <div *ngIf="isOpen">
-    <button
+    <div *ngIf="isScore">
+      Оценка: {{ studentTest.scoreTest }}
+    </div>
+    <div *ngIf="!isScore">
+      <button
       type="button"
       class="btn btn-outline-primary"
       (click)="redirectToTestPass()">
         Пройти
     </button>
+    </div>
   </div>
   <div *ngIf="!isOpen">
     <p>Тест закрыт</p>
   </div>
+  <div *ngIf="isLector">
+    <div style="display: flex;">
+      <strong>Список сдавших</strong>
+      <div *ngIf="!listOpen">
+        <i
+          class="bi bi-caret-down-fill arrow"
+          (click)="listOpen = true"></i>
+      </div>
+      <div *ngIf="listOpen">
+        <i
+          class="bi bi-caret-up-fill arrow"
+          (click)="listOpen = false"></i>
+          <div *ngFor="let student of students">
+            <p>{{ student.name }}</p>
+            <p>{{ student.groupName }}</p>
+            <p>{{ student.scoreTest }}</p>
+            <button
+              type="button"
+              class="btn btn-secondary"
+              (click)="giveMoreChance(student)">
+              Открыть тест
+            </button>
+          </div>
+      </div>
+
+    </div>
+  </div>
+
   <div>
     <button
       type="button"

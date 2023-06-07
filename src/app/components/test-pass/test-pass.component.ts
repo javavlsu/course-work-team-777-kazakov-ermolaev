@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { FormGroup, FormBuilder, FormArray, FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AnswerOption } from 'src/app/models/answerOption.model';
 import { Task } from 'src/app/models/task.model';
@@ -15,16 +16,27 @@ export class TestPassComponent {
   private idDiscipline = this.route.snapshot.params["idDiscipline"];
   private idTest = this.route.snapshot.params["idTest"];
 
+  form: FormGroup;
+
   constructor(
     private testService: TestService,
     private storageService: StorageService,
     private route: ActivatedRoute,
-    private router: Router) {}
+    private router: Router,
+    fb: FormBuilder) {
+      this.form = fb.group({
+        pickedAnswers:  new FormArray([])
+       });
+    }
 
   test: Test = {};
   tasks: Task[] = [];
   answerOptions: AnswerOption[] = [];
 
+  selectedAnswerOption: AnswerOption[] = [];
+
+  testCheaked = false;
+  errorMess = "";
 
   ngOnInit() {
     this.getTest();
@@ -53,11 +65,10 @@ export class TestPassComponent {
   }
 
   getAnswer() {
-    this.testService.getAllAnswerOptionInTest(this.idDiscipline, this.idTest, 1)
+    this.testService.getAllAnswerOptionInTest(this.idDiscipline, this.idTest)
       .subscribe({
         next:(data) => {
-          this.answerOptions = data;
-          console.log(this.answerOptions)
+          this.answerOptions = data
         },
         error: (e) => console.error(e)
       })
@@ -74,5 +85,54 @@ export class TestPassComponent {
 
   answerInTask(idTask: any, idAnswer: any): Boolean{
     return idTask == idAnswer;
+  }
+
+  cheakTest() {
+    console.log(this.selectedAnswerOption)
+    const data = {
+      answers: this.selectedAnswerOption
+    }
+    this.testService.cheakTest(this.idDiscipline, this.idTest, data)
+      .subscribe({
+        next: () => {
+          this.testCheaked = true;
+          this.router.navigate([`/discipline/${this.idDiscipline}/testPage/${this.idTest}`])
+        },
+        error: (e) => {
+          this.testCheaked = false;
+          this.errorMess =  e.error.message;
+        }
+      })
+  }
+
+  onCheckboxChange(event: any, answer: AnswerOption) {
+
+    const pickedAnswers = (this.form.controls['pickedAnswers'] as FormArray);
+    if (event.target.checked) {
+      pickedAnswers.push(new FormControl(event.target.value));
+      this.selectedAnswerOption.push(answer);
+    } else {
+      const index = pickedAnswers.controls
+      .findIndex(x => x.value == event.target.value);
+      pickedAnswers.removeAt(index);
+      this.selectedAnswerOption.forEach( (item, index) => {
+        if(item == answer) this.selectedAnswerOption.splice(index, 1);
+      });
+    }
+  }
+
+  onRadioChange(event: any, answer: AnswerOption) {
+    const pickedAnswers = (this.form.controls['pickedAnswers'] as FormArray);
+    if (event.target.checked) {
+      pickedAnswers.push(new FormControl(event.target.value));
+      this.selectedAnswerOption.push(answer);
+    } else {
+      const index = pickedAnswers.controls
+      .findIndex(x => x.value == event.target.value);
+      pickedAnswers.removeAt(index);
+      this.selectedAnswerOption.forEach( (item, index) => {
+        if(item == answer) this.selectedAnswerOption.splice(index, 1);
+      });
+    }
   }
 }

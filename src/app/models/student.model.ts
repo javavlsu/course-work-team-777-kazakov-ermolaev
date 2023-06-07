@@ -3,4 +3,7 @@ export class Student {
     name?: string;
     email?: string;
     groupName?: string;
+    scoreTest?: any;
+    scoreLab?: any;
+    score?: any;
 }

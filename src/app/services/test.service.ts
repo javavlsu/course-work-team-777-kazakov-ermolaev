@@ -4,6 +4,8 @@ import { Observable } from 'rxjs';
 import { Test } from '../models/test.model';
 import { Task } from '../models/task.model';
 import { AnswerOption } from '../models/answerOption.model';
+import { StudentTest } from '../models/studentTest.model';
+import { Student } from '../models/student.model';
 
 const baseUrl = 'http://localhost:8080/api';
 
@@ -62,8 +64,8 @@ export class TestService {
     return this.http.get<AnswerOption[]>(`${baseUrl}/${idDiscipline}/tests/${idTest}/tasks/${idTask}/answerOptions`)
   }
 
-  getAllAnswerOptionInTest(idDiscipline: any, idTest: any, idTask: any): Observable<AnswerOption[]> {
-    return this.http.get<AnswerOption[]>(` ${baseUrl}/${idDiscipline}/tests/${idTest}/tasks/${idTask}/allAnswerOptions`)
+  getAllAnswerOptionInTest(idDiscipline: any, idTest: any): Observable<AnswerOption[]> {
+    return this.http.get<AnswerOption[]>(` ${baseUrl}/${idDiscipline}/tests/${idTest}/allAnswerOptions`)
   }
 
   getAnswerOptionById(idDiscipline: any, idTest: any, idTask: any, idAnswerOption: any): Observable<AnswerOption> {
@@ -80,5 +82,22 @@ export class TestService {
 
   deleteAnswerOption(idDiscipline: any, idTest: any, idTask: any, idAnswerOption: any): Observable<any> {
     return this.http.delete(`${baseUrl}/${idDiscipline}/tests/${idTest}/tasks/${idTask}/answerOptions/${idAnswerOption}`)
+  }
+
+
+  cheakTest(idDiscipline: any, idTest: any, data: any): Observable<any> {
+    return this.http.post(`${baseUrl}/${idDiscipline}/tests/${idTest}/checkTest`, data);
+  }
+
+  getScoreStudentForTest(idDiscipline: any, idTest: any): Observable<StudentTest> {
+    return this.http.get<StudentTest>(`${baseUrl}/${idDiscipline}/tests/${idTest}/scoreStudentForTest`);
+  }
+
+  getScores(idDiscipline: any, idTest: any): Observable<Student[]> {
+    return this.http.get<Student[]>(`${baseUrl}/${idDiscipline}/tests/${idTest}/scoreForTest`);
+  }
+
+  getOneMoreChance(idDiscipline: any, idTest: any, data: any): Observable<any> {
+    return this.http.post<Student[]>(`${baseUrl}/${idDiscipline}/tests/${idTest}/giveOneMoreChance`, data);
   }
 }

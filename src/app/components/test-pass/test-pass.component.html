@@ -1,28 +1,50 @@
-<div>
-  <label><strong>Тест {{ test.title }}</strong></label>
-  <div *ngFor="let task of tasks">
-    <p><label><strong>{{ task.title }}</strong></label></p>
-    <div *ngFor="let answer of answerOptions">
-      <div *ngIf="answerInTask(task.id, answer.idTask)">
-        <div *ngIf="isOnlyOneAnswer(task)">
-          <input
-            type="radio"
-            class="custom-control-input"
-            id="{{task.title}}"
-            value="{{answer.isRight}}"
-            name="{{task.title}}"/>
-          {{ answer.title }}
+<div style="margin-left: 4%;">
+  <div class="form-group">
+    <label><strong>Тест {{ test.title }}</strong></label>
+    <section>
+      <form [formGroup]="form" novalidate>
+        <div *ngFor="let task of tasks">
+          <p><label><strong>{{ task.title }}</strong></label></p>
+          <div style="margin-left: 2%;" *ngFor="let answer of answerOptions">
+            <div *ngIf="answerInTask(task.id, answer.idTask)">
+              <div *ngIf="isOnlyOneAnswer(task)">
+                <input
+                  type="radio"
+                  formArrayName="pickedAnswers"
+                  class="custom-control-input"
+                  id="{{task.title}}"
+                  [value]="answer"
+                  name="{{task.title}}"/>
+                {{ answer.title }}
+              </div>
+              <div *ngIf="!isOnlyOneAnswer(task)">
+                <input
+                  type="checkbox"
+                  formArrayName="pickedAnswers"
+                  class="custom-control-input"
+                  id="{{task.title}}"
+                  [value]="answer.isRight"
+                  (change)="onCheckboxChange($event, answer)"
+                  name="{{task.title}}"/>
+                  {{ answer.title }}
+              </div>
+            </div>
+          </div>
         </div>
-        <div *ngIf="!isOnlyOneAnswer(task)">
-          <input
-            type="checkbox"
-            class="custom-control-input"
-            id="{{task.title}}"
-            value="{{answer.isRight}}"
-            name="{{task.title}}"/>
-            {{ answer.title }}
-        </div>
-      </div>
+      </form>
+    </section>
+  </div>
+
+
+  <div>
+    <button
+      type="button"
+      class="btn btn-secondary"
+      (click)="cheakTest()">
+      Отправить
+    </button>
+    <div class="alert alert-warning" *ngIf="!testCheaked">
+      Тест не отправлен!<br />{{ errorMess }}
     </div>
   </div>
 </div>

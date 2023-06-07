@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { Discipline } from '../models/discipline.model';
 import { Group } from '../models/group.model';
 import { Lector } from '../models/lector.model';
+import { Student } from '../models/student.model';
 
 const baseUrl = 'http://localhost:8080/api/discipline';
 
@@ -48,5 +49,10 @@ export class DisciplineService {
 
   getLectorsOutByDisciplineId(id: any): Observable<Lector[]> {
     return this.http.get<Lector[]>(`${baseUrl}/lector/withoutDiscipline/${id}`);
+  }
+
+
+  getScore(id: any): Observable<Student[]> {
+    return this.http.get<Student[]>(`${baseUrl}/${id}/scoreStudentForDiscipline`)
   }
 }

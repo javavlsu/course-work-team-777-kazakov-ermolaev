@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { LabWork } from '../models/labwork.model';
 import { Observable } from 'rxjs';
+import { Student } from '../models/student.model';
 
 const baseUrl = 'http://localhost:8080/api';
 
@@ -30,5 +31,9 @@ export class LabworkService {
 
   deleteLabWork(idDiscipline: any, idLabwork: any): Observable<any> {
     return this.http.delete(`${baseUrl}/${idDiscipline}/labworks/${idLabwork}`)
+  }
+
+  getScore(idDiscipline: any, idLabwork: any): Observable<Student[]> {
+    return this.http.get<Student[]>(`${baseUrl}/${idDiscipline}/labworks/${idLabwork}/scoreStudentForLabWork`);
   }
 }
