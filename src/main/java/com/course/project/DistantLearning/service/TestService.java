@@ -2,13 +2,9 @@ package com.course.project.DistantLearning.service;
 
 import com.course.project.DistantLearning.dto.request.UpdateAnswer;
 import com.course.project.DistantLearning.dto.response.AnswerOptionResponse;
-import com.course.project.DistantLearning.models.AnswerOption;
-import com.course.project.DistantLearning.models.Discipline;
-import com.course.project.DistantLearning.models.Task;
-import com.course.project.DistantLearning.models.Test;
-import com.course.project.DistantLearning.repository.AnswerOptionRepository;
-import com.course.project.DistantLearning.repository.TaskRepository;
-import com.course.project.DistantLearning.repository.TestRepository;
+import com.course.project.DistantLearning.dto.response.StudentResponse;
+import com.course.project.DistantLearning.models.*;
+import com.course.project.DistantLearning.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +23,15 @@ public class TestService {
 
     @Autowired
     AnswerOptionRepository answerOptionRepository;
+
+    @Autowired
+    StudentTestRepository studentTestRepository;
+
+    @Autowired
+    StudentRepository studentRepository;
+
+    @Autowired
+    ScoreRepository scoreRepository;
 
     public Boolean testExistsByTitle(String title) { return testRepository.existsByTitle(title); }
 
@@ -266,4 +271,120 @@ public class TestService {
     }
 
     public void deleteAnswerOption(Long idAnswerOption) { answerOptionRepository.deleteById(idAnswerOption); }
+
+
+    public boolean checkStudentAnswer(User user, Long idTest, UpdateAnswer updateAnswer) {
+        try {
+            List<AnswerOption> answerOptions = new ArrayList<>();
+            List<Task> tasks = new ArrayList<>();
+            testRepository.findById(idTest).ifPresent(value -> tasks.addAll(taskRepository.findByTest(value)));
+
+            for (var answer: updateAnswer.getAnswers()) {
+                answerOptionRepository.findById(answer.getId()).ifPresent(answerOptions::add);
+            }
+
+            var score = 0;
+            for (var task: tasks) {
+                for(var answer: answerOptions) {
+                    if (answer.getTask().getId().equals(task.getId())) {
+                        if (Objects.equals(task.getType(), "radio")) {
+                            if (answer.getRight()) {
+                                score++;
+                                break;
+                            }
+                        }
+                        else {
+                            var i = 0;
+                            if (answer.getRight()) i++;
+                            else i--;
+
+                            if (i < 0) i = 0;
+
+                            score += i;
+                        }
+                    }
+                }
+            }
+
+            Optional<Student> student = studentRepository.findByUser(user);
+            Optional<Test> test = testRepository.findById(idTest);
+            if (student.isPresent() && test.isPresent()) {
+                Optional<Score> scoreEntity = scoreRepository.findByStudentAndDiscipline(student.get(), test.get().getDiscipline());
+                Optional<StudentTest> studentTestData = studentTestRepository.findByStudentAndTest(student.get(), test.get());
+                if (scoreEntity.isPresent()) {
+                    Score _scoreEntity = scoreEntity.get();
+                    if (studentTestData.isEmpty()) {
+                        StudentTest studentTest = new StudentTest();
+                        studentTest.setScoreTest(score);
+                        studentTest.setStudent(student.get());
+                        studentTest.setTest(test.get());
+                        studentTest.setDiscipline(test.get().getDiscipline());
+                        studentTest.setPassedDate(new Date());
+                        studentTestRepository.save(studentTest);
+
+                        _scoreEntity.setScore(scoreEntity.get().getScore() + studentTest.getScoreTest());
+                    } else {
+                        StudentTest studentTest = studentTestData.get();
+                        studentTest.setScoreTest(score);
+                        studentTest.setPassedDate(new Date());
+                        studentTestRepository.save(studentTest);
+
+                        _scoreEntity.setScore(scoreEntity.get().getScore() - (studentTestData.get().getScoreTest() - studentTest.getScoreTest()));
+                    }
+                    scoreRepository.save(_scoreEntity);
+                }
+            }
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public Optional<StudentTest> getStudentScoreForTest(Long idTest, User user) {
+        Optional<Student> student = studentRepository.findByUser(user);
+        Optional<Test> test = testRepository.findById(idTest);
+        if (student.isPresent() && test.isPresent()) {
+            return studentTestRepository.findByStudentAndTest(student.get(), test.get());
+        }
+
+        return Optional.empty();
+    }
+
+    public List<StudentResponse> getScoresForTest(Long idTest) {
+        List<StudentResponse> studentResponseList = new ArrayList<>();
+        Optional<Test> test = testRepository.findById(idTest);
+        if (test.isPresent()) {
+            for (var student: studentRepository.findAll()) {
+                Optional<StudentTest> studentTest = studentTestRepository.findByStudentAndTest(student, test.get());
+                if (studentTest.isPresent()) {
+                    StudentResponse studentResponse = new StudentResponse();
+                    studentResponse.setId(student.getId());
+                    studentResponse.setName(student.getUser().getFullName());
+                    studentResponse.setGroupName(student.getGroup().getName());
+                    studentResponse.setEmail(student.getUser().getEmail());
+                    studentResponse.setScoreTest(studentTest.get().getScoreTest());
+                    studentResponseList.add(studentResponse);
+                }
+            }
+        }
+        return studentResponseList;
+    }
+
+    public void getMoreChance(StudentResponse studentResponse, Long idTest, Long idDiscipline) {
+        Optional<Student> student = studentRepository.findById(studentResponse.getId());
+        Optional<Test> test = testRepository.findById(idTest);
+        Optional<Discipline> discipline = disciplineService.getDisciplineById(idDiscipline);
+
+        if (student.isPresent() & test.isPresent() & discipline.isPresent()) {
+            Optional<Score> scoreData = scoreRepository.findByStudentAndDiscipline(student.get(), discipline.get());
+            Optional<StudentTest> studentTest = studentTestRepository.findByStudentAndTest(student.get(), test.get());
+
+            if (scoreData.isPresent() && studentTest.isPresent()) {
+                Score score = scoreData.get();
+                score.setScore(scoreData.get().getScore() - studentTest.get().getScoreTest());
+                scoreRepository.save(score);
+                studentTestRepository.deleteById(studentTest.get().getId());
+            }
+        }
+    }
 }

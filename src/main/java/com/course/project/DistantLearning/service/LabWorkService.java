@@ -1,8 +1,13 @@
 package com.course.project.DistantLearning.service;
 
+import com.course.project.DistantLearning.dto.response.StudentResponse;
 import com.course.project.DistantLearning.models.Discipline;
 import com.course.project.DistantLearning.models.LabWork;
+import com.course.project.DistantLearning.models.StudentLabWork;
 import com.course.project.DistantLearning.repository.LabWorkRepository;
+import com.course.project.DistantLearning.repository.StudentLabWorkRepository;
+import com.course.project.DistantLearning.repository.StudentRepository;
+import com.course.project.DistantLearning.repository.StudentTestRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -21,7 +26,13 @@ public class LabWorkService {
     DisciplineService disciplineService;
 
     @Autowired
+    StudentRepository studentRepository;
+
+    @Autowired
     TestTransactionService testTransactionService;
+
+    @Autowired
+    StudentLabWorkRepository studentLabWorkRepository;
 
     public Boolean existsByTitle(String title) { return labWorkRepository.existsByTitle(title); }
 
@@ -77,5 +88,24 @@ public class LabWorkService {
     public void Test1() {
         testTransactionService.InsertingGroupWithoutException();
         testTransactionService.InsertingUserWithException();
+    }
+
+    public List<StudentResponse> getScoresForLabWork(Long idLabWork) {
+        List<StudentResponse> studentResponseList = new ArrayList<>();
+        Optional<LabWork> labWork = labWorkRepository.findById(idLabWork);
+        if (labWork.isPresent()) {
+            for (var student: studentRepository.findAll()) {
+                Optional<StudentLabWork> studentLabWork = studentLabWorkRepository.findByStudentAndLabwork(student, labWork.get());
+                if (studentLabWork.isPresent()) {
+                    StudentResponse studentResponse = new StudentResponse();
+                    studentResponse.setName(student.getUser().getFullName());
+                    studentResponse.setGroupName(student.getGroup().getName());
+                    studentResponse.setEmail(student.getUser().getEmail());
+                    studentResponse.setScoreLab(studentLabWork.get().getScoreLab());
+                    studentResponseList.add(studentResponse);
+                }
+            }
+        }
+        return studentResponseList;
     }
 }

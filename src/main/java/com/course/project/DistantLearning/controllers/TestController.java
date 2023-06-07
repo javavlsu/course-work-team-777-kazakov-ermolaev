@@ -3,20 +3,18 @@ package com.course.project.DistantLearning.controllers;
 import com.course.project.DistantLearning.dto.response.AnswerOptionResponse;
 import com.course.project.DistantLearning.dto.request.UpdateAnswer;
 import com.course.project.DistantLearning.dto.response.MessageResponse;
-import com.course.project.DistantLearning.models.AnswerOption;
-import com.course.project.DistantLearning.models.Task;
-import com.course.project.DistantLearning.models.Test;
+import com.course.project.DistantLearning.dto.response.StudentResponse;
+import com.course.project.DistantLearning.models.*;
+import com.course.project.DistantLearning.service.RoleService;
 import com.course.project.DistantLearning.service.TestService;
+import com.course.project.DistantLearning.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @CrossOrigin(origins = "http://localhost:4200", maxAge = 3600, allowCredentials="true")
 @RestController
@@ -24,6 +22,12 @@ import java.util.Optional;
 public class TestController {
     @Autowired
     TestService testService;
+
+    @Autowired
+    UserService userService;
+
+    @Autowired
+    RoleService roleService;
 
     @GetMapping
     @PreAuthorize("hasRole('STUDENT') or hasRole('LECTOR') or hasRole('ADMIN')")
@@ -170,7 +174,7 @@ public class TestController {
         return new ResponseEntity<>(answerOptions, HttpStatus.OK);
     }
 
-    @GetMapping("/{idTest}/tasks/{idTask}/allAnswerOptions")
+    @GetMapping("/{idTest}/allAnswerOptions")
     @PreAuthorize("hasRole('STUDENT') or hasRole('LECTOR') or hasRole('ADMIN')")
     public ResponseEntity<List<AnswerOptionResponse>> getAllAnswerOptionInTest(@PathVariable("idTest") Long idTest) {
         List<AnswerOptionResponse> answerOptions = testService.geyAllAnswerOptionInTest(idTest);
@@ -226,6 +230,58 @@ public class TestController {
     public ResponseEntity<HttpStatus> deleteAnswerOption(@PathVariable("idAnswerOption") Long idAnswerOption) {
         try {
             testService.deleteAnswerOption(idAnswerOption);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        catch (Exception e){
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PostMapping("/{idTest}/checkTest")
+    @PreAuthorize("hasRole('STUDENT') or hasRole('LECTOR') or hasRole('ADMIN')")
+    public ResponseEntity<?> checkTest(@PathVariable("idTest") Long idTest, @RequestBody UpdateAnswer updateAnswer) {
+        Optional<User> user = userService.getAuthorizeUser();
+
+        if (user.isPresent()) {
+            List<String> roles = new ArrayList<>(roleService.getUserRoles(user.get()));
+            if (!roles.isEmpty()) {
+                if(!roles.contains("ROLE_ADMIN") & !roles.contains("ROLE_LECTOR") & roles.contains("ROLE_STUDENT")) {
+                    if (testService.checkStudentAnswer(user.get(), idTest, updateAnswer))
+                        return ResponseEntity.ok().body(new MessageResponse("Test was checked"));
+                }
+            }
+        }
+
+        return ResponseEntity.badRequest().body(new MessageResponse("Test has not checked"));
+    }
+
+    @GetMapping("/{idTest}/scoreStudentForTest")
+    @PreAuthorize("hasRole('STUDENT') or hasRole('LECTOR') or hasRole('ADMIN')")
+    public ResponseEntity<StudentTest> getScoreStudentForTest(@PathVariable("idTest") Long idTest) {
+        Optional<User> user = userService.getAuthorizeUser();
+        if (user.isPresent()) {
+            Optional<StudentTest> studentTest = testService.getStudentScoreForTest(idTest, user.get());
+            if (studentTest.isPresent()) {
+                return new ResponseEntity<>(studentTest.get(), HttpStatus.OK);
+            }
+        }
+
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    @GetMapping("/{idTest}/scoreForTest")
+    @PreAuthorize("hasRole('LECTOR') or hasRole('ADMIN')")
+    public ResponseEntity<List<StudentResponse>> getScores(@PathVariable("idTest") Long idTest) {
+        List<StudentResponse> studentResponseList = testService.getScoresForTest(idTest);
+
+        return new ResponseEntity<>(studentResponseList, HttpStatus.OK);
+    }
+
+    @PostMapping("/{idTest}/giveOneMoreChance")
+    @PreAuthorize("hasRole('LECTOR') or hasRole('ADMIN')")
+    public ResponseEntity<HttpStatus> giveOneMoreChance(@PathVariable("idDiscipline") Long idDiscipline, @PathVariable("idTest") Long idTest, @RequestBody StudentResponse studentResponse) {
+        try {
+            testService.getMoreChance(studentResponse, idTest, idDiscipline);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
         catch (Exception e){

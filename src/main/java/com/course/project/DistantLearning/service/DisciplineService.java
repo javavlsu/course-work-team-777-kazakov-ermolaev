@@ -2,10 +2,8 @@ package com.course.project.DistantLearning.service;
 
 import com.course.project.DistantLearning.dto.request.CreateOrUpdateDisciplineRequest;
 import com.course.project.DistantLearning.dto.response.LectorResponse;
-import com.course.project.DistantLearning.dto.response.MessageResponse;
-import com.course.project.DistantLearning.models.Discipline;
-import com.course.project.DistantLearning.models.Group;
-import com.course.project.DistantLearning.models.Lector;
+import com.course.project.DistantLearning.dto.response.StudentResponse;
+import com.course.project.DistantLearning.models.*;
 import com.course.project.DistantLearning.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,6 +27,12 @@ public class DisciplineService {
 
     @Autowired
     GroupService groupService;
+
+    @Autowired
+    ScoreRepository scoreRepository;
+
+    @Autowired
+    StudentRepository studentRepository;
 
     public Optional<Discipline> getDisciplineById(Long idDiscipline) { return disciplineRepository.findById(idDiscipline); }
 
@@ -71,30 +75,52 @@ public class DisciplineService {
         disciplineRepository.save(discipline);
     }
 
-    public MessageResponse updateDiscipline(Long idDiscipline, CreateOrUpdateDisciplineRequest createOrUpdateDisciplineRequest) {
+    public Boolean updateDiscipline(Long idDiscipline, CreateOrUpdateDisciplineRequest createOrUpdateDisciplineRequest) {
         Optional<Discipline> disciplineData = disciplineRepository.findById(idDiscipline);
 
         if (disciplineData.isPresent()) {
-            Discipline _discipline = disciplineData.get();
-            List<Lector> lectorList = new ArrayList<>();
-            List<Group> groupList = new ArrayList<>();
+            try {
+                Discipline _discipline = disciplineData.get();
+                List<Lector> lectorList = new ArrayList<>();
+                List<Group> groupList = new ArrayList<>();
 
-            _discipline.setTitle(createOrUpdateDisciplineRequest.getTitle());
+                _discipline.setTitle(createOrUpdateDisciplineRequest.getTitle());
 
-            for(var lector: createOrUpdateDisciplineRequest.getLectorResponseList()) {
-                userService.getLectorById(lector.getId()).ifPresent(lectorList::add);
+                for(var lector: createOrUpdateDisciplineRequest.getLectorResponseList()) {
+                    userService.getLectorById(lector.getId()).ifPresent(lectorList::add);
+                }
+
+                for(var group: createOrUpdateDisciplineRequest.getGroupList()) {
+                    groupService.getGroupById(group.getId()).ifPresent(groupList::add);
+                }
+
+                _discipline.setGroupList(groupList);
+                _discipline.setLector(lectorList);
+                disciplineRepository.save(_discipline);
+
+                for (var group: groupList) {
+                    for (var student: group.getStudentList()) {
+                        if (scoreRepository.findByStudentAndDiscipline(student, _discipline).isEmpty()) {
+                            Score score = new Score(student, _discipline, 0);
+                            scoreRepository.save(score);
+                        }
+                    }
+                }
+
+                for (var group: getGroupOutByDisciplineId(_discipline.getId())) {
+                    for (var student: group.getStudentList()) {
+                        scoreRepository.findByStudentAndDiscipline(student, _discipline)
+                                .ifPresent(value -> scoreRepository.deleteById(value.getId()));
+                    }
+                }
+
+                return true;
+            } catch (Exception e) {
+                return false;
             }
 
-            for(var group: createOrUpdateDisciplineRequest.getGroupList()) {
-                groupService.getGroupById(group.getId()).ifPresent(groupList::add);
-            }
-
-            _discipline.setGroupList(groupList);
-            _discipline.setLector(lectorList);
-            disciplineRepository.save(_discipline);
-            return new MessageResponse("Update discipline has finished successfully");
         } else {
-            return new MessageResponse("Error! discipline lector has stopped");
+            return false;
         }
     }
 
@@ -107,15 +133,10 @@ public class DisciplineService {
     public List<Group> getGroupOutByDisciplineId(Long idDiscipline) {
         List<Group> groupInDiscipline = new ArrayList<>();
         disciplineRepository.findById(idDiscipline).ifPresent(value -> groupInDiscipline.addAll(value.getGroupList()));
-        List<Group> groupOutDiscipline = groupService.getGroups();
-        System.out.println(groupOutDiscipline.size());
+        List<Group> groupOutDiscipline = groupService.getAllGroups();
 
-        if (!groupInDiscipline.isEmpty()) {
-            for (var group: groupInDiscipline) {
-                System.out.println(groupOutDiscipline.size());
-                groupOutDiscipline.remove(group);
-
-            }
+        for (var group: groupInDiscipline) {
+            groupOutDiscipline.remove(group);
         }
 
         return groupOutDiscipline.stream().sorted(Comparator.comparingLong(Group::getId)).toList();
@@ -163,5 +184,24 @@ public class DisciplineService {
 
     public void deleteDiscipline(Long idDiscipline) {
         disciplineRepository.deleteById(idDiscipline);
+    }
+
+    public List<StudentResponse> getScoresForDiscipline(Long idDiscipline) {
+        List<StudentResponse> studentResponseList = new ArrayList<>();
+        Optional<Discipline> discipline = disciplineRepository.findById(idDiscipline);
+        if (discipline.isPresent()) {
+            for (var student: studentRepository.findAll()) {
+                Optional<Score> score = scoreRepository.findByStudentAndDiscipline(student, discipline.get());
+                if (score.isPresent()) {
+                    StudentResponse studentResponse = new StudentResponse();
+                    studentResponse.setName(student.getUser().getFullName());
+                    studentResponse.setGroupName(student.getGroup().getName());
+                    studentResponse.setEmail(student.getUser().getEmail());
+                    studentResponse.setScore(score.get().getScore());
+                    studentResponseList.add(studentResponse);
+                }
+            }
+        }
+        return studentResponseList;
     }
 }

@@ -40,7 +40,7 @@ public class Score {
         return student;
     }
 
-    public void setStudent(Student studentId) {
+    public void setStudent(Student student) {
         this.student = student;
     }
 

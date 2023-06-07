@@ -1,6 +1,7 @@
 package com.course.project.DistantLearning.controllers;
 
 import com.course.project.DistantLearning.dto.response.MessageResponse;
+import com.course.project.DistantLearning.dto.response.StudentResponse;
 import com.course.project.DistantLearning.models.LabWork;
 import com.course.project.DistantLearning.repository.LabWorkRepository;
 import com.course.project.DistantLearning.service.LabWorkService;
@@ -84,5 +85,13 @@ public class LabWorkController {
         catch (Exception e){
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @GetMapping("/{idLabWork}/scoreStudentForLabWork")
+    @PreAuthorize("hasRole('LECTOR') or hasRole('ADMIN')")
+    public ResponseEntity<List<StudentResponse>> getScores(@PathVariable("idLabWork") Long idLabWork) {
+        List<StudentResponse> studentResponseList = labWorkService.getScoresForLabWork(idLabWork);
+
+        return new ResponseEntity<>(studentResponseList, HttpStatus.OK);
     }
 }

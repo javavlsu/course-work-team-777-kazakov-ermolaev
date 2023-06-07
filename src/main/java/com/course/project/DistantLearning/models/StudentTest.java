@@ -24,18 +24,18 @@ public class StudentTest {
     private Discipline discipline;
 
     @Column(name = "scoretest")
-    private float scoretest;
+    private float scoreTest;
 
     @Column(name = "passedDate")
     private Date passedDate;
 
     public StudentTest() {}
 
-    public StudentTest(Test test, Student student, Discipline discipline, float scoretest, Date passedDate) {
+    public StudentTest(Test test, Student student, Discipline discipline, float scoreTest, Date passedDate) {
         this.test = test;
         this.student = student;
         this.discipline = discipline;
-        this.scoretest = scoretest;
+        this.scoreTest = scoreTest;
         this.passedDate = passedDate;
     }
 
@@ -71,12 +71,12 @@ public class StudentTest {
         this.discipline = discipline;
     }
 
-    public float getScoretest() {
-        return scoretest;
+    public float getScoreTest() {
+        return scoreTest;
     }
 
-    public void setScoretest(float scoretest) {
-        this.scoretest = scoretest;
+    public void setScoreTest(float scoreTest) {
+        this.scoreTest = scoreTest;
     }
 
     public Date getPassedDate() {

@@ -2,6 +2,7 @@ package com.course.project.DistantLearning.controllers;
 
 import com.course.project.DistantLearning.dto.request.CreateOrUpdateDisciplineRequest;
 import com.course.project.DistantLearning.dto.response.LectorResponse;
+import com.course.project.DistantLearning.dto.response.StudentResponse;
 import com.course.project.DistantLearning.models.Discipline;
 import com.course.project.DistantLearning.models.Group;
 import com.course.project.DistantLearning.dto.response.MessageResponse;
@@ -68,7 +69,10 @@ public class DisciplineController {
     @PutMapping("/{idDiscipline}")
     @PreAuthorize("hasRole('LECTOR') or hasRole('ADMIN')")
     public  ResponseEntity<?> updateDiscipline(@PathVariable("idDiscipline") Long idDiscipline, @RequestBody CreateOrUpdateDisciplineRequest createOrUpdateDisciplineRequest) {
-        return ResponseEntity.ok(disciplineService.updateDiscipline(idDiscipline, createOrUpdateDisciplineRequest));
+        if (disciplineService.updateDiscipline(idDiscipline, createOrUpdateDisciplineRequest)) {
+            return ResponseEntity.ok().body(new MessageResponse("Update discipline has finished successfully"));
+        }
+        return ResponseEntity.badRequest().body(new MessageResponse("Error! discipline has stopped"));
     }
 
     @GetMapping("/groups/withDiscipline/{idDiscipline}")
@@ -115,9 +119,9 @@ public class DisciplineController {
         return new ResponseEntity<>(lectors, HttpStatus.OK);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{idDiscipline}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<HttpStatus> deleteDiscipline(@PathVariable("id") Long idDiscipline) {
+    public ResponseEntity<HttpStatus> deleteDiscipline(@PathVariable("idDiscipline") Long idDiscipline) {
         try {
             disciplineService.deleteDiscipline(idDiscipline);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -127,4 +131,11 @@ public class DisciplineController {
         }
     }
 
+    @GetMapping("/{idDiscipline}/scoreStudentForDiscipline")
+    @PreAuthorize("hasRole('LECTOR') or hasRole('ADMIN')")
+    public ResponseEntity<List<StudentResponse>> getScores(@PathVariable("idDiscipline") Long idDiscipline) {
+        List<StudentResponse> studentResponseList = disciplineService.getScoresForDiscipline(idDiscipline);
+
+        return new ResponseEntity<>(studentResponseList, HttpStatus.OK);
+    }
 }

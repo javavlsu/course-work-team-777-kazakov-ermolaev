@@ -4,9 +4,7 @@ import com.course.project.DistantLearning.dto.response.LectorResponse;
 import com.course.project.DistantLearning.dto.response.MessageResponse;
 import com.course.project.DistantLearning.dto.response.StudentResponse;
 import com.course.project.DistantLearning.models.*;
-import com.course.project.DistantLearning.repository.LectorRepository;
-import com.course.project.DistantLearning.repository.StudentRepository;
-import com.course.project.DistantLearning.repository.UserRepository;
+import com.course.project.DistantLearning.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -208,4 +206,5 @@ public class UserService {
         }
         return studentResponseList.stream().sorted(Comparator.comparingLong(StudentResponse::getId)).toList();
     }
+
 }

@@ -5,6 +5,9 @@ public class StudentResponse {
     private String name;
     private String email;
     private String groupName;
+    private float scoreTest;
+    private float scoreLab;
+    private float score;
 
     public StudentResponse() {}
 
@@ -45,5 +48,29 @@ public class StudentResponse {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public float getScoreTest() {
+        return scoreTest;
+    }
+
+    public void setScoreTest(float scoreTest) {
+        this.scoreTest = scoreTest;
+    }
+
+    public float getScoreLab() {
+        return scoreLab;
+    }
+
+    public void setScoreLab(float scoreLab) {
+        this.scoreLab = scoreLab;
+    }
+
+    public float getScore() {
+        return score;
+    }
+
+    public void setScore(float score) {
+        this.score = score;
     }
 }

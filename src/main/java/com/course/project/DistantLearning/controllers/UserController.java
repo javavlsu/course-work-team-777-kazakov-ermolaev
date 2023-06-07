@@ -198,7 +198,10 @@ public class UserController {
     @PutMapping("/students/groups/{idGroup}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> updateGroup(@PathVariable("idGroup") Long idGroup, @RequestBody UpdateGroupResponse group) {
-        return ResponseEntity.ok(groupService.updateGroup(idGroup, group));
+        if (groupService.updateGroup(idGroup, group)) {
+            return ResponseEntity.ok().body(new MessageResponse("Group has updated"));
+        }
+        return ResponseEntity.badRequest().body(new MessageResponse("Error: group has not updated"));
     }
 
     @DeleteMapping("/students/groups/{idGroup}")
