@@ -5,6 +5,8 @@ import com.course.project.DistantLearning.models.LabWork;
 import com.course.project.DistantLearning.repository.LabWorkRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +19,9 @@ public class LabWorkService {
 
     @Autowired
     DisciplineService disciplineService;
+
+    @Autowired
+    TestTransactionService testTransactionService;
 
     public Boolean existsByTitle(String title) { return labWorkRepository.existsByTitle(title); }
 
@@ -55,6 +60,9 @@ public class LabWorkService {
             _labWork.setDeadline(labWork.getDeadline());
             _labWork.setStatus("None");
             labWorkRepository.save(_labWork);
+
+
+
             return true;
         }
         else {
@@ -64,4 +72,10 @@ public class LabWorkService {
 
     public void deleteLabWork(Long idLabWork) { labWorkRepository.deleteById(idLabWork); }
 
+
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public void Test1() {
+        testTransactionService.InsertingGroupWithoutException();
+        testTransactionService.InsertingUserWithException();
+    }
 }
