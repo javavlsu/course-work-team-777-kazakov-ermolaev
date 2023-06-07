@@ -9,6 +9,12 @@
       <!-- (click)="openLoadFormFile()" -->
         Загрузить отчёт
     </button>
+    <div class="form-group">
+      <label for="file">Выберите файл</label>
+      <input type="file"
+             id="file"
+             >
+    </div>
   </div>
   <div *ngIf="isLector" style="margin-top: 15px;">
     <div *ngIf="!studentFiles">

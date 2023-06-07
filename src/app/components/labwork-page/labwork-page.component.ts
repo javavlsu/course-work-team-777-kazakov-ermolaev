@@ -3,6 +3,7 @@ import { LabWork } from 'src/app/models/labwork.model';
 import { Component } from '@angular/core';
 import { StorageService } from 'src/app/services/storage.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { FileModel } from 'src/app/models/file.model';
 
 @Component({
   selector: 'app-labwork-page',
@@ -20,6 +21,12 @@ export class LabworkPageComponent {
   isLector = false;
   isStudent = false;
 
+
+  files: FileModel = {
+    name: "",
+    path: ""
+  }
+
   studentFiles = false;
 
   labWork: LabWork = {
@@ -27,6 +34,8 @@ export class LabworkPageComponent {
     manual: "",
     deadline: new Date()
   }
+
+  fileToUpload: File | null = null;
 
   constructor(
     private labworkService: LabworkService,
@@ -71,4 +80,7 @@ export class LabworkPageComponent {
     this.studentFiles = false;
   }
 
+  handleFileInput(files: FileList) {
+    this.fileToUpload = files.item(0);
+  }
 }

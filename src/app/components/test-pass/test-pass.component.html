@@ -8,16 +8,18 @@
           <input
             type="radio"
             class="custom-control-input"
-            id="answer.idTask"
-            value=""/>
+            id="{{task.title}}"
+            value="{{answer.isRight}}"
+            name="{{task.title}}"/>
           {{ answer.title }}
         </div>
         <div *ngIf="!isOnlyOneAnswer(task)">
           <input
             type="checkbox"
             class="custom-control-input"
-            id="answer.idTask"
-            value=""/>
+            id="{{task.title}}"
+            value="{{answer.isRight}}"
+            name="{{task.title}}"/>
             {{ answer.title }}
         </div>
       </div>
