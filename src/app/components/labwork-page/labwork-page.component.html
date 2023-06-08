@@ -3,17 +3,12 @@
   <p>Ссылка на методичку: <a href="{{ labWork.manual }}" >{{ labWork.manual }}</a></p>
   <p>Дата окончания: {{ labWork.deadline | date:'dd.MM:YYYY HH:mm' }}</p>
   <div *ngIf="isStudent">
-    <button
-      type="button"
-      class="btn btn-outline-primary">
-      <!-- (click)="openLoadFormFile()" -->
-        Загрузить отчёт
-    </button>
     <div class="form-group">
       <label for="file">Выберите файл</label>
       <input type="file"
              id="file"
              >
+      <button (click)="createScoreLabWork()">Загрузить</button>
     </div>
   </div>
   <div *ngIf="isLector" style="margin-top: 15px;">
@@ -33,7 +28,24 @@
     </div>
   </div>
   <div class="row-md-6" *ngIf="studentFiles" style="margin-left: 4%;">
-    <div>ХРЮ</div>
+        <table class="table">
+          <tr>
+           <th>Имя</th>
+           <th>Группа</th>
+           <th>Файл</th>
+           <th>Оценка</th>
+           <th></th>
+          </tr>
+
+          <tr *ngFor="let score of scores">
+           <td>{{ score.name }}</td>
+           <td>{{ score.groupName }}</td>
+           <td>Не загружен</td>
+           <td><input type="text" [(ngModel)]="score.scoreLab"/></td>
+           <td><button (click)="(updateScoreLabWork(score.scoreLab, score.id))">Сохранить</button></td>
+          </tr>
+
+      </table>
   </div>
 
   <div style="margin-top: 30px;">

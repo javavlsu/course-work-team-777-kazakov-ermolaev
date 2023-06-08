@@ -36,4 +36,12 @@ export class LabworkService {
   getScore(idDiscipline: any, idLabwork: any): Observable<Student[]> {
     return this.http.get<Student[]>(`${baseUrl}/${idDiscipline}/labworks/${idLabwork}/scoreStudentForLabWork`);
   }
+
+  updateScoreLabWork(idLabWork: any, idDiscipline: any, data: any): Observable<any> {
+    return this.http.put(`${baseUrl}/${idDiscipline}/labworks/${idLabWork}/putScore`, data);
+  }
+
+  createScoreLabWork(idDiscipline: any, idLabWork: any): Observable<any> {
+    return this.http.get(`${baseUrl}/${idDiscipline}/labworks/${idLabWork}/createScoreLabWork`)
+  }
 }

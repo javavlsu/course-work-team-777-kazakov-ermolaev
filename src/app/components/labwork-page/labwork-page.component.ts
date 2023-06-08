@@ -4,6 +4,8 @@ import { Component } from '@angular/core';
 import { StorageService } from 'src/app/services/storage.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FileModel } from 'src/app/models/file.model';
+import { StudentLabWork } from 'src/app/models/studentlabwork.model';
+import { Student } from 'src/app/models/student.model';
 
 @Component({
   selector: 'app-labwork-page',
@@ -35,6 +37,8 @@ export class LabworkPageComponent {
     deadline: new Date()
   }
 
+  scores: Student[] = [];
+
   fileToUpload: File | null = null;
 
   constructor(
@@ -49,13 +53,13 @@ export class LabworkPageComponent {
     if (this.isLoggedIn) {
       const user = this.storageService.getUser();
       this.roles = user.roles;
-
       this.isAdmin = this.roles.includes('ROLE_ADMIN');
       this.isLector = this.roles.includes('ROLE_LECTOR');
-      this.isStudent = this.roles.includes('ROLE_STUDENT');
+      this.isStudent = !this.roles.includes('ROLE_LECTOR');
     }
 
     this.getLabWork();
+    this.getScores();
   }
 
   getLabWork() {
@@ -83,4 +87,35 @@ export class LabworkPageComponent {
   handleFileInput(files: FileList) {
     this.fileToUpload = files.item(0);
   }
+
+  getScores() {
+    this.labworkService.getScore(this.idDiscipline, this.idLabWork)
+    .subscribe({
+      next: (data) => {
+        this.scores = data;
+      },
+      error: (e) => console.error(e)
+    });
+  }
+
+  createScoreLabWork() {
+    this.labworkService.createScoreLabWork(this.idDiscipline, this.idLabWork)
+    .subscribe({
+      next: (data) => console.log(data),
+      error: (e) => console.error(e)
+    });
+  }
+
+  updateScoreLabWork(scoreLab: any, idStudent: any) {
+    const data = {
+      idStudent: idStudent,
+      score: scoreLab
+    }
+    this.labworkService.updateScoreLabWork(this.idLabWork, this.idDiscipline, data)
+      .subscribe({
+        next: (data) => console.log(data),
+        error: (e) => console.error(e)
+      });
+  }
+
 }
