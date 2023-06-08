@@ -27,6 +27,22 @@
           (click)="listOpen = true"></i>
       </div>
       <div *ngIf="listOpen">
+        <table class="table">
+          <tr>
+           <th>Имя</th>
+           <th>Группа</th>
+           <th>Оценка</th>
+           <th></th>
+          </tr>
+
+          <tr *ngFor="let student of students">
+           <td>{{ student.name }}</td>
+           <td>{{ student.groupName }}</td>
+           <td>{{ student.scoreLab }}</td>
+           <td><button (click)="giveMoreChance(student)">Открыть тест</button></td>
+          </tr>
+
+      </table>
         <i
           class="bi bi-caret-up-fill arrow"
           (click)="listOpen = false"></i>
