@@ -167,6 +167,10 @@ export class DisciplinePageComponent {
     this.router.navigate([`/discipline/${this.idDiscipline}/labworkPage/${idLabWork}`])
   }
 
+  rediretToResultPage() {
+    this.router.navigate([`discipline/${this.idDiscipline}/results`])
+  }
+
   deleteLabWork(idLabWork: any) {
     this.labworkService.deleteLabWork(this.idDiscipline, idLabWork)
       .subscribe({

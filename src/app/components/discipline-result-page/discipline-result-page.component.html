@@ -1,0 +1,21 @@
+<table class="table">
+  <tr>
+   <th>Имя</th>
+   <th>Группа</th>
+   <th>Оценка</th>
+   <th></th>
+  </tr>
+
+  <tr *ngFor="let student of students">
+   <td>{{ student.name }}</td>
+   <td>{{ student.groupName }}</td>
+   <td>{{ student.score }}</td>
+  </tr>
+
+</table>
+<button
+  type="button"
+  class="btn btn-secondary"
+  (click)="redirectToDisciplinePage()">
+  назад
+</button>
