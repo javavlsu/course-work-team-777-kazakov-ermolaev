@@ -1,16 +1,21 @@
 package com.course.project.DistantLearning.controllers;
 
 import com.course.project.DistantLearning.dto.response.MessageResponse;
+import com.course.project.DistantLearning.dto.response.StudentLabWorkResponse;
 import com.course.project.DistantLearning.dto.response.StudentResponse;
 import com.course.project.DistantLearning.models.LabWork;
+import com.course.project.DistantLearning.models.User;
 import com.course.project.DistantLearning.repository.LabWorkRepository;
 import com.course.project.DistantLearning.service.LabWorkService;
+import com.course.project.DistantLearning.service.RoleService;
+import com.course.project.DistantLearning.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -21,6 +26,12 @@ import java.util.Optional;
 public class LabWorkController {
     @Autowired
     LabWorkService labWorkService;
+
+    @Autowired
+    UserService userService;
+
+    @Autowired
+    RoleService roleService;
 
     @GetMapping
     @PreAuthorize("hasRole('STUDENT') or hasRole('LECTOR') or hasRole('ADMIN')")
@@ -94,4 +105,32 @@ public class LabWorkController {
 
         return new ResponseEntity<>(studentResponseList, HttpStatus.OK);
     }
+
+    @GetMapping("/{idLabWork}/createScoreLabWork")
+    @PreAuthorize("hasRole('STUDENT') or hasRole('LECTOR') or hasRole('ADMIN')")
+    public ResponseEntity<?> createScoreLabWork(@PathVariable("idDiscipline") Long idDiscipline, @PathVariable("idLabWork") Long idLabWork) {
+        Optional<User> user = userService.getAuthorizeUser();
+
+        if (user.isPresent()) {
+            List<String> roles = new ArrayList<>(roleService.getUserRoles(user.get()));
+            if (!roles.isEmpty()) {
+                if(!roles.contains("ROLE_ADMIN") & !roles.contains("ROLE_LECTOR") & roles.contains("ROLE_STUDENT")) {
+                    if (labWorkService.createScoreLabWork(idDiscipline, idLabWork, user.get()))
+                        return ResponseEntity.ok().body(new MessageResponse("ScoreLabWork was created"));
+                }
+            }
+        }
+
+        return ResponseEntity.badRequest().body(new MessageResponse("ScoreLabWork did not created"));
+    }
+
+    @PutMapping("/{idLabWork}/putScore")
+    @PreAuthorize("hasRole('LECTOR') or hasRole('ADMIN')")
+    public ResponseEntity<?> putLabWorkScore(@PathVariable("idLabWork") Long idLabWork, @RequestBody StudentLabWorkResponse studentLabWorkResponse) {
+        if (labWorkService.updateScoreLabWork(idLabWork, studentLabWorkResponse.getIdStudent(), studentLabWorkResponse.getUser(), studentLabWorkResponse.getScore())) {
+            return ResponseEntity.ok(new MessageResponse("Score for labWork has updated!"));
+        }
+        return ResponseEntity.badRequest().body(new MessageResponse("Update score ofr labWork has crashed!"));
+    }
+
 }

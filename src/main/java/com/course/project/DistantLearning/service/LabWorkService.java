@@ -1,19 +1,15 @@
 package com.course.project.DistantLearning.service;
 
 import com.course.project.DistantLearning.dto.response.StudentResponse;
-import com.course.project.DistantLearning.models.Discipline;
-import com.course.project.DistantLearning.models.LabWork;
-import com.course.project.DistantLearning.models.StudentLabWork;
-import com.course.project.DistantLearning.repository.LabWorkRepository;
-import com.course.project.DistantLearning.repository.StudentLabWorkRepository;
-import com.course.project.DistantLearning.repository.StudentRepository;
-import com.course.project.DistantLearning.repository.StudentTestRepository;
+import com.course.project.DistantLearning.models.*;
+import com.course.project.DistantLearning.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,6 +29,18 @@ public class LabWorkService {
 
     @Autowired
     StudentLabWorkRepository studentLabWorkRepository;
+
+    @Autowired
+    DisciplineRepository disciplineRepository;
+
+    @Autowired
+    LectorRepository lectorRepository;
+
+    @Autowired
+    UserService userService;
+
+    @Autowired
+    ScoreRepository scoreRepository;
 
     public Boolean existsByTitle(String title) { return labWorkRepository.existsByTitle(title); }
 
@@ -98,6 +106,7 @@ public class LabWorkService {
                 Optional<StudentLabWork> studentLabWork = studentLabWorkRepository.findByStudentAndLabwork(student, labWork.get());
                 if (studentLabWork.isPresent()) {
                     StudentResponse studentResponse = new StudentResponse();
+                    studentResponse.setId(student.getId());
                     studentResponse.setName(student.getUser().getFullName());
                     studentResponse.setGroupName(student.getGroup().getName());
                     studentResponse.setEmail(student.getUser().getEmail());
@@ -107,5 +116,48 @@ public class LabWorkService {
             }
         }
         return studentResponseList;
+    }
+
+    public Boolean createScoreLabWork(Long idDiscipline, Long IdLabWork, User user) {
+        try {
+            Optional<Student> student = studentRepository.findByUser(user);
+            Optional<LabWork> labWork = labWorkRepository.findById(IdLabWork);
+            Optional<Discipline> discipline = disciplineRepository.findById(idDiscipline);
+            if (student.isPresent() & labWork.isPresent() & discipline.isPresent()) {
+                StudentLabWork studentLabWork = new StudentLabWork();
+                studentLabWork.setPassedDate(new Date());
+                studentLabWork.setStudent(student.get());
+                studentLabWork.setLabwork(labWork.get());
+                studentLabWork.setDiscipline(discipline.get());
+                studentLabWorkRepository.save(studentLabWork);
+                return true;
+            }
+            return false;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public Boolean updateScoreLabWork(Long idLabWork, Long idStudent, User user, float score) {
+        Optional<Student> student = studentRepository.findById(idStudent);
+        Optional<LabWork> labWork = labWorkRepository.findById(idLabWork);
+
+        if (student.isPresent() & labWork.isPresent()) {
+            var studentLabWork = studentLabWorkRepository.findByStudentAndLabwork(student.get(), labWork.get());
+            Optional<Score> scoreEntity = scoreRepository.findByStudentAndDiscipline(student.get(), labWork.get().getDiscipline());
+            if (scoreEntity.isPresent()) {
+                Score _score = scoreEntity.get();
+                if (studentLabWork.isPresent()) {
+                    StudentLabWork studentLabWork1 = studentLabWork.get();
+                    studentLabWork1.setScoreLab(score);
+                    studentLabWork1.setLector(lectorRepository.findByUser(userService.getAuthorizeUser().get()).get());
+                    studentLabWorkRepository.save(studentLabWork1);
+                    _score.setScore(scoreEntity.get().getScore() - (studentLabWork.get().getScoreLab() - score));
+                    scoreRepository.save(_score);
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }
